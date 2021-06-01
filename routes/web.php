@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\GoogleController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -26,6 +29,17 @@ Route::get('/', function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    Route::get('budget', [BudgetController::class, 'index'])->name('budget.index');
+    Route::get('plan', [PlanController::class, 'index'])->name('plan.index');
+
+    // Resource controller : https://laravel.com/docs/8.x/controllers#resource-controllers
+    Route::resources([
+        'documents' => DocumentController::class,
+        'projects' => ProjectController::class,
+    ]);
+});

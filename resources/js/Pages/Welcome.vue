@@ -5,10 +5,11 @@
                 <div class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
                     <div class="sm:text-center lg:text-left">
                         <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                            <span class="text-green-600">SMCU</span> <span class="text-gray-600">Planning and Budget</span>
+                            <span class="text-green-600">SMCU</span> <span class="text-gray-600">Administrative System</span>
                         </h1>
-                        <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            ระบบแผนงานและงบประมาณ สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+                        <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                            ระบบบริหารงานสโมสร สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+                            <span class="inline-flex bg-gray-700 text-white rounded-full px-3 items-center text-sm ml-1.5">Prototype</span>
                         </p>
                         <!--div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                           <div class="rounded-md shadow">
@@ -27,7 +28,18 @@
             </div>
         </div>
     </div>
-    <div class="items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
+    <div v-if="canLogin" class="px-6 py-4 sm:block text-center">
+        <inertia-link v-if="$page.props.user" href="/dashboard" class="text-gray-700 underline">
+            Dashboard
+        </inertia-link>
+
+        <template v-else>
+            <a :href="route('login.google')" class="text-gray-700 underline">
+                Log in using Docchula
+            </a>
+        </template>
+    </div>
+    <!--div class="items-top justify-center pb-12 bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
         <div v-if="canLogin" class="px-6 py-4 sm:block text-right">
             <inertia-link v-if="$page.props.user" href="/dashboard" class="text-sm text-gray-700 underline">
                 Dashboard
@@ -132,7 +144,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
 </template>
 
 <script>

@@ -18,7 +18,19 @@
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    หน้าหลัก
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('documents.index')" :active="route().current('documents.index')">
+                                    สารบรรณ
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('projects.index')" :active="route().current('projects.index')">
+                                    โครงการ
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
+                                    งบประมาณ
+                                </jet-nav-link>
+                                <jet-nav-link :href="route('plan.index')" :active="route().current('plan.index')">
+                                    แผน
                                 </jet-nav-link>
                             </div>
                         </div>
@@ -141,7 +153,19 @@
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                            หน้าหลัก
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('documents.index')" :active="route().current('documents.index')">
+                            สารบรรณ
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('projects.index')" :active="route().current('projects.index')">
+                            โครงการ
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
+                            งบประมาณ
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link :href="route('plan.index')" :active="route().current('plan.index')">
+                            แผน
                         </jet-responsive-nav-link>
                     </div>
 
