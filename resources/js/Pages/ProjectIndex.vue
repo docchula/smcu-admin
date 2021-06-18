@@ -13,16 +13,16 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                เลขที่หนังสือ
+                                เลขที่
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 ชื่อ
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                ผู้รับผิดชอบ
+                                สังกัด
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                สังกัด
+                                สร้างโดย
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 สร้างเมื่อ
@@ -34,24 +34,27 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <tr v-for="item in list.data" :key="item.id">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-3 whitespace-nowrap">
+                                    {{ item.year }}-{{ item.number }}
+                            </td>
+                            <td class="px-6 py-3 whitespace-normal">
                                 <inertia-link :href="route('projects.show', {project: item.id})">
                                     {{ item.name }}
                                 </inertia-link>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {{ item.owner }}
+                            <td class="px-6 py-3 whitespace-normal">
+                                {{ item.department.name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {{ item.department }}
+                            <td class="px-6 py-3 whitespace-normal text-gray-500 text-sm">
+                                {{ item.user.name }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">
+                            <td class="px-6 py-3 whitespace-normal text-gray-500 text-sm">
                                 <span v-if="item.created_at">
-                                    {{ item.created_at | relativeDate }}
+                                    {{ item.created_at }}
                                 </span>
                                 <span v-else>-</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                 <inertia-link :href="route('projects.show', {project: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
                             </td>
                         </tr>

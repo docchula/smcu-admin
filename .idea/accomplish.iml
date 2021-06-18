@@ -130,6 +130,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth1-client" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/clock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpoffice/phpword" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-zendframework-bridge" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laminas/laminas-escaper" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/intl" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/openpsa/ranger" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

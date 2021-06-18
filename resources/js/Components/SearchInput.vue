@@ -8,8 +8,8 @@
             </div>
             <input type="text" id="searchFood" placeholder="Search" ref="keyword" autofocus
                    class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-8 sm:text-sm border-gray-300 rounded-md"
-                   v-bind:value="value"
-                   v-on:input="$emit('input', $event.target.value)"/>
+                   :value="modelValue"
+                   @input="$emit('update:modelValue', $event.target.value)"/>
         </div>
         <p class="text-sm text-blue-600" v-if="status">{{ status }}</p>
     </div>
@@ -18,8 +18,9 @@
 <script>
 export default {
     props: {
-        value: String,
+        modelValue: String,
         status: String
     },
+    emits: ['update:modelValue']
 }
 </script>

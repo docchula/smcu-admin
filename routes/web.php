@@ -42,4 +42,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'documents' => DocumentController::class,
         'projects' => ProjectController::class,
     ]);
+    Route::get('projects/generateApprovalDocument/{project}', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
 });

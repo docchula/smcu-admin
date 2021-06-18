@@ -2,82 +2,237 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper;
+use App\Models\Department;
+use App\Models\Document;
+use App\Models\Project;
+use App\Models\ProjectParticipant;
 use App\Models\User;
 use App\VestaService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Inertia\Response;
+use IntlDateFormatter;
+use OpenPsa\Ranger\Ranger;
+use PhpOffice\PhpWord\Exception\CopyFileException;
+use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
+use PhpOffice\PhpWord\TemplateProcessor;
+use Throwable;
 
 class ProjectController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Inertia\Response {
-        $searchKeyword = $request->input('search');
+    public function index(Request $request): Response {
+        $keyword = $request->input('search');
+        $query = Project::query()->select('id', 'year', 'number', 'name', 'department_id', 'user_id', 'created_at')->with(['user', 'department']);
+        if (empty($keyword)) {
+            $currentBE = Helper::buddhistYear();
+            $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);
+        } elseif (preg_match("/^[-\d]+/", $keyword)) {
+            $parts = explode('-', $keyword, 2);
+            if ($parts[0]) {
+                $query->where('year', $parts[0]);
+            }
+            if ($parts[1]) {
+                $query->where('number', $parts[1]);
+            } else {
+                $query->orWhere('number', $parts[0]);
+            }
+        } else {
+            $query->where('name', 'LIKE', '%' . $keyword . '%');
+        }
 
         return Inertia::render('ProjectIndex', [
-            'list' => User::where('id', 0)->paginate(15)->withQueryString(),
-            'keyword' => $searchKeyword
+            'list' => $query->paginate(15)->withQueryString(),
+            'keyword' => $keyword
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request): \Inertia\Response {
-        return $this->edit($request, new User([]));
+    public function create(Request $request): Response {
+        return $this->edit($request, new Project([]));
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        return response('Not Implemented', 501);
+        return $this->update($request, new Project());
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id) {
-        return response('Not Implemented', 501);
+    public function show(Project $project) {
+        return Inertia::render('ProjectShow', [
+            'item' => $project->load(['user', 'department', 'participants', 'participants.user'])
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, User $item): \Inertia\Response {
+    public function edit(Request $request, Project $project): Response {
         /** @var User $user */
         $user = $request->user();
+        $project->organizers = $project->participants()->with('user')->where('type', 'organizer')->get()->map(function (ProjectParticipant $p) {
+            $names = explode(' ', $p->user->name, 2);
+            return ['first_name' => $names[0], 'last_name' => $names[1], 'student_id' => $p->user->student_id];
+        });
+
         return Inertia::render('ProjectCreate', [
-            'item' => $item,
-            'static_departments' => [['id' => 1, 'name' => 'ฝ่ายเทคโนโลยีสารสนเทศ'], ['id' => 2, 'name' => 'ฝ่ายวิชาการ']],
+            'item' => $project,
+            'static_departments' => Department::optionList(),
             'vesta_token' => VestaService::generateProxyIdToken($user->google_id, $user->email, $user->name)
         ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     * @return \Illuminate\Http\Response
+     * @throws Throwable
      */
-    public function update(Request $request, $id) {
-        //
+    public function update(Request $request, Project $project) {
+        $this->validate($request, [
+            'name' => 'required|filled|string|min:5|max:255',
+            'advisor' => 'required|filled|string|min:5|max:255',
+            'type' => 'required|filled|string|max:20',
+            'recurrence' => 'required|filled|string|max:20',
+            'period_start' => 'required|date',
+            'period_end' => 'required|date',
+            'department_id' => 'required|integer|min:1',
+            'background' => 'required|string',
+            'aims' => 'required|string',
+            'outcomes' => 'required|string',
+            'objectives' => 'required|array',
+            'expense' => 'nullable|array',
+            'organizers' => 'nullable|array',
+        ]);
+        $userId = Auth::id();
+        if (isset($project->user_id) and ($project->user_id != $userId)) {
+            abort(403);
+        }
+        $project->fill($request->all());
+        $project->user_id = $userId;
+        if (!$project->id) {
+            $project->year = Helper::buddhistYear();
+            $previousRecord = Document::latestOfYear($project->year);
+            $project->number = $previousRecord ? ($previousRecord->number + 1) : 1;
+        }
+        $existingParticipants = $project->participants;
+        if ($request->filled('organizers')) {
+            // Note: these lines of code suffers from n+1 performance issue
+            $inputParticipants = new Collection($request->input('organizers', []));
+            $newParticipants = new Collection();
+            $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])->get();
+            foreach ($inputParticipants as $student) {
+                // Add / edit existing
+                $user = $users->where('student_id', $student['student_id'])->first() ?? User::create([
+                        'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
+                        'email' => $student['email'],
+                        'student_id' => $student['student_id'],
+                    ]);
+                if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
+                    // Existing
+                    if ($participant->type != 'organizer') {
+                        $participant->type = 'organizer';
+                        $participant->save();
+                    }
+                } else {
+                    $newParticipants->push(['user_id' => $user->id, 'type' => 'organizer']);
+                }
+            }
+            if ($newParticipants->isNotEmpty()) {
+                $project->participants()->createMany($newParticipants);
+            }
+            // Delete unused existing
+            $existingParticipants->whereNotIn('user_id', $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id'))->where('type', 'organizer')->each->delete();
+        } elseif ($existingParticipants->isNotEmpty()) {
+            $project->participants()->where('type', 'organizer')->delete();
+        }
+        $project->saveOrFail();
+
+        return redirect()->route('projects.index')->with('flash.banner', 'บันทึกโครงการ เลขที่ ' . $project->year . '-' . $project->number . ' แล้ว')->with('flash.bannerStyle', 'success');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
         //
+    }
+
+    /**
+     * @throws CopyFileException
+     * @throws CreateTemporaryFileException
+     */
+    public function generateApprovalDocument(Request $request, Project $project) {
+        $project->load('department', 'participants', 'participants.user');
+        $ranger = (new Ranger('th'))->setDateType(IntlDateFormatter::LONG);
+        $template = new TemplateProcessor(storage_path('project_approval_template.docx'));
+        $template->setValues([
+            'doc_number' => '...../'.Helper::buddhistYear(),
+            'date' => Carbon::now()->locale('th')->isoFormat('D MMMM ').Helper::buddhistYear(),
+            'name' => $project->name,
+            'number' => $project->getNumber(),
+            'department' => ($project->department_id == 33) ? 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย' : $project->department->name,
+            'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ').$ranger->format($project->period_start, $project->period_end),
+            'aims' => call_user_func(function ($text) {
+                $aims = explode("\n", $text);
+                $aims[count($aims)-1] = 'และ'.$aims[count($aims)-1];
+                return implode(' ', $aims);
+            }, $project->aims),
+            'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
+                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'กองทุนอื่นของคณะ']);
+            })) ? 'พร้อมงบประมาณสนับสนุน' : '',
+            'contact_name' => $request->user()->name,
+            'contact_phone' => '.............',
+            'signer_advisor_name' => $project->advisor,
+            'signer_s2_title' => 'หัวหน้าฝ่าย/ประธานนิสิตแพทย์ชั้นปีที่.....',
+            'signer_s3_title' => 'อุปนายกสโมสรนิสิต คนที่ .....',
+            'signer_s4_title' => "นายกสโมสรนิสิต\nคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
+            'background' => $project->background
+        ]);
+        if ($organizer = $project->participants->where('type', 'organizer')->first()) {
+            $template->setValues([
+                'signer_s1_name' => '('.$organizer->user->name.')',
+                'signer_s1_title' => 'นิสิตผู้รับผิดชอบโครงการ'
+            ]);
+        }
+        $template->cloneRowAndSetValues('organizers_number', $project->participants->where('type', 'organizer')->map(function (ProjectParticipant $participant, $i) {
+            return ['organizers_number' => $i+1, 'organizers_name' => $participant->user->name, 'organizers_id' => $participant->user->student_id];
+        }));
+        $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
+            return ['expense_name' => $ex['name'], 'expense_type' => $ex['type'], 'expense_source' => $ex['source'], 'expense_amount' => number_format($ex['amount'], 2)];
+        }, $project->expense));
+        $template->cloneRowAndSetValues('objectives_goal', array_map(function (array $o) {
+            return ['objectives_goal' => $o['goal'], 'objectives_method' => $o['method']];
+        }, $project->objectives));
+        $template->cloneRowAndSetValues('aims_number', call_user_func(function ($text) {
+            $aims = explode("\n", $text);
+            $return = [];
+            foreach ($aims as $i => $aim) {
+                $return[] = ['aims_number' => $i+1, 'aims_text' => $aim];
+            }
+            return $return;
+        }, $project->aims));
+        $template->cloneRowAndSetValues('outcomes_number', call_user_func(function ($text) {
+            $outcomes = explode("\n", $text);
+            $return = [];
+            foreach ($outcomes as $i => $outcome) {
+                $return[] = ['outcomes_number' => $i+1, 'outcomes_text' => $outcome];
+            }
+            return $return;
+        }, $project->outcomes));
+
+        $tmpPath = tempnam(storage_path(), 'tmp-projectapproval-');
+        $template->saveAs($tmpPath);
+
+        return response()->download($tmpPath, $project->getNumber().' Project Approval.docx')->deleteFileAfterSend(true);
     }
 }

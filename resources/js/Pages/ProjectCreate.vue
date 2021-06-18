@@ -20,9 +20,10 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <p v-if="form.hasErrors" class="bg-red-500 text-white p-3 w-full mb-6 rounded-md shadow-md transition">ข้อมูลที่กรอกไม่ถูกต้องครบถ้วน กรุณาตรวจสอบอีกครั้ง</p>
             <jet-form-section @submitted="submit">
                 <template #title>ข้อมูลพื้นฐาน</template>
-                <template #description>กรณีโครงการนำเสนอผลงานในการประชุมวิชาการ เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"</template>
+                <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล กรณีโครงการนำเสนอผลงานในการประชุมวิชาการ เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"</template>
 
                 <template #form>
                     <div class="col-span-6">
@@ -32,13 +33,13 @@
                     </div>
                     <div class="col-span-6">
                         <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
-                        <select id="department" name="department"
-                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                v-model="form.department" required>
+                        <select id="department" v-model="form.department_id" required
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <option v-for="department in static_departments" v-bind:key="department.id" :value="department.id">
                                 {{ department.name }}
                             </option>
                         </select>
+                        <jet-input-error :message="form.errors.department_id" class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <jet-label for="advisor" value="อาจารย์ที่ปรึกษา"/>
@@ -65,10 +66,11 @@
                                 <input id="type_purchase" v-model="form.type" name="type" value="purchase" type="radio"
                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                                 <label for="type_purchase" class="ml-3 block text-sm font-medium text-gray-700">
-                                    ไม่ใช่กิจกรรม
+                                    โครงการจัดซื้อ (ไม่ใช่กิจกรรม)
                                 </label>
                             </div>
                         </div>
+                        <jet-input-error :message="form.errors.type" class="mt-2"/>
                     </fieldset>
                     <fieldset class="col-span-6">
                         <div class="flex gap-x-8">
@@ -87,24 +89,25 @@
                                 </label>
                             </div>
                         </div>
+                        <jet-input-error :message="form.errors.recurrence" class="mt-2"/>
                     </fieldset>
-                    <div class="col-span-6">
+                    <div class="col-span-6 lg:col-span-2">
                         <jet-label for="year" value="ปีวาระ"/>
-                        <jet-input id="year" v-model="form.year" type="number" min="2564" max="2580" class="mt-1 block w-full" required/>
+                        <jet-input id="year" v-model="form.year" type="number" min="2564" max="2580" class="mt-1 block w-full" required :disabled="item.number"/>
                         <jet-input-error :message="form.errors.year" class="mt-2"/>
                     </div>
-                    <div class="col-span-3">
-                        <jet-label for="period_start" value="เริ่มการดำเนินงาน"/>
+                    <div class="col-span-3 lg:col-span-2">
+                        <jet-label for="period_start" :value="(form.type === 'once') ? 'วันที่เริ่มกิจกรรม' : 'วันที่เริ่มดำเนินงาน'"/>
                         <datepicker id="period_start" v-model="form.period_start" type="date" :weekStartsOn="0" startingView="month" inputFormat="yyyy-MM-dd"
                                     class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full"
                         ></datepicker>
-                        <p class="mt-1 text-xs text-gray-500 col-span-6" v-if="!form.errors.period_start">
-                            รวมเตรียมงานและสรุปผล
+                        <p class="mt-1 text-xs text-gray-500 col-span-6" v-if="!form.errors.period_start && (form.type === 'once')">
+                            ไม่รวมเตรียมงานและสรุปผล
                         </p>
                         <jet-input-error :message="form.errors.period_start" class="mt-2"/>
                     </div>
-                    <div class="col-span-3">
-                        <jet-label for="period_end" value="สิ้นสุดการดำเนินงาน"/>
+                    <div class="col-span-3 lg:col-span-2">
+                        <jet-label for="period_end" :value="(form.type === 'once') ? 'วันที่สิ้นสุดกิจกรรม' : 'วันที่สิ้นสุดการดำเนินงาน'"/>
                         <datepicker id="period_end" v-model="form.period_end" type="date" :weekStartsOn="0" startingView="month" inputFormat="yyyy-MM-dd"
                                     class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full"
                         ></datepicker>
@@ -125,6 +128,7 @@
                                       v-model.trim="form.background"></textarea>
                         </div>
                         <p class="mt-2 text-xs text-gray-500">กรอกข้อความเท่านั้น กรณีต้องการขึ้นย่อหน้าใหม่ให้กด Enter 2 ครั้ง (มีบรรทัดว่างคั่น)</p>
+                        <jet-input-error :message="form.errors.background" class="mt-1"/>
                     </div>
                     <div class="col-span-6">
                         <label for="aims" class="block text-sm font-medium text-gray-700">วัตถุประสงค์</label>
@@ -134,6 +138,7 @@
                             ></textarea>
                         </div>
                         <p class="mt-2 text-xs text-gray-500">บรรทัดละข้อ (ตอนนี้มี {{ aimLines }} ข้อ)</p>
+                        <jet-input-error :message="form.errors.aims" class="mt-1"/>
                     </div>
                     <div class="col-span-6">
                         <label for="outcomes" class="block text-sm font-medium text-gray-700">ผลที่คาดว่าจะได้รับ</label>
@@ -144,16 +149,20 @@
                             ></textarea>
                         </div>
                         <p class="mt-2 text-xs text-gray-500">บรรทัดละข้อ (ตอนนี้มี {{ outcomeLines }} ข้อ)</p>
+                        <jet-input-error :message="form.errors.outcomes" class="mt-1"/>
                     </div>
                 </template>
             </jet-form-section>
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ความสอดคล้องตามแผนงาน</template>
-                <template #description>โครงการนี้สอดคล้องกับวิสัยทัศน์หรือแผนงานของสโมสรอย่างไร</template>
+                <template #description>
+                    โครงการนี้สอดคล้องกับวิสัยทัศน์หรือแผนงานของสโมสรอย่างไร เลือกได้หลายข้อ
+                    <span class="py-0.5 px-2 ml-2 text-white bg-red-500 rounded inline-block">Not Implemented</span>
+                </template>
                 <template #form>
                     <div class="col-span-6">
-                        <label for="category" class="block text-sm font-medium text-gray-700">แผนงานของสโมสร</label>
+                        <label for="category" class="block text-sm font-medium text-red-700">แผนงานของสโมสร</label>
                         <select id="category" required multiple
                                 class="mt-1 block w-full h-64 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <!-- @todo v-model="okr" -->
@@ -176,7 +185,11 @@
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>เป้าหมาย และวิธีการประเมินผล</template>
-                <template #description>เป้าหมาย คือ ผลลัพธ์ย่อยที่มุ่งหวังให้เกิดขึ้นในระยะสั้น สามารถวัดได้ ควรสอดคล้องกับวัตถุประสงค์ ใช้เพื่อประเมินผลการดำเนินโครงการ</template>
+                <template #description>
+                    เป้าหมาย คือ ผลลัพธ์ย่อยที่มุ่งหวังให้เกิดขึ้นในระยะสั้น เป็นปริมาณสามารถวัดได้ ควรสอดคล้องกับวัตถุประสงค์ ใช้เพื่อประเมินผลการดำเนินโครงการ<br/>
+                    <a @click="objectives.push({goal: 'ผู้เข้าร่วมร้อยละ 50 เห็นว่ากิจกรรมนี้ทำให้ตระหนักถึงปัญหาความไม่เท่าเทียมทางเพศในวงการแพทย์', method: 'แบบสอบถาม'})"
+                       class="cursor-pointer text-green-600">ดูตัวอย่าง</a>
+                </template>
                 <template #form>
                     <table v-if="objectives.length > 0" class="col-span-6 divide-y divide-gray-200">
                         <thead>
@@ -213,19 +226,32 @@
                         <jet-button class="bg-purple-500 hover:bg-purple-600 focus:border-purple-900" :disabled="form.processing" type="button" @click="objectives.push({goal: '', method: ''})">
                             เพิ่มเป้าหมาย
                         </jet-button>
+                        <jet-input-error :message="form.errors.objectives" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>งบประมาณ</template>
-                <template #description>ค่าใช้จ่ายเพื่อดำเนินโครงการ</template>
+                <template #description>
+                    ค่าใช้จ่ายเพื่อดำเนินโครงการ
+                    <a href="http://www.audit.moi.go.th/books0704-33_0704-68.pdf" target="_blank" class="text-green-600 block">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
+                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
+                        </svg>
+                        หลักการจำแนกประเภทรายจ่าย
+                    </a>
+                </template>
                 <template #form>
                     <table v-if="expense.length > 0" class="col-span-6 divide-y divide-gray-200">
                         <thead>
                         <tr>
                             <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
                                 รายการ
+                            </th>
+                            <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
+                                ประเภทรายจ่าย
                             </th>
                             <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
                                 แหล่งงบประมาณ
@@ -242,9 +268,25 @@
                                 <jet-input type="text" class="block w-full" v-model="member.name" required/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
+                                <select name="department" v-model="member.type" required
+                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <optgroup label="งบดำเนินงาน">
+                                        <option value="ค่าตอบแทน">ค่าตอบแทน (ให้ผู้ปฏิบัติงาน)</option>
+                                        <option value="ค่าใช้สอย">ค่าใช้สอย (ค่าบริการและอื่น ๆ)</option>
+                                        <option value="ค่าวัสดุ">ค่าวัสดุ (ของที่ใช้ไม่นานหรือหมดไป)</option>
+                                        <option value="ค่าสาธารณูปโภค">ค่าสาธารณูปโภค (เช่น โทรศัพท์ ไปรษณีย์ วิทยุ)</option>
+                                    </optgroup>
+                                    <optgroup label="งบลงทุน">
+                                        <option value="ค่าครุภัณฑ์">ค่าครุภัณฑ์ (ของที่คงทน ถาวร)</option>
+                                    </optgroup>
+                                    <option value="อื่น ๆ">อื่น ๆ</option>
+                                    <option value="">(ไม่ระบุ)</option>
+                                </select>
+                            </td>
+                            <td class="px-3 py-4 whitespace-nowrap">
                                 <select name="department" v-model="member.source" required
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <option value="งบรายปีสพจ.">งบรายปีสพจ.</option>
+                                    <option value="งบประจำปีสพจ.">งบประจำปีสพจ.</option>
                                     <option value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
                                     <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
                                     <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>
@@ -253,7 +295,7 @@
                                 </select>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
-                                <jet-input type="number" class="block w-32" step="0.01" v-model.number="member.amount" required/>
+                                <jet-input type="number" class="block w-full" min="0" step="0.01" v-model.number="member.amount" required/>
                             </td>
                             <td class="px-1 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" viewBox="0 0 20 20" fill="currentColor" @click="expense.splice(index, 1)">
@@ -271,6 +313,7 @@
                                     @click="expense.push({name: '', source: '', amount: ''})">
                             เพิ่มรายการงบประมาณ
                         </jet-button>
+                        <jet-input-error :message="form.errors.expense" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
@@ -314,6 +357,7 @@
                         <jet-button class="bg-purple-500 hover:bg-purple-600 focus:border-purple-900" :disabled="form.processing" type="button" @click="showStudentIdDialog = true">
                             เพิ่มนิสิตผู้รับผิดชอบโครงการ
                         </jet-button>
+                        <jet-input-error :message="form.errors.organizers" class="mt-2"/>
                     </div>
                 </template>
                 <template #actions>
@@ -321,7 +365,7 @@
                         Saved.
                     </jet-action-message>
 
-                    <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing && !form.wasSuccessful">
                         Save
                     </jet-button>
                 </template>
@@ -367,11 +411,12 @@ export default {
                 _method: this.item.id ? 'PUT' : 'POST',
                 name: this.item.name ?? "",
                 advisor: this.item.advisor ?? "",
+                department_id: this.item.department_id ?? "",
                 type: this.item.type ?? "",
                 recurrence: this.item.recurrence ?? "",
                 year: this.item.year ?? (defaultYear.getFullYear() + 543),
-                period_start: this.item.period_start ?? now,
-                period_end: this.item.period_end ?? now,
+                period_start: this.item.period_start ? new Date(this.item.period_start) : now,
+                period_end: this.item.period_end ? new Date(this.item.period_end) : now,
                 background: this.item.background ?? "",
                 aims: this.item.aims ?? "",
                 outcomes: this.item.outcomes ?? "",
@@ -379,7 +424,7 @@ export default {
             objectives: this.item.objectives ?? [],
             expense: this.item.expense ?? [],
             organizers: this.item.organizers ?? [],
-            showStudentIdDialog: false
+            showStudentIdDialog: false,
         }
     },
 
@@ -400,8 +445,13 @@ export default {
             // this.showStudentIdDialog = false;
         },
         submit() {
-            this.form.post(this.item.id
-                ? this.route('projects.update', {participant: this.item.id})
+            this.form.transform(data => ({
+                ...data,
+                objectives: this.objectives,
+                expense: this.expense,
+                organizers: this.organizers,
+            })).post(this.item.id
+                ? this.route('projects.update', {project: this.item.id})
                 : this.route('projects.store')
             )
         }

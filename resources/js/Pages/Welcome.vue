@@ -11,33 +11,26 @@
                             ระบบบริหารงานสโมสร สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
                             <span class="inline-flex bg-gray-700 text-white rounded-full px-3 items-center text-sm ml-1.5">Prototype</span>
                         </p>
-                        <!--div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                          <div class="rounded-md shadow">
-                            <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">
-                              Get started
-                            </a>
-                          </div>
-                          <div class="mt-3 sm:mt-0 sm:ml-3">
-                            <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 md:py-4 md:text-lg md:px-10">
-                              Live demo
-                            </a>
-                          </div>
+                        <!--div class="">
                         </div-->
+                        <div v-if="canLogin" class="mt-5 sm:mt-12 sm:flex sm:justify-center lg:justify-start">
+                            <div v-if="$page.props.user" class="mt-3 sm:mt-0 sm:ml-3">
+                                <inertia-link href="/dashboard"
+                                              class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 md:py-4 md:text-lg md:px-10">
+                                    Dashboard
+                                </inertia-link>
+                            </div>
+                            <div v-else class="rounded-md shadow">
+                                <a :href="route('login.google')"
+                                   class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10">
+                                    Log in with Docchula
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div v-if="canLogin" class="px-6 py-4 sm:block text-center">
-        <inertia-link v-if="$page.props.user" href="/dashboard" class="text-gray-700 underline">
-            Dashboard
-        </inertia-link>
-
-        <template v-else>
-            <a :href="route('login.google')" class="text-gray-700 underline">
-                Log in using Docchula
-            </a>
-        </template>
     </div>
     <!--div class="items-top justify-center pb-12 bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
         <div v-if="canLogin" class="px-6 py-4 sm:block text-right">

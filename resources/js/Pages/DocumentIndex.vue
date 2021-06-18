@@ -7,58 +7,61 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage" />
+            <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
             <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                เลขที่หนังสือ
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                ชื่อ
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                ผู้รับผิดชอบ
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                สังกัด
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                สร้างเมื่อ
-                            </th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Edit</span>
-                            </th>
-                        </tr>
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            เลขที่
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            หัวเรื่อง
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            สังกัด
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            ผู้รับผิดชอบ
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            สร้างเมื่อ
+                        </th>
+                        <th scope="col" class="relative px-6 py-3">
+                            <span class="sr-only">Edit</span>
+                        </th>
+                    </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="item in list.data" :key="item.id">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <inertia-link :href="route('projects.show', {project: item.id})">
-                                    {{ item.name }}
-                                </inertia-link>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {{ item.owner }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {{ item.department }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-500 text-sm">
+                    <tr v-for="item in list.data" :key="item.id">
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <inertia-link :href="route('documents.show', {document: item.id})">
+                                {{ item.number }}<span v-if="item.number_to">-{{ item.number_to }}</span>/{{ item.year }}
+                            </inertia-link>
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            {{ item.title }}
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm">
+                            {{ item.department.name }}
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-sm">
+                            {{ item.user.name }}
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-gray-500 text-sm">
                                 <span v-if="item.created_at">
-                                    {{ item.created_at | relativeDate }}
+                                    {{ item.created_at }}
                                 </span>
-                                <span v-else>-</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <inertia-link :href="route('projects.show', {project: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
-                            </td>
-                        </tr>
+                            <span v-else>-</span>
+                        </td>
+                        <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                            <inertia-link :href="route('documents.show', {document: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
-            <pagination class="mt-6" :links="list.links" />
+            <pagination class="mt-6" :links="list.links"/>
         </div>
         <inertia-link :href="route('documents.create')">
             <button

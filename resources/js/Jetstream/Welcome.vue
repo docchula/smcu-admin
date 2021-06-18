@@ -25,8 +25,7 @@
 
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
-                        Laravel has wonderful documentation covering every aspect of the framework. Whether you're new to the framework or have previous experience, we recommend reading all of the
-                        documentation from beginning to end.
+                        เมื่อส่วนงานหรือกลุ่มนิสิตมีความประสงค์จะจัดกิจกรรม ให้ลงทะเบียนข้อมูลโครงการ และส่งหนังสือขออนุมัติดำเนินโครงการ
                     </div>
                     <inertia-link :href="route('projects.create')">
                         <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
@@ -54,8 +53,7 @@
 
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
-                        Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in
-                        the process.
+                        กรณีส่วนงานมีความประสงค์จะจัดกิจกรรมหรือโครงการที่ใช้งบประมาณสโมสร ให้แจ้งคณะกรรมการสโมสรในช่วงต้นวาระเพื่อขอจัดสรรงบประมาณประจำปี
                     </div>
                     <inertia-link :href="route('budget.index')">
                         <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
@@ -83,8 +81,7 @@
 
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
-                        Laravel Jetstream is built with Tailwind, an amazing utility first CSS framework that doesn't get in your way. You'll be amazed how easily you can build and maintain fresh,
-                        modern designs with this wonderful framework at your fingertips.
+                        เมื่อส่วนงานใช้จ่ายตามที่ได้รับอนุมัติแล้ว ให้นำหลักฐานการจ่ายแจ้งต่อเหรัญญิกสโมสรเพื่อขอเบิกค่าใช้จ่าย
                     </div>
                 </div>
             </div>
@@ -99,8 +96,7 @@
 
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
-                        Authentication and registration views are included with Laravel Jetstream, as well as support for user email verification and resetting forgotten passwords. So, you're free to
-                        get started what matters most: building your application.
+                        เมื่อสิ้นสุดการดำเนินโครงการ ให้วัดประเมินผลเป็นข้อมูลเชิงปริมาณว่าโครงการบรรลุเป้าหมายและวัตถุประสงค์เพียงใด
                     </div>
                     <inertia-link :href="route('plan.index')">
                         <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
@@ -128,8 +124,7 @@
 
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
-                        Authentication and registration views are included with Laravel Jetstream, as well as support for user email verification and resetting forgotten passwords. So, you're free to
-                        get started what matters most: building your application.
+                        ในการดำเนินงาน หากมีความประสงค์จะออกหนังสือสพจ. เพื่อประสานงานกับหน่วยงานต่าง ๆ ให้ลงทะเบียนข้อมูลในเว็บไซต์นี้
                     </div>
                     <inertia-link :href="route('documents.index')">
                         <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">

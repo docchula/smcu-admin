@@ -7,7 +7,7 @@
         <template #content>
             <div>
                 <jet-label for="sid" value="เลขประจำตัวนิสิต"/>
-                <jet-input id="sid" type="text" class="mt-1 block w-full" v-model.trim="addStudentId" required placeholder="10 หลัก"/>
+                <jet-input id="sid" type="text" class="mt-1 block w-full" v-model.trim="addStudentId" required placeholder="10 หลัก" @keyup.enter="onInputEnter"/>
                 <jet-input-error :message="keywordError" class="mt-2"/>
             </div>
             <div v-if="searchResult.length > 0" class="mt-4 border-l border-r border-b border-gray-200">
@@ -76,7 +76,13 @@ export default {
             }).catch((error) => {
                 this.keywordError = 'Error! Could not reach the API. ' + error;
             })
-        }, 500)
+        }, 500),
+        onInputEnter() {
+            if (this.searchResult.length === 1) {
+                this.$emit('selected', this.searchResult[0]);
+                this.addStudentId='';
+            }
+        }
     },
     watch: {
         // whenever question changes, this function will run
