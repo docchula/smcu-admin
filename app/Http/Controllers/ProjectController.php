@@ -125,6 +125,7 @@ class ProjectController extends Controller {
             $project->number = $previousRecord ? ($previousRecord->number + 1) : 1;
         }
         $existingParticipants = $project->participants;
+        $project->saveOrFail();
         if ($request->filled('organizers')) {
             // Note: these lines of code suffers from n+1 performance issue
             $inputParticipants = new Collection($request->input('organizers', []));
@@ -155,7 +156,6 @@ class ProjectController extends Controller {
         } elseif ($existingParticipants->isNotEmpty()) {
             $project->participants()->where('type', 'organizer')->delete();
         }
-        $project->saveOrFail();
 
         return redirect()->route('projects.index')->with('flash.banner', 'บันทึกโครงการ เลขที่ ' . $project->year . '-' . $project->number . ' แล้ว')->with('flash.bannerStyle', 'success');
     }
