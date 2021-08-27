@@ -65,12 +65,15 @@
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ออกหนังสือหลายฉบับ</template>
-                <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับหลายคน (เช่น หนังสือเชิญ)</template>
+                <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ) ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน</template>
                 <template #form>
                     <div class="col-span-6">
                         <jet-label for="amount" value="จำนวนหนังสือ"/>
                         <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1" min="1" max="500"/>
-                        <jet-input-error :message="form.errors.amount" class="mt-2"/>
+                        <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
+                        <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
+                            อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
+                        </p>
                     </div>
                 </template>
             </jet-form-section>

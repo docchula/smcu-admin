@@ -37,10 +37,10 @@ class ProjectController extends Controller {
             if ($parts[0]) {
                 $query->where('year', $parts[0]);
             }
-            if ($parts[1]) {
-                $query->where('number', $parts[1]);
-            } else {
+            if (empty($parts[1])) {
                 $query->orWhere('number', $parts[0]);
+            } else {
+                $query->where('number', $parts[1]);
             }
         } else {
             $query->where('name', 'LIKE', '%' . $keyword . '%');

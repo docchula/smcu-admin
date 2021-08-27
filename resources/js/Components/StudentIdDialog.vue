@@ -11,12 +11,12 @@
                 <jet-input-error :message="keywordError" class="mt-2"/>
             </div>
             <div v-if="searchResult.length > 0" class="mt-4 border-l border-r border-b border-gray-200">
-                <div class="border-t hover:bg-gray-50 cursor-pointer px-3 py-2 flex" v-for="item in searchResult" :key="item.id" @click="$emit('selected', item);addStudentId=''">
+                <div class="border-t px-3 py-2 flex" :class="{'hover:bg-gray-50 cursor-pointer': !list.find(x => x.student_id === item.student_id)}" v-for="item in searchResult" :key="item.id" @click="selectStudent(item)">
                     <div class="flex-auto items-center">
                         {{ item.title }}{{ item.first_name }} {{ item.last_name }} ({{ item.nickname }})
                     </div>
                     <div class="flex-initial items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" v-if="list.find(x => x.id === item.id)" class="block h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" v-if="list.find(x => x.student_id === item.student_id)" class="block h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" v-else class="block h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
@@ -81,6 +81,12 @@ export default {
             if (this.searchResult.length === 1) {
                 this.$emit('selected', this.searchResult[0]);
                 this.addStudentId='';
+            }
+        },
+        selectStudent(item) {
+            if (this.list.filter(x => x.student_id === item.student_id).length === 0) {
+                this.$emit('selected', item);
+                this.addStudentId = '';
             }
         }
     },
