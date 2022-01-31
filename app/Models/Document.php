@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int         $number
  * @property int|null    $number_to
  * @property string      $title
- * @property string      $recipient
+ * @property string|null $recipient
  * @property int|null    $user_id
  * @property int|null    $project_id
  * @property int|null    $department_id
@@ -21,7 +21,7 @@ class Document extends Model {
     use HasFactory;
 
     protected $fillable = ['title', 'recipient', 'department_id', 'user_id'];
-    protected $casts = ['created_at' => 'datetime:j F Y'];
+    protected $casts = ['created_at' => 'datetime:j M Y'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(Department::class);

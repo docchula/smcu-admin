@@ -79,6 +79,21 @@
             </jet-form-section>
             <jet-section-border/>
             <jet-form-section @submitted="submit">
+                <template #title>โครงการ</template>
+                <template #description>หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด หากไม่มีให้เว้นว่าง</template>
+                <template #form>
+                    <div class="col-span-6">
+                        <jet-label for="project" value="ชื่อหรือเลขที่โครงการ"/>
+                        <jet-input id="project" type="text" class="mt-1 block w-full" v-model.number="projectKeyword" ref="project" />
+                        <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
+                        <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
+                            อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
+                        </p>
+                    </div>
+                </template>
+            </jet-form-section>
+            <jet-section-border/>
+            <jet-form-section @submitted="submit">
                 <template #title>ไฟล์เอกสาร</template>
                 <template #description>กรุณาแนบไฟล์เอกสารทั้งฉบับ รวมเป็นไฟล์เดียว ในรูปแบบ pdf หรือ docx ขนาดไม่เกิน 15 MB</template>
                 <template #form>
@@ -154,6 +169,7 @@ export default {
 
     data() {
         return {
+            projectKeyword: "",
             form: this.$inertia.form({
                 _method: this.item.id ? 'PUT' : 'POST',
                 title: this.item.title ?? "",

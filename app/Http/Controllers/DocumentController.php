@@ -16,7 +16,7 @@ class DocumentController extends Controller {
      */
     public function index(Request $request): \Inertia\Response {
         $keyword = $request->input('search');
-        $query = Document::query()->with(['user', 'department']);
+        $query = Document::query()->with(['department']);
         if (empty($keyword)) {
             $query->where('year', Helper::buddhistYear());
         } elseif (preg_match("/^[\/\d]+/", $keyword)) {
@@ -34,7 +34,7 @@ class DocumentController extends Controller {
         }
 
         return Inertia::render('DocumentIndex', [
-            'list' => $query->paginate(15)->withQueryString(),
+            'list' => $query->orderByDesc('number')->paginate(20)->withQueryString(),
             'keyword' => $keyword
         ]);
     }
@@ -60,6 +60,13 @@ class DocumentController extends Controller {
         return Inertia::render('DocumentShow', [
             'item' => $document->load(['user', 'department'])
         ]);
+    }
+
+    public function download(Document $document) {
+        return Storage::download(
+            $document->attachment_path,
+            'สพจ ' . $document->number . '-' . $document->year . ' ' . substr($document->title, 0, 25)
+        );
     }
 
     /**

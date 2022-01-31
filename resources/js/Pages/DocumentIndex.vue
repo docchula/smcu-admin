@@ -12,49 +12,43 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             เลขที่
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             หัวเรื่อง
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             สังกัด
                         </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                            ผู้รับผิดชอบ
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             สร้างเมื่อ
                         </th>
-                        <th scope="col" class="relative px-6 py-3">
+                        <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
                             <span class="sr-only">Edit</span>
                         </th>
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="item in list.data" :key="item.id">
-                        <td class="px-6 py-3 whitespace-nowrap">
+                        <td class="px-2 py-2 md:px-4 md:py-3">
                             <inertia-link :href="route('documents.show', {document: item.id})">
-                                {{ item.number }}<span v-if="item.number_to">-{{ item.number_to }}</span>/{{ item.year }}
+                                {{ item.number }}<span v-if="item.number_to">-{{ item.number_to }}</span><span class="text-sm">/{{ item.year }}</span>
                             </inertia-link>
                         </td>
-                        <td class="px-6 py-3 whitespace-nowrap">
+                        <td class="px-2 py-2 md:px-4 md:py-3">
                             {{ item.title }}
                         </td>
-                        <td class="px-6 py-3 whitespace-nowrap text-sm">
+                        <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
                             {{ item.department.name }}
                         </td>
-                        <td class="px-6 py-3 whitespace-nowrap text-sm">
-                            {{ item.user.name }}
-                        </td>
-                        <td class="px-6 py-3 whitespace-nowrap text-gray-500 text-sm">
+                        <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
                                 <span v-if="item.created_at">
                                     {{ item.created_at }}
                                 </span>
                             <span v-else>-</span>
                         </td>
-                        <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                        <td class="px-2 py-2 md:px-4 md:py-3 whitespace-nowrap text-right text-sm font-medium hidden md:table-cell">
                             <inertia-link :href="route('documents.show', {document: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
                         </td>
                     </tr>
@@ -95,7 +89,7 @@ export default {
     },
     methods: {
         search(keyword) {
-            this.$inertia.get(this.route('projects.index'), {search: keyword}, {
+            this.$inertia.get(this.route('documents.index'), {search: keyword}, {
                 only: ['list', 'keyword'],
                 preserveState: true
             });

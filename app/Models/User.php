@@ -47,10 +47,15 @@ class User extends Authenticatable {
      * @var array
      */
     protected $hidden = [
+        'email_verified_at',
         'password',
         'remember_token',
+        'two_factor_enabled',
         'two_factor_recovery_codes',
         'two_factor_secret',
+        'google_id',
+        'created_at',
+        'updated_at'
     ];
 
     /**

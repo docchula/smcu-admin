@@ -26,12 +26,12 @@
                                 <jet-nav-link :href="route('projects.index')" :active="route().current('projects.index')">
                                     โครงการ
                                 </jet-nav-link>
-                                <jet-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
+                                <!-- jet-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
                                     งบประมาณ
                                 </jet-nav-link>
                                 <jet-nav-link :href="route('plan.index')" :active="route().current('plan.index')">
                                     แผน
-                                </jet-nav-link>
+                                </jet-nav-link -->
                             </div>
                         </div>
 
@@ -161,12 +161,12 @@
                         <jet-responsive-nav-link :href="route('projects.index')" :active="route().current('projects.index')">
                             โครงการ
                         </jet-responsive-nav-link>
-                        <jet-responsive-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
+                        <!-- jet-responsive-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
                             งบประมาณ
                         </jet-responsive-nav-link>
                         <jet-responsive-nav-link :href="route('plan.index')" :active="route().current('plan.index')">
                             แผน
-                        </jet-responsive-nav-link>
+                        </jet-responsive-nav-link -->
                     </div>
 
                     <!-- Responsive Settings Options -->

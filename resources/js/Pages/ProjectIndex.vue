@@ -12,49 +12,49 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 เลขที่
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 ชื่อ
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 สังกัด
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 สร้างโดย
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 สร้างเมื่อ
                             </th>
-                            <th scope="col" class="relative px-6 py-3">
+                            <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
                                 <span class="sr-only">Edit</span>
                             </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <tr v-for="item in list.data" :key="item.id">
-                            <td class="px-6 py-3 whitespace-nowrap">
+                            <td class="px-2 py-2 md:px-4 md:py-3">
                                     {{ item.year }}-{{ item.number }}
                             </td>
-                            <td class="px-6 py-3 whitespace-normal">
+                            <td class="px-2 py-2 md:px-4 md:py-3">
                                 <inertia-link :href="route('projects.show', {project: item.id})">
                                     {{ item.name }}
                                 </inertia-link>
                             </td>
-                            <td class="px-6 py-3 whitespace-normal">
+                            <td class="px-2 py-2 md:px-4 md:py-3">
                                 {{ item.department.name }}
                             </td>
-                            <td class="px-6 py-3 whitespace-normal text-gray-500 text-sm">
+                            <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
                                 {{ item.user.name }}
                             </td>
-                            <td class="px-6 py-3 whitespace-normal text-gray-500 text-sm">
+                            <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
                                 <span v-if="item.created_at">
                                     {{ item.created_at }}
                                 </span>
                                 <span v-else>-</span>
                             </td>
-                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
+                            <td class="px-2 py-2 md:px-4 md:py-3 text-right text-sm font-medium hidden md:table-cell">
                                 <inertia-link :href="route('projects.show', {project: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
                             </td>
                         </tr>

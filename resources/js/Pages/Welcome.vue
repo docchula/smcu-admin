@@ -9,7 +9,6 @@
                         </h1>
                         <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                             ระบบบริหารงานสโมสร สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
-                            <span class="inline-flex bg-gray-700 text-white rounded-full px-3 items-center text-sm ml-1.5">Prototype</span>
                         </p>
                         <!--div class="">
                         </div-->

@@ -196,7 +196,7 @@
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     <a :href="route('projects.generateApprovalDocument', {project: item.id})"
                        class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">สร้างเอกสารขออนุมัติโครงการ</a>
-                    <p>เมื่อดาวน์โหลดเอกสารแล้ว กรุณาเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
+                    <p>เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
                     <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
                         ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่ฝ่ายกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
                 </div>
@@ -204,7 +204,7 @@
             <p class="mt-1 text-sm text-gray-500 text-right">
                 สร้างเมื่อ {{ item.created_at }}
                 <span v-if="item.updated_at && (item.created_at !== item.updated_at)">
-                    แก้ไขเมื่อ {{ item.updated_at }}
+                    &emsp;แก้ไขเมื่อ {{ item.updated_at }}
                 </span>
             </p>
         </div>

@@ -154,7 +154,7 @@
                 </template>
             </jet-form-section>
             <jet-section-border/>
-            <jet-form-section @submitted="submit">
+            <!-- jet-form-section @submitted="submit">
                 <template #title>ความสอดคล้องตามแผนงาน</template>
                 <template #description>
                     โครงการนี้สอดคล้องกับวิสัยทัศน์หรือแผนงานของสโมสรอย่างไร เลือกได้หลายข้อ
@@ -165,7 +165,7 @@
                         <label for="category" class="block text-sm font-medium text-red-700">แผนงานของสโมสร</label>
                         <select id="category" required multiple
                                 class="mt-1 block w-full h-64 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <!-- @todo v-model="okr" -->
+                            <-- @todo v-model="okr" ->
                             <optgroup label="1. สนับสนุนกิจกรรมนิสิต">
                                 <option>1.1) เพื่อส่งเสริมกิจกรรมเสริมหลักสูตร ในด้านทักษะทางวิชาการ ศิลปะ วัฒนธรรม และพลานามัย</option>
                                 <option>1.2) เพื่อส่งเสริมความสัมพันธ์อันดีระหว่างนิสิต อาจารย์ ศิษย์เก่า บุคลากร</option>
@@ -182,11 +182,11 @@
                     </div>
                 </template>
             </jet-form-section>
-            <jet-section-border/>
+            <jet-section-border/ -->
             <jet-form-section @submitted="submit">
-                <template #title>เป้าหมาย และวิธีการประเมินผล</template>
+                <template #title>ตัวชี้วัด และวิธีการประเมินผล</template>
                 <template #description>
-                    เป้าหมาย คือ ผลลัพธ์ย่อยที่มุ่งหวังให้เกิดขึ้นในระยะสั้น เป็นปริมาณสามารถวัดได้ ควรสอดคล้องกับวัตถุประสงค์ ใช้เพื่อประเมินผลการดำเนินโครงการ<br/>
+                    ตัวชี้วัด คือ หน่วยวัดความสำเร็จของการปฏิบัติงาน ควรมีผลเป็นตัวเลขที่นับได้จริง และต้องสื่อถึงเป้าหมายในการปฏิบัติงานสำคัญ<br/>
                     <a @click="objectives.push({goal: 'ผู้เข้าร่วมร้อยละ 50 เห็นว่ากิจกรรมนี้ทำให้ตระหนักถึงปัญหาความไม่เท่าเทียมทางเพศในวงการแพทย์', method: 'แบบสอบถาม'})"
                        class="cursor-pointer text-green-600">ดูตัวอย่าง</a>
                 </template>
@@ -195,7 +195,7 @@
                         <thead>
                         <tr>
                             <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                เป้าหมาย
+                                ตัวชี้วัด
                             </th>
                             <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
                                 วิธีการประเมินผล
@@ -286,7 +286,7 @@
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select name="department" v-model="member.source" required
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <option value="งบประจำปีสพจ.">งบประจำปีสพจ.</option>
+                                    <option value="สพจ.">สพจ.</option>
                                     <option value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
                                     <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
                                     <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>
