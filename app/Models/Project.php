@@ -71,4 +71,8 @@ class Project extends Model {
     public function getNumber(): string {
         return $this->year . '-' . $this->number;
     }
+
+    public static function latestOfYear(?int $year): ?self {
+        return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
+    }
 }

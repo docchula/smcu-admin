@@ -77,7 +77,7 @@
                     </div>
                 </template>
             </jet-form-section>
-            <jet-section-border/>
+            <!-- jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>โครงการ</template>
                 <template #description>หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด หากไม่มีให้เว้นว่าง</template>
@@ -91,7 +91,7 @@
                         </p>
                     </div>
                 </template>
-            </jet-form-section>
+            </jet-form-section -->
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ไฟล์เอกสาร</template>

@@ -32,6 +32,8 @@ class CreateProjectsTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->unsignedInteger('department_id')->nullable();
             $table->unsignedInteger('approval_document_id')->nullable();
+
+            $table->index(['year', 'number']);
         });
     }
 

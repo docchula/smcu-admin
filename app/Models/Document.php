@@ -36,6 +36,6 @@ class Document extends Model {
     }
 
     public static function latestOfYear(?int $year): ?self {
-        return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('id')->first();
+        return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
     }
 }

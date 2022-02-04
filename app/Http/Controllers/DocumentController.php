@@ -34,7 +34,7 @@ class DocumentController extends Controller {
         }
 
         return Inertia::render('DocumentIndex', [
-            'list' => $query->orderByDesc('number')->paginate(20)->withQueryString(),
+            'list' => $query->orderByDesc('year')->orderByDesc('number')->paginate(20)->withQueryString(),
             'keyword' => $keyword
         ]);
     }

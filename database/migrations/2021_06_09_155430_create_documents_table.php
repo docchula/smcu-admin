@@ -25,6 +25,8 @@ class CreateDocumentsTable extends Migration
             $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('department_id')->nullable();
             $table->string('attachment_path')->nullable();
+
+            $table->index(['year', 'number']);
         });
     }
 

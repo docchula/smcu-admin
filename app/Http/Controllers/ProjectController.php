@@ -47,7 +47,7 @@ class ProjectController extends Controller {
         }
 
         return Inertia::render('ProjectIndex', [
-            'list' => $query->paginate(15)->withQueryString(),
+            'list' => $query->orderByDesc('year')->orderByDesc('number')->paginate(15)->withQueryString(),
             'keyword' => $keyword
         ]);
     }
@@ -121,7 +121,7 @@ class ProjectController extends Controller {
         $project->user_id = $userId;
         if (!$project->id) {
             $project->year = Helper::buddhistYear();
-            $previousRecord = Document::latestOfYear($project->year);
+            $previousRecord = Project::latestOfYear($project->year);
             $project->number = $previousRecord ? ($previousRecord->number + 1) : 1;
         }
         $existingParticipants = $project->participants;
