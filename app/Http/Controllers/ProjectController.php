@@ -28,28 +28,15 @@ class ProjectController extends Controller {
      */
     public function index(Request $request): Response {
         $keyword = $request->input('search');
-        $query = Project::query()->select('id', 'year', 'number', 'name', 'department_id', 'user_id', 'created_at')->with(['user', 'department']);
-        if (empty($keyword)) {
-            $currentBE = Helper::buddhistYear();
-            $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);
-        } elseif (preg_match("/^[-\d]+/", $keyword)) {
-            $parts = explode('-', $keyword, 2);
-            if ($parts[0]) {
-                $query->where('year', $parts[0]);
-            }
-            if (empty($parts[1])) {
-                $query->orWhere('number', $parts[0]);
-            } else {
-                $query->where('number', $parts[1]);
-            }
-        } else {
-            $query->where('name', 'LIKE', '%' . $keyword . '%');
-        }
 
         return Inertia::render('ProjectIndex', [
-            'list' => $query->orderByDesc('year')->orderByDesc('number')->paginate(15)->withQueryString(),
+            'list' => Project::searchQuery($keyword)->orderByDesc('year')->orderByDesc('number')->paginate(15)->withQueryString(),
             'keyword' => $keyword
         ]);
+    }
+
+    public function search(string $keyword): \Illuminate\Http\JsonResponse {
+        return response()->json(Project::searchQuery($keyword)->take(5)->get());
     }
 
     /**
@@ -71,7 +58,7 @@ class ProjectController extends Controller {
      */
     public function show(Project $project) {
         return Inertia::render('ProjectShow', [
-            'item' => $project->load(['user', 'department', 'participants', 'participants.user'])
+            'item' => $project->load(['user', 'department', 'documents', 'participants', 'participants.user'])
         ]);
     }
 

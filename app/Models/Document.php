@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,11 +17,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null    $project_id
  * @property int|null    $department_id
  * @property string|null $attachment_path
+ * @property Carbon      $created_at
+ * @property Carbon|null $updated_at
  */
 class Document extends Model {
     use HasFactory;
 
-    protected $fillable = ['title', 'recipient', 'department_id', 'user_id'];
+    protected $fillable = ['title', 'recipient', 'department_id', 'project_id', 'user_id'];
     protected $casts = ['created_at' => 'datetime:j M Y'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {

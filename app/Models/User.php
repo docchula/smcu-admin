@@ -20,6 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $student_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property string      $roles
  */
 class User extends Authenticatable {
     use HasApiTokens;

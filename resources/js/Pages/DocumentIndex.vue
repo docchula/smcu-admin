@@ -107,7 +107,7 @@ export default {
         this.debouncedSearch = _.debounce(this.search, 500)
     },
     props: {
-        keyword: String,
+        keyword: String|null,
         list: Object
     }
 };

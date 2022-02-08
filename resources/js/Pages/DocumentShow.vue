@@ -26,27 +26,40 @@
                 </div>
                 <div class="border-t border-gray-200">
                     <dl class="grid grid-cols-2">
-                        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">หัวเรื่อง</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.title }}</dd>
-                        </div>
-                        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6" v-if="item.recipient">
                             <dt class="text-sm font-medium text-gray-500">ผู้รับ</dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.recipient }}</dd>
                         </div>
-                        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">หน่วยงาน</dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.department.name }}</dd>
                         </div>
-                        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6" v-if="item.project">
+                            <dt class="text-sm font-medium text-gray-500">โครงการ</dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <inertia-link :href="route('projects.show', {project: item.project_id})" class="text-indigo-600 hover:text-indigo-900">{{ item.project.name }}</inertia-link>
+                            </dd>
+                        </div>
+                        <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ผู้รับผิดชอบ</dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.user.name }}</dd>
                         </div>
-                        <div class="px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">สร้างเมื่อ</dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.created_at }}</dd>
                         </div>
                     </dl>
+                </div>
+            </div>
+            <div v-if="item.can['update-document']" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        ดาวน์โหลด
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200 p-4 sm:px-6">
+                    <a :href="route('documents.download', {document: item.id})"
+                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดร่างเอกสาร</a>
                 </div>
             </div>
         </div>

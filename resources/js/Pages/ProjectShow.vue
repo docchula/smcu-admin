@@ -164,6 +164,48 @@
                     </dl>
                 </div>
             </div>
+            <div v-if="item.documents.length > 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        เอกสารที่เกี่ยวข้อง
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6">
+                        <table class="divide-y divide-gray-200">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    เลขที่
+                                </th>
+                                <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    วันที่
+                                </th>
+                                <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    หัวเรื่อง
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="e in item.documents">
+                                <td class="p-2">
+                                    <inertia-link :href="route('documents.show', {document: e.id})" class="text-green-500">
+                                        {{ e.number }}<span v-if="e.number_to">-{{ e.number_to }}</span><span class="text-sm">/{{ e.year }}</span>
+                                    </inertia-link>
+                                </td>
+                                <td class="p-2">
+                                    <span v-if="e.created_at">{{ e.created_at }}</span>
+                                    <span v-else>-</span>
+                                </td>
+                                <td class="p-2">
+                                    {{ e.title }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div v-if="participantsGrouped" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -220,7 +262,7 @@ export default {
     },
     computed: {
         participantsGrouped() {
-            return this.item.participants.length ? _.groupBy(this.item.participants, 'type') : {};
+            return (this.item.participants.length > 0) ? _.groupBy(this.item.participants, 'type') : null;
         }
     },
     props: {

@@ -50,18 +50,6 @@
                     </div>
                 </template>
             </jet-form-section>
-            <!--jet-section-border/>
-            <jet-form-section @submitted="submit">
-                <template #title>โครงการ</template>
-                <template #description>กรณีหนังสือนี้มีความเกี่ยวข้องกับการดำเนินโครงการ ให้ใส่เลขที่หนังสือขออนุมัติโครงการนั้น ๆ</template>
-                <template #form>
-                    <div class="col-span-6">
-                        <jet-label for="project" value="เลขที่โครงการ (ถ้ามี)"/>
-                        <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="form.project" ref="project" required placeholder="เช่น 250/2564"/>
-                        <jet-input-error :message="form.errors.project" class="mt-2"/>
-                    </div>
-                </template>
-            </jet-form-section-->
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ออกหนังสือหลายฉบับ</template>
@@ -77,21 +65,44 @@
                     </div>
                 </template>
             </jet-form-section>
-            <!-- jet-section-border/>
-            <jet-form-section @submitted="submit">
+            <jet-section-border/>
+            <jet-form-section>
                 <template #title>โครงการ</template>
-                <template #description>หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด หากไม่มีให้เว้นว่าง</template>
+                <template #description>
+                    หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด หากไม่มีให้เว้นว่าง<br/>
+                    <strong>ก่อนส่งหนังสือขออนุมัติโครงการต้องลงทะเบียน<inertia-link :href="route('projects.index')" class="text-green-500">โครงการ</inertia-link> และกรอกเลขที่โครงการในเอกสารก่อน</strong>
+                </template>
                 <template #form>
-                    <div class="col-span-6">
-                        <jet-label for="project" value="ชื่อหรือเลขที่โครงการ"/>
-                        <jet-input id="project" type="text" class="mt-1 block w-full" v-model.number="projectKeyword" ref="project" />
-                        <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
-                        <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
-                            อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
-                        </p>
+                    <div v-if="selectedProject" class="col-span-6">
+                        กำลังเลือกโครงการ<strong>{{ selectedProject.name }}</strong> สังกัด{{ selectedProject.department.name }}
+                        <a class="cursor-pointer text-green-500" @click="projectKeyword = ''"><svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg></a>
+                    </div>
+                    <div v-else class="col-span-6">
+                        <div>
+                            <jet-label for="project" value="ชื่อหรือเลขที่โครงการ (หากไม่มีให้เว้นว่าง)"/>
+                            <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="projectKeyword" ref="project"/>
+                            <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
+                            <p v-else-if="projectKeyword !== ''" class="mt-2 text-xs text-gray-500">
+                                ยังไม่ได้เลือก (<a class="cursor-pointer text-green-500" @click="projectKeyword = ''">ล้าง</a>)
+                            </p>
+                        </div>
+                        <div v-if="projectSearchResult.length > 0" class="border-l border-r border-b border-gray-200">
+                            <div class="border-t px-3 py-2 flex hover:bg-gray-50 cursor-pointer" v-for="item in projectSearchResult" :key="item.id" @click="selectProject(item)">
+                                <div class="flex-auto items-center">
+                                    {{ item.name }}
+                                </div>
+                                <div class="flex-initial items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="block h-5 w-5 text-gray-600" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </template>
-            </jet-form-section -->
+            </jet-form-section>
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ไฟล์เอกสาร</template>
@@ -99,7 +110,8 @@
                 <template #form>
                     <p v-if="form.attachment" class="col-span-6">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 inline mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                                  clip-rule="evenodd"/>
                         </svg>
                         {{ form.attachment.name }}
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 cursor-pointer ml-4 inline" viewBox="0 0 20 20" fill="currentColor" @click="form.attachment = null">
@@ -118,7 +130,7 @@
                                 <label for="file-upload"
                                        class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload a file</span>
-                                    <input id="file-upload" type="file" class="sr-only" @input="form.attachment = $event.target.files[0]">
+                                    <input id="file-upload" type="file" class="sr-only" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,image/jpeg,image/png" @input="form.attachment = $event.target.files[0]">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
@@ -155,6 +167,8 @@ import JetInput from '@/Jetstream/Input'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import JetSectionBorder from '@/Jetstream/SectionBorder'
+import {isNumber} from "lodash";
+import _ from "lodash";
 
 export default {
     components: {
@@ -170,13 +184,16 @@ export default {
     data() {
         return {
             projectKeyword: "",
+            projectSearchResult: [],
+            keywordError: "",
+            selectedProject: null,
             form: this.$inertia.form({
                 _method: this.item.id ? 'PUT' : 'POST',
                 title: this.item.title ?? "",
                 recipient: this.item.recipient ?? "",
                 department_id: this.item.department_id ?? "",
                 amount: this.item.amount ?? 1,
-                project: this.item.project ?? "",
+                project_id: this.item.project_id,
                 attachment: null,
             }),
         }
@@ -196,6 +213,7 @@ export default {
             if (!this.form.attachment) {
                 this.form.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
             } else if (this.form.attachment.name.endsWith('pdf') || this.form.attachment.name.endsWith('docx')) {
+                this.form.project_id = this.selectedProject ? this.selectedProject.id : null;
                 this.form.post(this.item.id
                     ? this.route('documents.update', {document: this.item.id})
                     : this.route('documents.store')
@@ -203,7 +221,36 @@ export default {
             } else {
                 this.form.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
             }
+        },
+        searchProject: _.debounce(function (keyword) {
+            this.keywordError = 'กำลังค้นหา...';
+            axios.get(this.route('projects.search', {
+                keyword: keyword
+            })).then((response) => {
+                this.keywordError = '';
+                this.projectSearchResult = response.data;
+            }).catch((error) => {
+                this.keywordError = 'Error! Could not reach the API. ' + error;
+            })
+        }, 500),
+        selectProject(item) {
+            this.selectedProject = item;
         }
+    },
+    watch: {
+        projectKeyword: function (newValue, oldValue) {
+            this.keywordError = "กำลังพิมพ์...";
+            if (newValue === "") {
+                this.keywordError = "";
+                this.projectSearchResult = [];
+                this.selectedProject = null;
+                return;
+            } else if (newValue.length < 2 && !isNumber(newValue)) {
+                this.keywordError = 'กรุณากรอกคำค้นหาอย่างน้อย 2 ตัวอักษร';
+                return;
+            }
+            this.searchProject(newValue);
+        },
     },
 
     props: {

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Document;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class ImportOldDocuments extends Command {
@@ -74,6 +75,9 @@ class ImportOldDocuments extends Command {
                 $document->user_id = $user->id;
                 if (!empty($docData->filePath)) {
                     $document->attachment_path = str_replace('document/20', 'documents/20', $docData->filePath);
+                }
+                if (!empty($docData->timestamp)) {
+                    $document->created_at = Carbon::parse($docData->timestamp/1000);
                 }
                 $document->save();
                 $this->line('Document ' . $docData->number . '/' . $year . ' added.');

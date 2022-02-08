@@ -56,13 +56,18 @@ class DocumentController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Document $document): \Inertia\Response {
+    public function show(Request $request, Document $document): \Inertia\Response {
+        $document->can = [
+            'update-document' => $request->user()->can('update-document', $document)
+        ];
         return Inertia::render('DocumentShow', [
-            'item' => $document->load(['user', 'department'])
+            'item' => $document->load(['user', 'department', 'project'])
         ]);
     }
 
-    public function download(Document $document) {
+    public function download(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse {
+        $this->authorize('update-document', $document);
+
         return Storage::download(
             $document->attachment_path,
             'สพจ ' . $document->number . '-' . $document->year . ' ' . substr($document->title, 0, 25)

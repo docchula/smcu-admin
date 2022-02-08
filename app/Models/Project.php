@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -74,5 +75,27 @@ class Project extends Model {
 
     public static function latestOfYear(?int $year): ?self {
         return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
+    }
+
+    public static function searchQuery(?string $keyword = null): \Illuminate\Database\Eloquent\Builder {
+        $query = self::query()->select('id', 'year', 'number', 'name', 'department_id', 'user_id', 'created_at')->with(['user', 'department']);
+        if (empty($keyword)) {
+            $currentBE = Helper::buddhistYear();
+            $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);
+        } elseif (preg_match("/^[-\d]+/", $keyword)) {
+            $parts = explode('-', $keyword, 2);
+            if ($parts[0]) {
+                $query->where('year', $parts[0]);
+            }
+            if (empty($parts[1])) {
+                $query->orWhere('number', $parts[0]);
+            } else {
+                $query->where('number', $parts[1]);
+            }
+        } else {
+            $query->where('name', 'LIKE', '%' . $keyword . '%');
+        }
+
+        return $query;
     }
 }
