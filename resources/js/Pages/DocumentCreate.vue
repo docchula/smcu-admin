@@ -74,7 +74,7 @@
                 </template>
                 <template #form>
                     <div v-if="selectedProject" class="col-span-6">
-                        กำลังเลือกโครงการ<strong>{{ selectedProject.name }}</strong> สังกัด{{ selectedProject.department.name }}
+                        โครงการ<strong>{{ selectedProject.name }}</strong> สังกัด{{ selectedProject.department.name }}
                         <a class="cursor-pointer text-green-500" @click="projectKeyword = ''"><svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg></a>

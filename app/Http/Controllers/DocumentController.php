@@ -21,12 +21,12 @@ class DocumentController extends Controller {
             $query->where('year', Helper::buddhistYear());
         } elseif (preg_match("/^[\/\d]+/", $keyword)) {
             $parts = explode('/', $keyword, 2);
-            if ($parts[0]) {
-                $query->where('year_number', $parts[0]);
+            if (!empty($parts[0])) {
+                $query->where('number', $parts[0]);
             }
-            if ($parts[1]) {
+            if (!empty($parts[1])) {
                 $query->where('year', $parts[1]);
-            } else {
+            } elseif (strlen($parts[0]) === 4) {
                 $query->orWhere('year', $parts[0]);
             }
         } else {
