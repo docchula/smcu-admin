@@ -78,7 +78,7 @@ class Project extends Model {
     }
 
     public static function searchQuery(?string $keyword = null): \Illuminate\Database\Eloquent\Builder {
-        $query = self::query()->select('id', 'year', 'number', 'name', 'department_id', 'user_id', 'created_at')->with(['user', 'department']);
+        $query = self::query()->select('id', 'year', 'number', 'name', 'department_id', 'created_at')->with(['department']);
         if (empty($keyword)) {
             $currentBE = Helper::buddhistYear();
             $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);

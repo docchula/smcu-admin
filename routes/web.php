@@ -33,6 +33,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::get('/manual', function () {
+        return redirect('https://tasteful-silk-0e3.notion.site/SMCU-Activity-Manual-46105744f57645a2afaa7a30f8ce1d06');
+    })->name('manual');
 
     Route::get('budget', [BudgetController::class, 'index'])->name('budget.index');
     Route::get('plan', [PlanController::class, 'index'])->name('plan.index');

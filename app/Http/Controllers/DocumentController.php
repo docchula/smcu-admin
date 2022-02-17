@@ -78,6 +78,7 @@ class DocumentController extends Controller {
      * Show the form for editing the specified resource.
      */
     public function edit(Document $document): \Inertia\Response {
+        $this->authorize('update-document', $document);
         return Inertia::render('DocumentCreate', [
             'item' => $document,
             'static_departments' => Department::optionList()
@@ -96,12 +97,11 @@ class DocumentController extends Controller {
             'amount' => 'nullable|integer|min:1|max:500',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000' // File size limit: 20,000 KB
         ]);
-        $userId = Auth::id();
-        if (isset($item->user_id) and ($item->user_id != $userId)) {
-            abort(403);
-        }
+        $this->authorize('update-document', $item);
         $item->fill($request->all());
-        $item->user_id = $userId;
+        if (empty($project->user_id)) {
+            $item->user_id = Auth::id();
+        }
         if (!$item->id) {
             $item->year = Helper::buddhistYear();
             $previousRecord = Document::latestOfYear($item->year);

@@ -135,7 +135,7 @@
                                 <p class="pl-1">or drag and drop</p>
                             </div>
                             <p class="text-xs text-gray-500">
-                                PDF or DOCX up to 10MB
+                                PDF or DOCX up to 15 MB
                             </p>
                         </div>
                     </div>

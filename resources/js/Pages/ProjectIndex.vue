@@ -22,9 +22,6 @@
                                 สังกัด
                             </th>
                             <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                สร้างโดย
-                            </th>
-                            <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 สร้างเมื่อ
                             </th>
                             <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
@@ -44,9 +41,6 @@
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3">
                                 {{ item.department.name }}
-                            </td>
-                            <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
-                                {{ item.user.name }}
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
                                 <span v-if="item.created_at">

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helper;
 use App\Models\Department;
-use App\Models\Document;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
@@ -56,7 +55,10 @@ class ProjectController extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show(Project $project) {
+    public function show(Request $request, Project $project) {
+        $project->can = [
+            'update-project' => $request->user()->can('update-project', $project)
+        ];
         return Inertia::render('ProjectShow', [
             'item' => $project->load(['user', 'department', 'documents', 'participants', 'participants.user'])
         ]);
@@ -66,6 +68,7 @@ class ProjectController extends Controller {
      * Show the form for editing the specified resource.
      */
     public function edit(Request $request, Project $project): Response {
+        $this->authorize('update-project', $project);
         /** @var User $user */
         $user = $request->user();
         $project->organizers = $project->participants()->with('user')->where('type', 'organizer')->get()->map(function (ProjectParticipant $p) {
@@ -100,12 +103,11 @@ class ProjectController extends Controller {
             'expense' => 'nullable|array',
             'organizers' => 'nullable|array',
         ]);
-        $userId = Auth::id();
-        if (isset($project->user_id) and ($project->user_id != $userId)) {
-            abort(403);
-        }
+        $this->authorize('update-project', $project);
         $project->fill($request->all());
-        $project->user_id = $userId;
+        if (empty($project->user_id)) {
+            $project->user_id = Auth::id();
+        }
         if (!$project->id) {
             $project->year = Helper::buddhistYear();
             $previousRecord = Project::latestOfYear($project->year);
