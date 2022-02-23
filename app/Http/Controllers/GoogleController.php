@@ -44,8 +44,7 @@ class GoogleController extends Controller {
         }
         if (!isset($user->student_id) and VestaService::isEnabled()) {
             // Retrieve student information
-            $client = new Client(['base_uri' => 'https://vesta.mdcu.keendev.net/juno/v1/']);
-            // Send a request to https://foo.com/api/test
+            $client = new Client(['base_uri' => 'https://vesta.mdcu.keendev.net/juno/v1/', 'http_errors' => false]);
             $response = $client->get('students/' . $user->email . '?access_level=8', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . VestaService::generateProxyIdToken($user->google_id, $user->email, $user->name)

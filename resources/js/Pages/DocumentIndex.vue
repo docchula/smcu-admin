@@ -42,7 +42,7 @@
                         <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
                             {{ item.department.name }}
                         </td>
-                        <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
+                        <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-xs">
                                 <span v-if="item.created_at">
                                     {{ item.created_at }}
                                 </span>

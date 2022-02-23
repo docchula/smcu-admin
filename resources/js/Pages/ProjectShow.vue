@@ -152,8 +152,8 @@
                                         <td class="p-2">
                                             {{ e.source }}
                                         </td>
-                                        <td class="p-2 whitespace-nowrap">
-                                            {{ e.amount.toLocaleString('th-TH') }}
+                                        <td class="p-2">
+                                            {{ e.amount ? e.amount.toLocaleString('th-TH') : '-' }}
                                         </td>
                                     </tr>
                                     </tbody>
@@ -220,7 +220,7 @@
                                 <ol class="list-decimal">
                                     <li v-for="e in participants">
                                         {{ e.user.name }}
-                                        <span v-if="item.can['update-project']" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
+                                        <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
                                     </li>
                                 </ol>

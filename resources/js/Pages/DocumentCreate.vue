@@ -210,16 +210,16 @@ export default {
             });
         },
         submit() {
-            if (!this.form.attachment) {
+            if (!this.form.attachment && !this.item.id) {
                 this.form.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
-            } else if (this.form.attachment.name.endsWith('pdf') || this.form.attachment.name.endsWith('docx')) {
+            } else if (this.form.attachment && !(this.form.attachment.name.endsWith('.pdf') || this.form.attachment.name.endsWith('.docx'))) {
+                this.form.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
+            } else {
                 this.form.project_id = this.selectedProject ? this.selectedProject.id : null;
                 this.form.post(this.item.id
                     ? this.route('documents.update', {document: this.item.id})
                     : this.route('documents.store')
                 )
-            } else {
-                this.form.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
             }
         },
         searchProject: _.debounce(function (keyword) {

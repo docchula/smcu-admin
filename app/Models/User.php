@@ -56,7 +56,8 @@ class User extends Authenticatable {
         'two_factor_secret',
         'google_id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'roles'
     ];
 
     /**

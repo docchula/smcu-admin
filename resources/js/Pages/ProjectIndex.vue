@@ -22,7 +22,7 @@
                                 สังกัด
                             </th>
                             <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                สร้างเมื่อ
+                                วันที่จัด
                             </th>
                             <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
                                 <span class="sr-only">Edit</span>
@@ -39,14 +39,12 @@
                                     {{ item.name }}
                                 </inertia-link>
                             </td>
-                            <td class="px-2 py-2 md:px-4 md:py-3">
+                            <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
                                 {{ item.department.name }}
                             </td>
-                            <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-sm">
-                                <span v-if="item.created_at">
-                                    {{ item.created_at }}
-                                </span>
-                                <span v-else>-</span>
+                            <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-xs">
+                                {{ item.period_start }}
+                                <span v-if="item.period_start !== item.period_end">- {{ item.period_end }}</span>
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3 text-right text-sm font-medium hidden md:table-cell">
                                 <inertia-link :href="route('projects.show', {project: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>

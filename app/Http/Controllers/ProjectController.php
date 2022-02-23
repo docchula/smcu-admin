@@ -59,8 +59,14 @@ class ProjectController extends Controller {
         $project->can = [
             'update-project' => $request->user()->can('update-project', $project)
         ];
+        $project->load(['user', 'department', 'documents', 'participants', 'participants.user']);
+        $project->user->makeHidden('id', 'email', 'current_team_id', 'profile_photo_path', 'student_id', 'profile_photo_url');
+        $project->participants->each->user->makeHidden('id', 'email', 'current_team_id', 'profile_photo_path', 'student_id', 'profile_photo_url');
+        if (!$project->can['update-project']) {
+            $project->participants->each->user->makeHidden('student_id');
+        }
         return Inertia::render('ProjectShow', [
-            'item' => $project->load(['user', 'department', 'documents', 'participants', 'participants.user'])
+            'item' => $project
         ]);
     }
 
