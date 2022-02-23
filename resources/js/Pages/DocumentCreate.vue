@@ -6,12 +6,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
                 </svg>
                 <p v-if="item.id">
-                    {{ item.name }}
+                    {{ item.title }}
                 </p>
                 <p v-else>สารบรรณ</p>
             </inertia-link>
             <h2 v-if="item.id" class="font-semibold text-xl text-gray-800 leading-tight">
-                แก้ไข {{ item.name }}
+                แก้ไขหนังสือเลขที่ {{ item.number }}/{{ item.year }}
             </h2>
             <template v-else>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">สร้างเอกสารใหม่</h2>
@@ -183,10 +183,10 @@ export default {
 
     data() {
         return {
-            projectKeyword: "",
+            projectKeyword: this.item.project ? (this.item.project.year + '-' + this.item.project.number) : "",
             projectSearchResult: [],
             keywordError: "",
-            selectedProject: null,
+            selectedProject: this.item.project,
             form: this.$inertia.form({
                 _method: this.item.id ? 'PUT' : 'POST',
                 title: this.item.title ?? "",

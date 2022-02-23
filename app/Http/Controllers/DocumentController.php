@@ -80,7 +80,7 @@ class DocumentController extends Controller {
     public function edit(Document $document): \Inertia\Response {
         $this->authorize('update-document', $document);
         return Inertia::render('DocumentCreate', [
-            'item' => $document,
+            'item' => $document->load('project', 'project.department'),
             'static_departments' => Department::optionList()
         ]);
     }
@@ -89,7 +89,7 @@ class DocumentController extends Controller {
      * Update the specified resource in storage.
      * @throws \Throwable
      */
-    public function update(Request $request, Document $item): \Illuminate\Http\RedirectResponse {
+    public function update(Request $request, Document $document): \Illuminate\Http\RedirectResponse {
         $this->validate($request, [
             'title' => 'required|filled|string|min:5|max:255',
             'recipient' => 'required|filled|string|max:255',
@@ -97,30 +97,30 @@ class DocumentController extends Controller {
             'amount' => 'nullable|integer|min:1|max:500',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000' // File size limit: 20,000 KB
         ]);
-        $this->authorize('update-document', $item);
-        $item->fill($request->all());
+        $this->authorize('update-document', $document);
+        $document->fill($request->all());
         if (empty($project->user_id)) {
-            $item->user_id = Auth::id();
+            $document->user_id = Auth::id();
         }
-        if (!$item->id) {
-            $item->year = Helper::buddhistYear();
-            $previousRecord = Document::latestOfYear($item->year);
-            $item->number = $previousRecord ? (($previousRecord->number_to ?? $previousRecord->number) + 1) : 1;
+        if (!$document->id) {
+            $document->year = Helper::buddhistYear();
+            $previousRecord = Document::latestOfYear($document->year);
+            $document->number = $previousRecord ? (($previousRecord->number_to ?? $previousRecord->number) + 1) : 1;
             $amount = $request->input('amount', 1);
             if ($amount > 1) {
-                $item->number_to = $item->number + $amount - 1;
+                $document->number_to = $document->number + $amount - 1;
             }
         }
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('documents');
-            if ($item->attachment_path) {
-                Storage::delete($item->attachment_path);
+            if ($document->attachment_path) {
+                Storage::delete($document->attachment_path);
             }
-            $item->attachment_path = $path;
+            $document->attachment_path = $path;
         }
-        $item->saveOrFail();
+        $document->saveOrFail();
 
-        return redirect()->route('documents.index')->with('flash.banner', 'บันทึกเอกสาร เลขที่ ' . $item->number . '/' . $item->year . ' แล้ว')->with('flash.bannerStyle', 'success');
+        return redirect()->route('documents.index')->with('flash.banner', 'บันทึกเอกสาร เลขที่ ' . $document->number . '/' . $document->year . ' แล้ว')->with('flash.bannerStyle', 'success');
     }
 
     /**
