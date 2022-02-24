@@ -16,16 +16,28 @@
                             <div v-if="$page.props.user" class="mt-3 sm:mt-0 sm:ml-3">
                                 <inertia-link href="/dashboard"
                                               class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 md:py-4 md:text-lg md:px-10">
-                                    Dashboard
+                                    หน้าแรก
                                 </inertia-link>
                             </div>
-                            <div v-else class="rounded-md shadow">
-                                <a :href="route('login.google')"
-                                   class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10">
-                                    Log in with Docchula
-                                </a>
+                            <div v-else>
+                                <p class="block mb-4">เมื่อกดปุ่มต่อไปนี้ ถือว่าท่านได้ยินยอมให้มีการดำเนินการต่อข้อมูลส่วนบุคคลตาม<inertia-link :href="route('policy.show')" class="text-green-500">นโยบายการคุ้มครองข้อมูลส่วนบุคคล</inertia-link></p>
+                                <div class="rounded-md shadow">
+                                    <a :href="route('login.google')"
+                                       class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10">
+                                        Log in with Docchula
+                                    </a>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container mx-auto lg:mt-16 xl:mt-32">
+                <div class="mt-8 border-t-2 border-gray-200 flex flex-col">
+                    <div class="py-6 px-4">
+                        <p class="text-sm text-green-700 font-bold mb-2">
+                            <a href="https://docchula.com">The Student Union of the Faculty of Medicine, Chulalongkorn University</a>
+                        </p>
                     </div>
                 </div>
             </div>

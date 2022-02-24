@@ -44,6 +44,7 @@ class Project extends Model {
         'objectives' => 'array',
         'expense' => 'array',
     ];
+    protected $hidden = ['user_id'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(Department::class);

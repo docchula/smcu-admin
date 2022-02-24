@@ -99,7 +99,7 @@ class DocumentController extends Controller {
         ]);
         $this->authorize('update-document', $document);
         $document->fill($request->all());
-        if (empty($project->user_id)) {
+        if (empty($document->user_id)) {
             $document->user_id = Auth::id();
         }
         if (!$document->id) {

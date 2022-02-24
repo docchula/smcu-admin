@@ -15,7 +15,7 @@
         </div>
 
         <div class="bg-gray-400 bg-opacity-25 text-gray-500 px-6 py-1">
-            ขั้นตอนการดำเนินโครงการ (<a :href="route('manual')" target="_blank" class="font-semibold text-indigo-700">คู่มือ</a>)
+            ขั้นตอนการดำเนินโครงการ (<a :href="route('manual')" target="_blank" class="font-semibold text-green-700">คู่มือ</a>)
         </div>
         <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2">
             <div class="p-6">
@@ -23,7 +23,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
-                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://laracasts.com">1. วางแผนและขอจัดสรรงบประมาณ</a></div>
+                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">1. วางแผนและขอจัดสรรงบประมาณ</div>
                 </div>
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
@@ -50,17 +50,17 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://laravel.com/docs">2. ขออนุมัติดำเนินโครงการ</a></div>
+                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">2. ขออนุมัติดำเนินโครงการ</div>
                 </div>
                 <div class="ml-12">
                     <div class="mt-2 text-sm text-gray-500">
                         ลงทะเบียนข้อมูลโครงการ และส่งหนังสือขออนุมัติดำเนินโครงการ โดยระบุเลขที่โครงการในหนังสือด้วย
                     </div>
                     <inertia-link :href="route('projects.create')">
-                        <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
+                        <div class="mt-3 flex items-center text-sm font-semibold text-green-700">
                             <div>ไปที่หน้า เพิ่มโครงการ</div>
 
-                            <div class="ml-1 text-indigo-500">
+                            <div class="ml-1 text-green-500">
                                 <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                                     <path fill-rule="evenodd"
                                           d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
@@ -85,10 +85,10 @@
                         ในการดำเนินงาน หากมีความประสงค์จะออกหนังสือสพจ. เพื่อประสานงานกับหน่วยงานต่าง ๆ ให้ลงทะเบียนข้อมูลในเว็บไซต์นี้
                     </div>
                     <inertia-link :href="route('documents.index')">
-                        <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
+                        <div class="mt-3 flex items-center text-sm font-semibold text-green-700">
                             <div>ไปที่หน้า สารบรรณ</div>
 
-                            <div class="ml-1 text-indigo-500">
+                            <div class="ml-1 text-green-500">
                                 <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                                     <path fill-rule="evenodd"
                                           d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
@@ -105,7 +105,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold"><a href="https://tailwindcss.com/">4. การเบิกค่าใช้จ่าย</a></div>
+                    <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">4. การเบิกค่าใช้จ่าย</div>
                 </div>
 
                 <div class="ml-12">

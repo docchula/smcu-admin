@@ -25,6 +25,7 @@ class Document extends Model {
 
     protected $fillable = ['title', 'recipient', 'department_id', 'project_id', 'user_id'];
     protected $casts = ['created_at' => 'datetime:j M Y'];
+    protected $hidden = ['user_id', 'attachment_path'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(Department::class);

@@ -56,15 +56,19 @@ class ProjectController extends Controller {
      * Display the specified resource.
      */
     public function show(Request $request, Project $project) {
+        $canUpdateProject = $request->user()->can('update-project', $project);
         $project->can = [
-            'update-project' => $request->user()->can('update-project', $project)
+            'update-project' => $canUpdateProject
         ];
         $project->load(['user', 'department', 'documents', 'participants', 'participants.user']);
-        $project->user->makeHidden('id', 'email', 'current_team_id', 'profile_photo_path', 'student_id', 'profile_photo_url');
-        $project->participants->each->user->makeHidden('id', 'email', 'current_team_id', 'profile_photo_path', 'student_id', 'profile_photo_url');
-        if (!$project->can['update-project']) {
-            $project->participants->each->user->makeHidden('student_id');
-        }
+        $project->user->makeHidden('id', 'student_id', 'profile_photo_url');
+        $project->participants->transform(function (ProjectParticipant $participant) use ($canUpdateProject) {
+            $participant->user->makeHidden('id', 'profile_photo_url');
+            if (!$canUpdateProject) {
+                $participant->user->makeHidden('student_id');
+            }
+            return $participant;
+        });
         return Inertia::render('ProjectShow', [
             'item' => $project
         ]);

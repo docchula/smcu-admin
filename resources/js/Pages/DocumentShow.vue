@@ -36,8 +36,8 @@
                         </div>
                         <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6" v-if="item.project">
                             <dt class="text-sm font-medium text-gray-500">โครงการ</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <inertia-link :href="route('projects.show', {project: item.project_id})" class="text-indigo-600 hover:text-indigo-900">{{ item.project.name }}</inertia-link>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                                <inertia-link :href="route('projects.show', {project: item.project_id})" class="text-yellow-600 hover:text-yellow-900">{{ item.project.name }}</inertia-link>
                             </dd>
                         </div>
                         <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

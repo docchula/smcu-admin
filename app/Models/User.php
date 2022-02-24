@@ -48,6 +48,9 @@ class User extends Authenticatable {
      * @var array
      */
     protected $hidden = [
+        'current_team_id',
+        'profile_photo_path',
+        'email',
         'email_verified_at',
         'password',
         'remember_token',
