@@ -154,10 +154,12 @@
 
 <script>
 import JetApplicationMark from '@/Jetstream/ApplicationMark';
+import JetBanner from '@/Jetstream/Banner';
 
 export default {
     components: {
-        JetApplicationMark
+        JetApplicationMark,
+        JetBanner,
     },
     props: {
         canLogin: Boolean,
