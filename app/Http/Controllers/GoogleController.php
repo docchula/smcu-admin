@@ -36,7 +36,7 @@ class GoogleController extends Controller {
                 }
             }
         } else {
-            $user = User::create([
+            $user = new User([
                 'name' => $googleUser->name,
                 'email' => $googleUser->email,
                 'google_id' => $googleUser->id,
