@@ -57,7 +57,7 @@
                 <template #form>
                     <div class="col-span-6">
                         <jet-label for="amount" value="จำนวนหนังสือ"/>
-                        <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1" min="1" max="500"/>
+                        <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1" min="1" max="500" :disabled="item.id"/>
                         <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
                         <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
                             อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
@@ -130,7 +130,7 @@
                                 <label for="file-upload"
                                        class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload a file</span>
-                                    <input id="file-upload" type="file" class="sr-only" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,image/jpeg,image/png" @input="form.attachment = $event.target.files[0]">
+                                    <input id="file-upload" type="file" class="sr-only" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" @input="form.attachment = $event.target.files[0]">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
