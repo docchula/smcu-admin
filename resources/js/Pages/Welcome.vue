@@ -153,12 +153,10 @@
 </template>
 
 <script>
-import JetApplicationMark from '@/Jetstream/ApplicationMark';
 import JetBanner from '@/Jetstream/Banner';
 
 export default {
     components: {
-        JetApplicationMark,
         JetBanner,
     },
     props: {

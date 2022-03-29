@@ -6,6 +6,7 @@ use App\Models\User;
 use App\VestaService;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -65,6 +66,7 @@ class GoogleController extends Controller {
 
             return redirect()->intended('dashboard');
         } else {
+            Log::info('Unable to find student information.', ['email' => $user->email]);
             return redirect('/')->with('flash.banner', 'Unable to find student information, please contact administrator.')->with('flash.bannerStyle', 'danger');
         }
     }
