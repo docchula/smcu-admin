@@ -16,6 +16,6 @@ class Department extends Model {
     protected $hidden = ['created_at', 'updated_at'];
 
     public static function optionList() {
-        return self::select('id', 'super_id', 'name')->get();
+        return self::select('id', 'super_id', 'name')->orderBy('sequence')->get();
     }
 }
