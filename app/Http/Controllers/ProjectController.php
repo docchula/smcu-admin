@@ -132,9 +132,8 @@ class ProjectController extends Controller {
             $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])->get();
             foreach ($inputParticipants as $student) {
                 // Add / edit existing
-                $user = $users->where('student_id', $student['student_id'])->first() ?? User::create([
+                $user = User::firstOrCreate(['email' => $student['email']], [
                         'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
-                        'email' => $student['email'],
                         'student_id' => $student['student_id'],
                     ]);
                 if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
