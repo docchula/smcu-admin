@@ -47,6 +47,7 @@
                                 {{ department.name }}
                             </option>
                         </select>
+                        <jet-input-error v-if="form.errors.department_id" :message="form.errors.department_id" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
