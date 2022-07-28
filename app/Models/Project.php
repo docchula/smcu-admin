@@ -47,7 +47,7 @@ class Project extends Model {
     protected $hidden = ['user_id'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class)->select('id', 'name');
     }
 
     public function documents(): \Illuminate\Database\Eloquent\Relations\HasMany {
@@ -59,7 +59,7 @@ class Project extends Model {
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->select('id', 'name');
     }
 
     public function setPeriodStartAttribute($value) {

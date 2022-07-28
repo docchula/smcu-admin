@@ -28,42 +28,44 @@
                     </h3>
                 </div>
                 <div class="border-t border-gray-200">
-                    <dl class="grid grid-cols-2 lg:grid-cols-3">
+                    <dl class="grid grid-cols-2 lg:grid-cols-3 text-gray-900">
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">อาจารย์ที่ปรึกษา</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.advisor }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.advisor }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">สร้างโดย</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.user.name }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.user.name }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">หน่วยงาน</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.department.name }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2" :class="{'text-gray-400': item.department_id === 33}">
+                                {{ item.department.name }}
+                            </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ปีวาระ</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.year }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.year }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ลักษณะกิจกรรม</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ {once: 'กิจกรรมครั้งเดียว', longitudinal: 'กิจกรรมระยะยาว', purchase: 'โครงการจัดซื้อ'}[item.type] }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ {once: 'กิจกรรมครั้งเดียว', longitudinal: 'กิจกรรมระยะยาว', purchase: 'โครงการจัดซื้อ'}[item.type] }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ประเภท</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ ['โครงการครั้งแรก', 'โครงการต่อเนื่อง'][item.recurrence] }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ ['โครงการครั้งแรก', 'โครงการต่อเนื่อง'][item.recurrence] }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">วันที่เริ่ม</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.period_start }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.period_start }}</dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">วันที่สิ้นสุด</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ item.period_end }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.period_end }}</dd>
                         </div>
                         <div v-if="item.approval_document_id" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">หนังสือขออนุมัติ</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
                                 <inertia-link :href="route('documents.show', {document: item.approval_document_id})">
                                     ดูเอกสาร
                                 </inertia-link>
@@ -78,29 +80,29 @@
                         เหตุผล และวัตถุประสงค์
                     </h3>
                 </div>
-                <div class="border-t border-gray-200">
+                <div class="border-t border-gray-200 text-gray-900">
                     <dl class="">
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">หลักการและเหตุผล</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                                 {{ item.background }}
                             </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">วัตถุประสงค์</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                                 {{ item.aims }}
                             </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ผลที่คาดว่าจะได้รับ</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
                                 {{ item.outcomes }}
                             </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">เป้าหมาย และวิธีการประเมิน</dt>
-                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
                                 <ol v-if="item.objectives.length" class="list-decimal">
                                     <li v-for="objective in item.objectives">
                                         <u>เป้าหมาย</u>&nbsp;{{ objective.goal }}<br/>

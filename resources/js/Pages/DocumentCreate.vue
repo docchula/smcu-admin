@@ -70,38 +70,52 @@
             <jet-form-section>
                 <template #title>โครงการ</template>
                 <template #description>
-                    หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด หากไม่มีให้เว้นว่าง<br/>
-                    <strong>ก่อนส่งหนังสือขออนุมัติโครงการต้องลงทะเบียน<inertia-link :href="route('projects.index')" class="text-green-500">โครงการ</inertia-link> และกรอกเลขที่โครงการในเอกสารก่อน</strong>
+                    หนังสือฉบับนี้เป็นการดำเนินงานของโครงการใด<br/>
+                    <strong>ก่อนส่งหนังสือขออนุมัติโครงการต้องลงทะเบียน<a :href="route('projects.index')" target="_blank" class="text-green-500">โครงการ</a>
+                        และกรอกเลขที่โครงการในเอกสารก่อน</strong>
                 </template>
                 <template #form>
                     <div v-if="selectedProject" class="col-span-6">
-                        โครงการ<strong>{{ selectedProject.name }}</strong> สังกัด{{ selectedProject.department.name }}
-                        <a class="cursor-pointer text-green-500" @click="projectKeyword = ''"><svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg></a>
+                        โครงการ<strong>{{ selectedProject.name }}</strong> <template v-if="selectedProject.department_id !== 33">สังกัด{{ selectedProject.department.name }}</template>
+                        <a class="cursor-pointer text-green-500" @click="projectKeyword = ''">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 text-red-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </a>
                     </div>
                     <div v-else class="col-span-6">
-                        <div>
-                            <jet-label for="project" value="ชื่อหรือเลขที่โครงการ (หากไม่มีให้เว้นว่าง)"/>
-                            <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="projectKeyword" ref="project"/>
-                            <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
-                            <p v-else-if="projectKeyword !== ''" class="mt-2 text-xs text-gray-500">
-                                ยังไม่ได้เลือก (<a class="cursor-pointer text-green-500" @click="projectKeyword = ''">ล้าง</a>)
-                            </p>
-                        </div>
-                        <div v-if="projectSearchResult.length > 0" class="border-l border-r border-b border-gray-200">
-                            <div class="border-t px-3 py-2 flex hover:bg-gray-50 cursor-pointer" v-for="item in projectSearchResult" :key="item.id" @click="selectProject(item)">
-                                <div class="flex-auto items-center">
-                                    {{ item.name }}
-                                </div>
-                                <div class="flex-initial items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="block h-5 w-5 text-gray-600" fill="none" viewBox="0 0 20 20" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
+                        <div class="mb-4" v-if="!form.is_non_project">
+                            <div>
+                                <jet-label for="project" value="ค้นหาด้วยชื่อหรือเลขที่โครงการ"/>
+                                <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="projectKeyword" ref="project"/>
+                                <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
+                                <p v-else-if="projectKeyword !== ''" class="mt-2 text-xs text-gray-500">
+                                    ยังไม่ได้เลือก (<a class="cursor-pointer text-green-500" @click="projectKeyword = ''">ล้าง</a>)
+                                </p>
+                            </div>
+                            <div v-if="projectSearchResult.length > 0" class="border-l border-r border-b border-gray-200">
+                                <div class="border-t px-3 py-2 flex hover:bg-gray-50 cursor-pointer" v-for="item in projectSearchResult" :key="item.id" @click="selectProject(item)">
+                                    <div class="flex-auto items-center">
+                                        {{ item.name }}
+                                    </div>
+                                    <div class="flex-initial items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="block h-5 w-5 text-gray-600" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <Checkbox id="is_non_project" :checked="form.is_non_project" @update:checked="newValue => form.is_non_project = newValue"/>
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="is_non_project" class="font-medium text-gray-700">ไม่ใช่การดำเนินโครงการ</label>
+                            </div>
+                        </div>
                     </div>
+                    <jet-input-error :message="form.errors.project_id" class="col-span-6"/>
                 </template>
             </jet-form-section>
             <jet-section-border/>
@@ -131,7 +145,9 @@
                                 <label for="file-upload"
                                        class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                     <span>Upload a file</span>
-                                    <input id="file-upload" type="file" class="sr-only" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" @input="form.attachment = $event.target.files[0]">
+                                    <input id="file-upload" type="file" class="sr-only"
+                                           accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+                                           @input="form.attachment = $event.target.files[0]">
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
@@ -170,10 +186,13 @@ import JetLabel from '@/Jetstream/Label'
 import JetSectionBorder from '@/Jetstream/SectionBorder'
 import {isNumber} from "lodash";
 import _ from "lodash";
+import Checkbox from "../Jetstream/Checkbox";
 
 export default {
     components: {
-        AppLayout, JetActionMessage,
+        AppLayout,
+        Checkbox,
+        JetActionMessage,
         JetButton,
         JetFormSection,
         JetInput,
@@ -196,6 +215,7 @@ export default {
                 amount: this.item.amount ?? 1,
                 project_id: this.item.project_id,
                 attachment: null,
+                is_non_project: this.item.id ? !this.item.project_id : false,
             }),
         }
     },
@@ -215,6 +235,8 @@ export default {
                 this.form.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
             } else if (this.form.attachment && !(this.form.attachment.name.endsWith('.pdf') || this.form.attachment.name.endsWith('.docx'))) {
                 this.form.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
+            } else if (!this.selectedProject && !this.form.is_non_project) {
+                this.form.errors.project_id = "กรุณาเลือกโครงการ";
             } else {
                 this.form.project_id = this.selectedProject ? this.selectedProject.id : null;
                 this.form.post(this.item.id

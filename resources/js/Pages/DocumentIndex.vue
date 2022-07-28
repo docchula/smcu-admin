@@ -19,7 +19,7 @@
                             หัวเรื่อง
                         </th>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider" v-if="hasDepartment">
-                            สังกัด
+                            หน่วยงาน
                         </th>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             สร้างเมื่อ

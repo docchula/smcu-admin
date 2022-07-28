@@ -32,11 +32,11 @@ class Document extends Model {
     }
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(Project::class)->select('id', 'name');
+        return $this->belongsTo(Project::class)->select('id', 'name', 'number', 'year', 'department_id');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->select('id', 'name');
     }
 
     public static function latestOfYear(?int $year): ?self {
