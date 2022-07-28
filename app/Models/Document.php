@@ -28,11 +28,11 @@ class Document extends Model {
     protected $hidden = ['user_id', 'attachment_path'];
 
     public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class)->select('id', 'name');
     }
 
     public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class)->select('id', 'name');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {

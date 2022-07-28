@@ -57,16 +57,24 @@ class DocumentController extends Controller {
      * Display the specified resource.
      */
     public function show(Request $request, Document $document): \Inertia\Response {
+        $isAuthorized = $request->user()->can('update-document', $document);
         $document->can = [
-            'update-document' => $request->user()->can('update-document', $document)
+            'update-document' => $isAuthorized
         ];
+        $document->has_attachment = $isAuthorized && !empty($document->attachment_path);
+        $document->load(['user:id,name', 'department:id,name', 'project:id,name']);
+        if ($document->user) {
+            unset($document->user->id);
+        }
         return Inertia::render('DocumentShow', [
-            'item' => $document->load(['user', 'department', 'project'])
+            'item' => $document
         ]);
     }
 
     public function download(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse {
         $this->authorize('update-document', $document);
+        abort_if(empty($document->attachment_path), 404);
+        abort_if(!file_exists($document->attachment_path), 404);
 
         return Storage::download(
             $document->attachment_path,
