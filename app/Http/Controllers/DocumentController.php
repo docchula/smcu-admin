@@ -8,6 +8,7 @@ use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class DocumentController extends Controller {
@@ -111,6 +112,9 @@ class DocumentController extends Controller {
             $document->user_id = Auth::id();
         }
         if (!$document->id) {
+            if (str_starts_with($document->title, 'โครงการ')) {
+                $document->title = Str::replaceFirst('โครงการ', '', $document->title);
+            }
             $document->year = Helper::buddhistYear();
             $previousRecord = Document::latestOfYear($document->year);
             $document->number = $previousRecord ? (($previousRecord->number_to ?? $previousRecord->number) + 1) : 1;

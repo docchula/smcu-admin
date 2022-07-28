@@ -8,7 +8,12 @@
             <div>
                 <jet-label for="sid" value="เลขประจำตัวนิสิต"/>
                 <jet-input id="sid" type="text" class="mt-1 block w-full" v-model.trim="addStudentId" required placeholder="10 หลัก" @keyup.enter="onInputEnter"/>
-                <jet-input-error :message="keywordError" class="mt-2"/>
+                <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
+                <a v-else-if="addStudentId !== $page.props.user.student_id && !list.find(x => x.student_id === $page.props.user.student_id)"
+                   class="text-sm cursor-pointer text-green-500"
+                   @click="addStudentId = $page.props.user.student_id">
+                    {{ $page.props.user.student_id }}
+                </a>
             </div>
             <div v-if="searchResult.length > 0" class="mt-4 border-l border-r border-b border-gray-200">
                 <div class="border-t px-3 py-2 flex" :class="{'hover:bg-gray-50 cursor-pointer': !list.find(x => x.student_id === item.student_id)}" v-for="item in searchResult" :key="item.id" @click="selectStudent(item)">

@@ -23,7 +23,9 @@
             <p v-if="form.hasErrors" class="bg-red-500 text-white p-3 w-full mb-6 rounded-md shadow-md transition">ข้อมูลที่กรอกไม่ถูกต้องครบถ้วน กรุณาตรวจสอบอีกครั้ง</p>
             <jet-form-section @submitted="submit">
                 <template #title>ข้อมูลพื้นฐาน</template>
-                <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล กรณีโครงการนำเสนอผลงานในการประชุมวิชาการ เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"</template>
+                <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
+                    กรณี<a @click="forAcademicPresentation" class="cursor-pointer text-green-500">โครงการนำเสนอผลงานในการประชุมวิชาการ</a>
+                    เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"</template>
 
                 <template #form>
                     <div class="col-span-6">
@@ -454,6 +456,11 @@ export default {
                 ? this.route('projects.update', {project: this.item.id})
                 : this.route('projects.store')
             )
+        },
+        forAcademicPresentation() {
+            this.form.type = 'once';
+            this.form.recurrence = 0;
+            this.form.department_id = 38;
         }
     },
 
