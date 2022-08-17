@@ -75,7 +75,7 @@ class DocumentController extends Controller {
     public function download(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse {
         $this->authorize('update-document', $document);
         abort_if(empty($document->attachment_path), 404);
-        abort_if(!file_exists($document->attachment_path), 404);
+        abort_if(Storage::missing($document->attachment_path), 404);
 
         return Storage::download(
             $document->attachment_path,
