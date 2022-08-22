@@ -118,6 +118,13 @@ class ProjectController extends Controller {
         if (empty($project->user_id)) {
             $project->user_id = Auth::id();
         }
+        if ($project->period_start->getTimezone()->toOffsetName() == '+00:00') {
+            $project->period_start = $project->period_start->setTimezone('Asia/Bangkok');
+            $project->period_end = $project->period_end->setTimezone('Asia/Bangkok');
+        }
+        if ($project->period_end < $project->period_start) {
+            $project->fill(['period_start' => $project->period_end, 'period_end' => $project->period_start]);
+        }
         if (!$project->id) {
             $project->year = Helper::buddhistYear();
             $previousRecord = Project::latestOfYear($project->year);
