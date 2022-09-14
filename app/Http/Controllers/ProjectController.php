@@ -49,6 +49,7 @@ class ProjectController extends Controller {
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
+        $this->validate($request, ['name' => 'required|unique:projects,name']);
         return $this->update($request, new Project());
     }
 

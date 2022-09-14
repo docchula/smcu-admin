@@ -231,7 +231,7 @@
                     </dl>
                 </div>
             </div>
-            <div v-if="item.can['update-project'] && !item.approval_document_id" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.can['update-project'] && item.documents.length === 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         สร้างเอกสารขออนุมัติโครงการ
