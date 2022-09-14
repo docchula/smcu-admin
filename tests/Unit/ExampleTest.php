@@ -2,7 +2,9 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Models\User;
+use Laravel\Jetstream\Features;
+use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
@@ -13,6 +15,12 @@ class ExampleTest extends TestCase
      */
     public function test_example()
     {
-        $this->assertTrue(true);
+        $user = Features::hasTeamFeatures()
+            ? User::factory()->withPersonalTeam()->create()
+            : User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/projects');
+
+        $response->assertStatus(200);
     }
 }

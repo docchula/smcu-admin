@@ -17,6 +17,8 @@ jobs:
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
       run: php8.1 /sites/composer.phar install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+    - name: Install JS Dependencies
+      run: npm install
     - name: Generate key
       run: php8.1 artisan key:generate
     - name: Directory Permissions
@@ -25,6 +27,8 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Build JS assets
+      run: npm run prod
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
