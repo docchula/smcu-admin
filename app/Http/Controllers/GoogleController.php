@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\VestaService;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use VestaClient;
 
 class GoogleController extends Controller {
     public function redirectToGoogle() {
@@ -43,19 +42,14 @@ class GoogleController extends Controller {
                 'google_id' => $googleUser->id,
             ]);
         }
-        if (!isset($user->student_id) and VestaService::isEnabled()) {
+        if (!isset($user->student_id) and VestaClient::isEnabled()) {
             // Retrieve student information
-            $client = new Client(['base_uri' => 'https://vesta.mdcu.keendev.net/juno/v1/', 'http_errors' => false]);
-            $response = $client->get('students/' . $user->email . '?access_level=8', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . VestaService::generateProxyIdToken($user->google_id, $user->email, $user->name)
-                ]
-            ]);
-            if ($response->getStatusCode() == 200) {
-                $vestaUser = json_decode($response->getBody());
-                if (isset($vestaUser->first_name)) {
-                    $user->name = ($vestaUser->title ?? '') . $vestaUser->first_name . ' ' . $vestaUser->last_name;
-                    $user->student_id = $vestaUser->student_id;
+            $response = VestaClient::retrieveStudent($user->email, $user->email);
+            if ($response->successful()) {
+                $vestaUser = $response->json();
+                if (isset($vestaUser['first_name'])) {
+                    $user->name = ($vestaUser['title'] ?? '') . $vestaUser['first_name'] . ' ' . $vestaUser['last_name'];
+                    $user->student_id = $vestaUser['student_id'];
                     $user->saveOrFail();
                 }
             }

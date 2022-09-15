@@ -339,7 +339,7 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                         <tr v-for="(member, index) in organizers" :key="member.id">
                             <td class="px-3 py-2 whitespace-nowrap">
-                                {{ member.title }}{{ member.first_name }} {{ member.last_name }}
+                                {{ member.name }}
                             </td>
                             <td class="px-3 py-2 whitespace-nowrap">
                                 {{ member.student_id }}
@@ -373,7 +373,7 @@
                 </template>
             </jet-form-section>
         </div>
-        <StudentIdDialog :show-modal="showStudentIdDialog" :id-token="vesta_token" :list="organizers" @close="showStudentIdDialog = false" @selected="addOrganizer($event)"/>
+        <StudentIdDialog :show-modal="showStudentIdDialog" :list="organizers" @close="showStudentIdDialog = false" @selected="addOrganizer($event)"/>
     </app-layout>
 </template>
 
@@ -441,7 +441,7 @@ export default {
 
     methods: {
         addOrganizer(student) {
-            if (!this.organizers.find(s => s.id === student.id)) {
+            if (!this.organizers.find(s => s.student_id === student.student_id)) {
                 this.organizers.push(student);
             }
             // this.showStudentIdDialog = false;
@@ -467,7 +467,6 @@ export default {
     props: {
         item: Object,
         static_departments: Array,
-        vesta_token: String,
     }
 };
 </script>

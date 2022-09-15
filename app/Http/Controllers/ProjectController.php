@@ -7,7 +7,6 @@ use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
-use App\VestaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -20,6 +19,7 @@ use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Throwable;
+use VestaClient;
 
 class ProjectController extends Controller {
     /**
@@ -83,14 +83,12 @@ class ProjectController extends Controller {
         /** @var User $user */
         $user = $request->user();
         $project->organizers = $project->participants()->with('user')->where('type', 'organizer')->get()->map(function (ProjectParticipant $p) {
-            $names = explode(' ', $p->user->name, 2);
-            return ['first_name' => $names[0], 'last_name' => $names[1], 'student_id' => $p->user->student_id];
+            return ['name' => $p->user->name, 'student_id' => $p->user->student_id];
         });
 
         return Inertia::render('ProjectCreate', [
             'item' => $project,
             'static_departments' => Department::optionList(),
-            'vesta_token' => VestaService::generateProxyIdToken($user->google_id, $user->email, $user->name)
         ]);
     }
 
@@ -143,11 +141,11 @@ class ProjectController extends Controller {
                 $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])->get();
                 foreach ($inputParticipants as $student) {
                     // Add / edit existing
-                    if (!empty($student['email'])) {
-                        $user = $users->where('email', $student['email'])->first() ?? User::firstOrCreate(['email' => $student['email']], [
+                    if (!empty($student['student_id'])) {
+                        $user = $users->where('student_id', $student['student_id'])->first(); /* ?? User::firstOrCreate(['email' => $student['email']], [
                             'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
                             'student_id' => $student['student_id'],
-                        ]);
+                        ]); */
                         if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
                             // Existing
                             if ($participant->type != $role) {
@@ -216,9 +214,11 @@ class ProjectController extends Controller {
                 'signer_s1_title' => 'นิสิตผู้รับผิดชอบโครงการ'
             ]);
         }
-        $template->cloneRowAndSetValues('organizers_number', $project->participants->where('type', 'organizer')->map(function (ProjectParticipant $participant, $i) {
-            return ['organizers_number' => $i+1, 'organizers_name' => $participant->user->name, 'organizers_id' => $participant->user->student_id];
-        }));
+        $template->cloneRowAndSetValues('organizers_number', $project->participants->where('type', 'organizer')->map(fn(ProjectParticipant $participant, int $i) => [
+            'organizers_number' => $i + 1,
+            'organizers_name' => $participant->user->name,
+            'organizers_id' => $participant->user->student_id
+        ]));
         $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
             return ['expense_name' => $ex['name'], 'expense_type' => $ex['type'], 'expense_source' => $ex['source'], 'expense_amount' => number_format($ex['amount'], 2)];
         }, $project->expense));
@@ -246,5 +246,28 @@ class ProjectController extends Controller {
         $template->saveAs($tmpPath);
 
         return response()->download($tmpPath, $project->getNumber().' Project Approval.docx')->deleteFileAfterSend(true);
+    }
+
+    public function searchNewParticipant(Request $request) {
+        $this->validate($request, [
+            'q' => 'required|string|min:10'
+        ]);
+        $q = $request->input('q');
+        if (!$student = User::where('email', $q)->orWhere('student_id', $q)->first()) {
+            $vestaResponse = VestaClient::retrieveStudent($q, $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
+            if ($vestaResponse->successful()) {
+                $data = $vestaResponse->json();
+                $student = User::create([
+                    'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
+                    'email' => $data['email'],
+                    'student_id' => $data['student_id'],
+                ]);
+                $student->nickname = $data['nickname'];
+            } else {
+                return response()->json(['error' => 'ไม่พบนิสิตที่ค้นหา'], 404);
+            }
+        }
+
+        return response()->json($student->only(['name', 'student_id', 'nickname']));
     }
 }

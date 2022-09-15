@@ -18,7 +18,7 @@
             <div v-if="searchResult.length > 0" class="mt-4 border-l border-r border-b border-gray-200">
                 <div class="border-t px-3 py-2 flex" :class="{'hover:bg-gray-50 cursor-pointer': !list.find(x => x.student_id === item.student_id)}" v-for="item in searchResult" :key="item.id" @click="selectStudent(item)">
                     <div class="flex-auto items-center">
-                        {{ item.title }}{{ item.first_name }} {{ item.last_name }} ({{ item.nickname }})
+                        {{ item.name }} <span v-if="item.nickname">({{ item.nickname }})</span>
                     </div>
                     <div class="flex-initial items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" v-if="list.find(x => x.student_id === item.student_id)" class="block h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
@@ -65,19 +65,13 @@ export default {
     methods: {
         search: _.debounce(function (keyword) {
             this.keywordError = 'กำลังค้นหา...';
-            axios.get('https://vesta.mdcu.keendev.net/juno/v1/search', {
-                headers: {
-                    'Authorization': `Bearer ${this.idToken}`
-                },
+            axios.get(route('projects.searchNewParticipant'), {
                 params: {
-                    keyword: keyword
+                    q: keyword
                 },
             }).then((response) => {
                 this.keywordError = '';
-                this.searchResult = response.data.map(item => {
-                    item.student_id = keyword;
-                    return item;
-                });
+                this.searchResult = [response.data];
             }).catch((error) => {
                 this.keywordError = 'Error! Could not reach the API. ' + error;
             })
@@ -109,7 +103,7 @@ export default {
             this.search(newValue);
         },
     },
-    props: {'showModal': Boolean, 'idToken': String, 'list': Array},
+    props: {'showModal': Boolean, 'list': Array},
     emits: ['close', 'selected']
 }
 </script>

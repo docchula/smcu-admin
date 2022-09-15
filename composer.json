@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "docchula/vesta-client": "^0.0.3",
         "guzzlehttp/guzzle": "^7.3",
         "inertiajs/inertia-laravel": "^0.6.3",
         "laravel/framework": "^9.19",
@@ -16,7 +17,8 @@
         "lcobucci/jwt": "^4.1",
         "openpsa/ranger": "^0.5.2",
         "phpoffice/phpword": "^0.18.2",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.0",
+        "ext-intl": "*"
     },
     "require-dev": {
         "spatie/laravel-ignition": "^1.0",
