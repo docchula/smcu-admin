@@ -33,6 +33,6 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: php8.1 vendor/bin/phpunit
+      run: php8.1 artisan test
     - name: Deploy
       run: git -C /sites/Providence pull https://keenthekeen:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git && php8.1 /sites/composer.phar install -d /sites/Providence --no-dev && npm install && npm run prod
