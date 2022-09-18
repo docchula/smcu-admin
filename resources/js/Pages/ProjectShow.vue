@@ -213,18 +213,24 @@
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         นิสิตผู้เกี่ยวข้อง
                     </h3>
+                    <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)" @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
                 </div>
                 <div class="border-t border-gray-200">
                     <dl>
-                        <div v-for="(participants, type) in participantsGrouped" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">{{ {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}[type] }}</dt>
+                        <div v-for="(name, type) in {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">
+                                {{ name }}
+                                <PlusIcon v-if="item.can['update-project']" class="inline-block ml-1 h-5 text-green-400 cursor-pointer" @click="showStudentIdDialog = type" />
+                            </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 <ol class="list-decimal">
-                                    <li v-for="e in participants">
+                                    <li v-if="participantsGrouped[type]" v-for="e in participantsGrouped[type]">
                                         {{ e.user.name }}
                                         <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
+                                        <XMarkIcon v-if="e.user.student_id" class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)" />
                                     </li>
+                                    <span v-else class="text-gray-500">-</span>
                                 </ol>
                             </dd>
                         </div>
@@ -257,15 +263,50 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout'
+import JetButton from '@/Jetstream/Button'
+import {PlusIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import StudentIdDialog from "../Components/StudentIdDialog";
+import _ from "lodash";
 
 export default {
     components: {
+        StudentIdDialog,
         AppLayout,
+        PlusIcon,
+        XMarkIcon,
+        JetButton,
     },
     computed: {
         participantsGrouped() {
             return (this.item.participants.length > 0) ? _.groupBy(this.item.participants, 'type') : null;
         }
+    },
+    data() {
+        return {
+            showStudentIdDialog: false,
+            addParticipantForm: this.$inertia.form({
+                type: '',
+                student_ids: [],
+            }),
+        }
+    },
+    methods: {
+        addParticipant(student) {
+            if (!this.item.participants.find(p => p.user.student_id === student.student_id)) {
+                this.addParticipantForm.type = this.showStudentIdDialog;
+                this.addParticipantForm.student_ids = [student.student_id];
+                this.addParticipantForm.post(this.route('projects.addParticipant', {project: this.item.id}));
+                /* this.item.participants.push({
+                    type: this.showStudentIdDialog,
+                    user: student,
+                }); */
+            }
+        },
+        removeParticipant(participant) {
+            if (confirm('ต้องการลบนิสิตผู้เกี่ยวข้องใช่หรือไม่?')) {
+                this.$inertia.post(this.route('projects.removeParticipant', {participant: participant.id}), {}, {});
+            }
+        },
     },
     props: {
         item: Object,

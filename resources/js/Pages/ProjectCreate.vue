@@ -373,7 +373,7 @@
                 </template>
             </jet-form-section>
         </div>
-        <StudentIdDialog :show-modal="showStudentIdDialog" :list="organizers" @close="showStudentIdDialog = false" @selected="addOrganizer($event)"/>
+        <StudentIdDialog :show-modal="showStudentIdDialog" :list="organizers.map(x => x.student_id)" @close="showStudentIdDialog = false" @selected="addOrganizer($event)"/>
     </app-layout>
 </template>
 

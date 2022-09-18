@@ -270,4 +270,40 @@ class ProjectController extends Controller {
 
         return response()->json($student->only(['name', 'student_id', 'nickname']));
     }
+
+    public function addParticipant(Request $request, Project $project) {
+        $this->validate($request, [
+            'student_ids' => 'required|array',
+            'student_ids.*' => 'numeric|digits:10',
+            'type' => 'required|string|in:organizer,staff,attendee'
+        ]);
+        $this->authorize('update-project', $project);
+        $toAdd = [];
+        foreach ($request->input('student_ids') as $studentId) {
+            if (!$user = User::where('student_id', $studentId)->first()) {
+                return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : ไม่พบนิสิต')->with('flash.bannerStyle', 'danger');
+            } elseif ($project->participants()->where('user_id', $user->id)->exists()) {
+                return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : มีข้อมูลนิสิตคนนี้อยู่แล้ว')->with('flash.bannerStyle', 'danger');
+            }
+            $toAdd [] = [
+                'user_id' => $user->id,
+                'type' => $request->input('type')
+            ];
+        }
+        if (count($toAdd) > 0) {
+            $project->participants()->createMany($toAdd);
+
+            return back()->with('flash.banner', 'เพิ่มนิสิตผู้เกี่ยวข้อง ' . count($toAdd) . ' คนแล้ว')->with('flash.bannerStyle', 'success');
+        } else {
+            return back()->with('flash.banner', 'ไม่มีการเพิ่มนิสิตผู้เกี่ยวข้อง')->with('flash.bannerStyle', 'danger');
+        }
+    }
+
+    public function removeParticipant(ProjectParticipant $participant) {
+        $participant->load(['project', 'user']);
+        $this->authorize('update-project', $participant->project);
+        $participant->delete();
+
+        return back()->with('flash.banner', 'ลบ ' . $participant->user->name . ' แล้ว')->with('flash.bannerStyle', 'success');
+    }
 }
