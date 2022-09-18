@@ -228,7 +228,8 @@
                                         {{ e.user.name }}
                                         <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
-                                        <XMarkIcon v-if="e.user.student_id" class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)" />
+                                        <XMarkIcon v-if="e.user.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1))"
+                                                   class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)"/>
                                     </li>
                                     <span v-else class="text-gray-500">-</span>
                                 </ol>
@@ -296,6 +297,7 @@ export default {
                 this.addParticipantForm.type = this.showStudentIdDialog;
                 this.addParticipantForm.student_ids = [student.student_id];
                 this.addParticipantForm.post(this.route('projects.addParticipant', {project: this.item.id}));
+                this.showStudentIdDialog = false;
                 /* this.item.participants.push({
                     type: this.showStudentIdDialog,
                     user: student,
