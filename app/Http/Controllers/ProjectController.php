@@ -282,7 +282,7 @@ class ProjectController extends Controller {
         foreach ($request->input('student_ids') as $studentId) {
             if (!$user = User::where('student_id', $studentId)->first()) {
                 return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : ไม่พบนิสิต')->with('flash.bannerStyle', 'danger');
-            } elseif ($project->participants()->where('user_id', $user->id)->exists()) {
+            } elseif ($project->participants->where('user_id', $user->id)->isNotEmpty()) {
                 return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : มีข้อมูลนิสิตคนนี้อยู่แล้ว')->with('flash.bannerStyle', 'danger');
             }
             $toAdd [] = [
