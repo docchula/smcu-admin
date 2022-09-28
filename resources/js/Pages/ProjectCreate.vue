@@ -15,7 +15,7 @@
             </h2>
             <template v-else>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">สร้างโครงการใหม่</h2>
-                <p class="mt-2 text-gray-500">สามารถกรอกเฉพาะข้อมูลพื้นฐานก่อนได้ กรณีต้องการส่งเฉพาะเพื่อขอจัดสรรงบประมาณ</p>
+                <p class="mt-2 text-gray-500">พึงส่งเอกสารล่วงหน้าอย่างน้อย 1 เดือน หรือตามลักษณะของกิจกรรม</p>
             </template>
         </template>
 
