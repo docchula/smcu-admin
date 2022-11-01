@@ -99,6 +99,7 @@
                             <div v-if="projectSearchResult.length > 0" class="border-l border-r border-b border-gray-200">
                                 <div class="border-t px-3 py-2 flex hover:bg-gray-50 cursor-pointer" v-for="item in projectSearchResult" :key="item.id" @click="selectProject(item)">
                                     <div class="flex-auto items-center">
+                                        <span class="text-xs text-gray-500 px-0.5">{{ item.year }}-{{ item.number }}</span>
                                         {{ item.name }}
                                     </div>
                                     <div class="flex-initial items-center">
@@ -264,7 +265,7 @@ export default {
         }
     },
     watch: {
-        projectKeyword: function (newValue, oldValue) {
+        projectKeyword: function (newValue) {
             this.keywordError = "กำลังพิมพ์...";
             if (newValue === "") {
                 this.keywordError = "";

@@ -5,6 +5,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -51,4 +52,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('projects/{project}/addParticipant', [ProjectController::class, 'addParticipant'])->name('projects.addParticipant');
     Route::post('projects/removeParticipant/{participant}', [ProjectController::class, 'removeParticipant'])->name('projects.removeParticipant');
     Route::get('search-participants', [ProjectController::class, 'searchNewParticipant'])->name('projects.searchNewParticipant');
+
+    Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
 });

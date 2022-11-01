@@ -80,4 +80,14 @@ class User extends Authenticatable {
     protected $appends = [
         // 'profile_photo_url',
     ];
+
+    public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(ProjectParticipant::class);
+    }
+
+    public function participantAndProjects() {
+        $participants = $this->participants;
+        $participants->load('project');
+        return $participants;
+    }
 }
