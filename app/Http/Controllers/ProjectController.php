@@ -110,7 +110,11 @@ class ProjectController extends Controller {
             'outcomes' => 'required|string',
             'objectives' => 'required|array',
             'expense' => 'nullable|array',
-            'organizers' => 'nullable|array',
+            'expense.*.name' => 'required|string',
+            'expense.*.type' => 'required|string',
+            'expense.*.source' => 'required|string',
+            'expense.*.amount' => 'required|numeric',
+            'organizers' => 'required|array',
             'staff' => 'nullable|array',
             'attendees' => 'nullable|array',
         ]);
@@ -220,7 +224,7 @@ class ProjectController extends Controller {
             'organizers_id' => $participant->user->student_id
         ]));
         $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
-            return ['expense_name' => $ex['name'], 'expense_type' => $ex['type'], 'expense_source' => $ex['source'], 'expense_amount' => number_format($ex['amount'], 2)];
+            return ['expense_name' => $ex['name'] ?? '', 'expense_type' => $ex['type'] ?? '', 'expense_source' => $ex['source'] ?? '', 'expense_amount' => number_format($ex['amount'] ?? 0, 2)];
         }, $project->expense));
         $template->cloneRowAndSetValues('objectives_goal', array_map(function (array $o) {
             return ['objectives_goal' => $o['goal'], 'objectives_method' => $o['method']];
@@ -257,9 +261,10 @@ class ProjectController extends Controller {
             $vestaResponse = VestaClient::retrieveStudent($q, $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
             if ($vestaResponse->successful()) {
                 $data = $vestaResponse->json();
-                $student = User::create([
-                    'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
+                $student = User::firstOrCreate([
                     'email' => $data['email'],
+                ], [
+                    'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
                     'student_id' => $data['student_id'],
                 ]);
                 $student->nickname = $data['nickname'];

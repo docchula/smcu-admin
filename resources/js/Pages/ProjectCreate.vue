@@ -268,6 +268,7 @@
                         <tr v-for="(member, index) in expense">
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <jet-input type="text" class="block w-full" v-model="member.name" required/>
+                                <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.name'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select name="department" v-model="member.type" required
@@ -284,6 +285,7 @@
                                     <option value="อื่น ๆ">อื่น ๆ</option>
                                     <option value="">(ไม่ระบุ)</option>
                                 </select>
+                                <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.type'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select name="department" v-model="member.source" required
@@ -295,9 +297,11 @@
                                     <option value="เงินฝ่าย/หน่วยงานสพจ.">เงินฝ่าย/หน่วยงานสพจ.</option>
                                     <option value="อื่น ๆ">อื่น ๆ</option>
                                 </select>
+                                <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.source'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <jet-input type="number" class="block w-full" min="0" step="0.01" v-model.number="member.amount" required/>
+                                <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.amount'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-1 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" viewBox="0 0 20 20" fill="currentColor" @click="expense.splice(index, 1)">
