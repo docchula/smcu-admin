@@ -42,8 +42,8 @@ class GoogleController extends Controller {
                 'google_id' => $googleUser->id,
             ]);
         }
-        if (!isset($user->student_id) and VestaClient::isEnabled()) {
-            // Retrieve student information
+        if ((!isset($user->student_id) OR preg_match('/^[a-z\s]*$/i', $user->name)) and VestaClient::isEnabled()) {
+            // Retrieve student information, if student id not already set or name is in English
             $response = VestaClient::retrieveStudent($user->email, $user->email);
             if ($response->successful()) {
                 $vestaUser = $response->json();
