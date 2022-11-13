@@ -18,7 +18,8 @@
         "lcobucci/jwt": "^4.1",
         "openpsa/ranger": "^0.5.2",
         "phpoffice/phpword": "^0.18.2",
-        "sentry/sentry-laravel": "^2.14",
+        "sentry/sentry-laravel": "^3.1",
+        "spatie/simple-excel": "^2.4",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

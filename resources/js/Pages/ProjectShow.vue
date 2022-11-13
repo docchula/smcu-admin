@@ -210,11 +210,17 @@
             </div>
             <div v-if="participantsGrouped" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 inline-block">
                         นิสิตผู้เกี่ยวข้อง
                     </h3>
-                    <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)" @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
+                    <a v-if="item.can['update-project']" @click="showImportParticipantDialog = true"
+                           class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                        <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline" />
+                        <span>นำเข้าด้วยไฟล์ Excel</span>
+                    </a>
                 </div>
+                <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false" />
+                <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)" @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
                 <div class="border-t border-gray-200">
                     <dl>
                         <div v-for="(name, type) in {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -223,16 +229,16 @@
                                 <PlusIcon v-if="item.can['update-project']" class="inline-block ml-1 h-5 text-green-400 cursor-pointer" @click="showStudentIdDialog = type" />
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <ol class="list-decimal">
-                                    <li v-if="participantsGrouped[type]" v-for="e in participantsGrouped[type]">
+                                <ol class="list-decimal" v-if="participantsGrouped[type]">
+                                    <li v-for="e in participantsGrouped[type]">
                                         {{ e.user.name }}
                                         <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
                                         <XMarkIcon v-if="e.user.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1))"
                                                    class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)"/>
                                     </li>
-                                    <span v-else class="text-gray-500">-</span>
                                 </ol>
+                                <span v-else class="text-gray-500">-</span>
                             </dd>
                         </div>
                     </dl>
@@ -265,17 +271,20 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout'
 import JetButton from '@/Jetstream/Button'
-import {PlusIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {ArrowUpTrayIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import StudentIdDialog from "../Components/StudentIdDialog";
 import _ from "lodash";
+import ImportParticipantDialog from "../Components/ImportParticipantDialog";
 
 export default {
     components: {
+        ImportParticipantDialog,
         StudentIdDialog,
         AppLayout,
         PlusIcon,
         XMarkIcon,
         JetButton,
+        ArrowUpTrayIcon,
     },
     computed: {
         participantsGrouped() {
@@ -285,6 +294,7 @@ export default {
     data() {
         return {
             showStudentIdDialog: false,
+            showImportParticipantDialog: false,
             addParticipantForm: this.$inertia.form({
                 type: '',
                 student_ids: [],

@@ -8,6 +8,8 @@ use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
 use Carbon\Carbon;
+use Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +20,7 @@ use OpenPsa\Ranger\Ranger;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
+use Spatie\SimpleExcel\SimpleExcelReader;
 use Throwable;
 use VestaClient;
 
@@ -50,6 +53,7 @@ class ProjectController extends Controller {
      */
     public function store(Request $request) {
         $this->validate($request, ['name' => 'required|unique:projects,name']);
+
         return $this->update($request, new Project());
     }
 
@@ -68,8 +72,10 @@ class ProjectController extends Controller {
             if (!$canUpdateProject) {
                 $participant->user->makeHidden('student_id');
             }
+
             return $participant;
         });
+
         return Inertia::render('ProjectShow', [
             'item' => $project
         ]);
@@ -190,15 +196,16 @@ class ProjectController extends Controller {
         $ranger = (new Ranger('th'))->setDateType(IntlDateFormatter::LONG);
         $template = new TemplateProcessor(storage_path('project_approval_template.docx'));
         $template->setValues([
-            'doc_number' => '...../'.Helper::buddhistYear(),
-            'date' => Carbon::now()->locale('th')->isoFormat('D MMMM ').Helper::buddhistYear(),
+            'doc_number' => '...../' . Helper::buddhistYear(),
+            'date' => Carbon::now()->locale('th')->isoFormat('D MMMM ') . Helper::buddhistYear(),
             'name' => $project->name,
             'number' => $project->getNumber(),
             'department' => ($project->department_id == 33) ? 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย' : $project->department->name,
-            'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ').$ranger->format($project->period_start, $project->period_end),
+            'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ') . $ranger->format($project->period_start, $project->period_end),
             'aims' => call_user_func(function ($text) {
                 $aims = explode("\n", $text);
-                $aims[count($aims)-1] = 'และ'.$aims[count($aims)-1];
+                $aims[count($aims) - 1] = 'และ' . $aims[count($aims) - 1];
+
                 return implode(' ', $aims);
             }, $project->aims),
             'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
@@ -214,7 +221,7 @@ class ProjectController extends Controller {
         ]);
         if ($organizer = $project->participants->where('type', 'organizer')->first()) {
             $template->setValues([
-                'signer_s1_name' => '('.$organizer->user->name.')',
+                'signer_s1_name' => '(' . $organizer->user->name . ')',
                 'signer_s1_title' => 'นิสิตผู้รับผิดชอบโครงการ'
             ]);
         }
@@ -233,23 +240,25 @@ class ProjectController extends Controller {
             $aims = explode("\n", $text);
             $return = [];
             foreach ($aims as $i => $aim) {
-                $return[] = ['aims_number' => $i+1, 'aims_text' => $aim];
+                $return[] = ['aims_number' => $i + 1, 'aims_text' => $aim];
             }
+
             return $return;
         }, $project->aims));
         $template->cloneRowAndSetValues('outcomes_number', call_user_func(function ($text) {
             $outcomes = explode("\n", $text);
             $return = [];
             foreach ($outcomes as $i => $outcome) {
-                $return[] = ['outcomes_number' => $i+1, 'outcomes_text' => $outcome];
+                $return[] = ['outcomes_number' => $i + 1, 'outcomes_text' => $outcome];
             }
+
             return $return;
         }, $project->outcomes));
 
         $tmpPath = tempnam(storage_path(), 'tmp-projectapproval-');
         $template->saveAs($tmpPath);
 
-        return response()->download($tmpPath, $project->getNumber().' Project Approval.docx')->deleteFileAfterSend(true);
+        return response()->download($tmpPath, $project->getNumber() . ' Project Approval.docx')->deleteFileAfterSend(true);
     }
 
     public function searchNewParticipant(Request $request) {
@@ -286,14 +295,13 @@ class ProjectController extends Controller {
         $toAdd = [];
         foreach ($request->input('student_ids') as $studentId) {
             if (!$user = User::where('student_id', $studentId)->first()) {
-                return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : ไม่พบนิสิต')->with('flash.bannerStyle', 'danger');
-            } elseif ($project->participants->where('user_id', $user->id)->isNotEmpty()) {
-                return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : มีข้อมูลนิสิตคนนี้อยู่แล้ว')->with('flash.bannerStyle', 'danger');
+                return back()->with('flash.banner', 'ไม่สามารถเพิ่มนิสิตผู้เกี่ยวข้องได้ : ไม่พบเลขประจำตัวนิสิต ' . $studentId)->with('flash.bannerStyle', 'danger');
+            } elseif ($project->participants->where('user_id', $user->id)->isEmpty()) {
+                $toAdd [] = [
+                    'user_id' => $user->id,
+                    'type' => $request->input('type')
+                ];
             }
-            $toAdd [] = [
-                'user_id' => $user->id,
-                'type' => $request->input('type')
-            ];
         }
         if (count($toAdd) > 0) {
             $project->participants()->createMany($toAdd);
@@ -310,5 +318,91 @@ class ProjectController extends Controller {
         $participant->delete();
 
         return back()->with('flash.banner', 'ลบ ' . $participant->user->name . ' แล้ว')->with('flash.bannerStyle', 'success');
+    }
+
+    public function importParticipantUpload(Request $request, Project $project) {
+        $this->validate($request, [
+            'import' => 'required|file|mimes:csv,xlsx,xls'
+        ]);
+        $this->authorize('update-project', $project);
+        $uploadedFile = $request->file('import');
+        $import = SimpleExcelReader::create($uploadedFile->path(), $uploadedFile->clientExtension())->getRows();
+        $toAdd = collect([]);
+        $messages = [];
+        foreach ($import as $row) {
+            if (empty($row['student_id']) or strlen($row['student_id']) < 10) {
+                $messages [] = 'ERROR: student_id ไม่ถูกต้อง';
+                break;
+            }
+            if (empty($row['type']) or !in_array($row['type'], ['organizer', 'staff', 'attendee'])) {
+                $messages [] = 'ERROR: type ไม่ถูกต้อง';
+                break;
+            }
+            if (!$student = User::where('email', $row['student_id'])->orWhere('student_id', $row['student_id'])->first()) {
+                $vestaResponse = VestaClient::retrieveStudent($row['student_id'], $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
+                if ($vestaResponse->successful()) {
+                    $data = $vestaResponse->json();
+                    $student = User::firstOrCreate([
+                        'email' => $data['email'],
+                    ], [
+                        'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
+                        'student_id' => $data['student_id'],
+                    ]);
+                } else {
+                    $messages [] = 'WARNING: ' . $row['student_id'] . ' ไม่พบนิสิต';
+                    break;
+                }
+            }
+            if (isset($student) and $project->participants->where('user_id', $student->id)->isEmpty()) {
+                $toAdd->add([
+                    'user_id' => $student->id,
+                    'user_name' => $student->name,
+                    'type' => $row['type'],
+                    'title' => $row['title'] ?? NULL,
+                ]);
+            } else {
+                $messages [] = 'WARNING: ' . $row['student_id'] . ' มีอยู่แล้ว';
+            }
+        }
+        if (count($toAdd) > 0) {
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'preview' => $toAdd->map(function ($item) {
+                        unset($item['user_id']);
+                        return $item;
+                    }),
+                    'import' => Crypt::encrypt($toAdd->toArray()),
+                    'messages' => $messages,
+                ],
+            ]);
+        } else {
+            $messages []= 'ERROR: ไม่มีข้อมูลที่สามารถบันทึกได้';
+            return response()->json([
+                'status' => 'fail',
+                'data' => [
+                    'preview' => null,
+                    'import' => null,
+                    'messages' => $messages,
+                ],
+            ]);
+        }
+    }
+
+    public function importParticipantCommit(Request $request, Project $project) {
+        try {
+            $toAdd = Crypt::decrypt($request->input('import'));
+        } catch (DecryptException) {
+            return back()->with('flash.banner', 'Unable to parse participant data.')->with('flash.bannerStyle', 'danger');
+        }
+        $project->participants()->createMany(collect($toAdd)->map(function ($item) {
+            return [
+                'user_id' => $item['user_id'],
+                'type' => $item['type'],
+                'title' => $item['title'] ?? null,
+            ];
+        }));
+
+        return back()->with('flash.banner', 'เพิ่มนิสิตผู้เกี่ยวข้อง ' . count($toAdd) . ' คนแล้ว')->with('flash.bannerStyle', 'success');
     }
 }
