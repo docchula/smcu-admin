@@ -6,6 +6,9 @@
 
         <template #description>
             โครงการที่ฉันมีส่วนร่วม
+            <InertiaLink :href="route('profile.printMyProjects')" class="text-green-600 ml-2 inline-block">
+                <PrinterIcon class="inline-block h-5 w-5" /> พิมพ์
+            </InertiaLink>
         </template>
 
         <template #content>
@@ -50,26 +53,15 @@
     </jet-action-section>
 </template>
 
-<script>
-import JetActionMessage from '@/Jetstream/ActionMessage'
-import JetActionSection from '@/Jetstream/ActionSection'
-import JetButton from '@/Jetstream/Button'
-import JetDialogModal from '@/Jetstream/DialogModal'
-import JetInput from '@/Jetstream/Input'
-import JetInputError from '@/Jetstream/InputError'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+<script setup>
+import {InertiaLink} from '@inertiajs/inertia-vue3'
+import JetActionSection from '../../Jetstream/ActionSection'
+import {PrinterIcon} from '@heroicons/vue/24/solid'
 
-export default {
-    props: ['projects'],
-
-    components: {
-        JetActionMessage,
-        JetActionSection,
-        JetButton,
-        JetDialogModal,
-        JetInput,
-        JetInputError,
-        JetSecondaryButton,
+const props = defineProps({
+    projects: {
+        type: Object,
+        required: true,
     },
-}
+});
 </script>

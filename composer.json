@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-intl": "*",
+        "barryvdh/laravel-dompdf": "^2.0",
         "docchula/vesta-client": "^0.0.3",
         "guzzlehttp/guzzle": "^7.3",
         "inertiajs/inertia-laravel": "^0.6.3",

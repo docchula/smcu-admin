@@ -56,4 +56,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('search-participants', [ProjectController::class, 'searchNewParticipant'])->name('projects.searchNewParticipant');
 
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
+    Route::get('/user/profile/printMyProjects', [UserProfileController::class, 'printMyProjects'])->name('profile.printMyProjects');
 });

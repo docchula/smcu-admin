@@ -8,7 +8,7 @@
 
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="projects">
+                <div>
                     <my-projects :projects="projects" />
 
                     <jet-section-border />

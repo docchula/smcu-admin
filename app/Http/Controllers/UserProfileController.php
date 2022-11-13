@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Http\Controllers\Inertia\UserProfileController as JetstreamUserProfileController;
@@ -17,5 +18,12 @@ class UserProfileController extends JetstreamUserProfileController {
             'sessions' => $this->sessions($request)->all(),
             'projects' => $request->user()->participantAndProjects(),
         ]);
+    }
+
+    public function printMyProjects(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user])->output())]);
     }
 }
