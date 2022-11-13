@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -85,7 +86,10 @@ class User extends Authenticatable {
         return $this->hasMany(ProjectParticipant::class);
     }
 
-    public function participantAndProjects() {
+    /**
+     * @return Collection<ProjectParticipant>
+     */
+    public function participantAndProjects(): Collection {
         $participants = $this->participants;
         $participants->load('project');
         return $participants;

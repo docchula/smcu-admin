@@ -9,6 +9,7 @@ use App\Models\ProjectParticipant;
 use App\Models\User;
 use Carbon\Carbon;
 use Crypt;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -17,6 +18,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 use IntlDateFormatter;
 use OpenPsa\Ranger\Ranger;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -370,6 +373,7 @@ class ProjectController extends Controller {
                 'data' => [
                     'preview' => $toAdd->map(function ($item) {
                         unset($item['user_id']);
+
                         return $item;
                     }),
                     'import' => Crypt::encrypt($toAdd->toArray()),
@@ -377,12 +381,13 @@ class ProjectController extends Controller {
                 ],
             ]);
         } else {
-            $messages []= 'ERROR: ไม่มีข้อมูลที่สามารถบันทึกได้';
+            $messages [] = 'ERROR: ไม่มีข้อมูลที่สามารถบันทึกได้';
+
             return response()->json([
                 'status' => 'fail',
                 'data' => [
-                    'preview' => null,
-                    'import' => null,
+                    'preview' => NULL,
+                    'import' => NULL,
                     'messages' => $messages,
                 ],
             ]);
@@ -390,6 +395,7 @@ class ProjectController extends Controller {
     }
 
     public function importParticipantCommit(Request $request, Project $project) {
+        $this->authorize('update-project', $project);
         try {
             $toAdd = Crypt::decrypt($request->input('import'));
         } catch (DecryptException) {
@@ -399,10 +405,36 @@ class ProjectController extends Controller {
             return [
                 'user_id' => $item['user_id'],
                 'type' => $item['type'],
-                'title' => $item['title'] ?? null,
+                'title' => $item['title'] ?? NULL,
             ];
         }));
 
         return back()->with('flash.banner', 'เพิ่มนิสิตผู้เกี่ยวข้อง ' . count($toAdd) . ' คนแล้ว')->with('flash.bannerStyle', 'success');
+    }
+
+    /**
+     * @throws AuthorizationException
+     * @throws Exception
+     */
+    public function exportParticipant(Project $project) {
+        $this->authorize('update-project', $project);
+        $participants = $project->participants()->with('user')->get()->map(function (ProjectParticipant $participant, int $i) {
+            return [
+                $i + 1,
+                $participant->user->name,
+                ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้จัดกิจกรรม', 'attendee' => 'ผู้เข้าร่วม'][$participant->type] ?? $participant->type,
+                $participant->title,
+            ];
+        });
+
+        $spreadsheet = IOFactory::load(storage_path('export_participant_template.xlsx'));
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->setCellValue('A1', 'รายชื่อนิสิตผู้เกี่ยวข้อง โครงการ' . $project->name);
+        $worksheet->setCellValue('A2', $project->period_start->format('j F Y') . ' - ' . $project->period_end->format('j F Y'));
+        $worksheet->fromArray($participants->toArray(), NULL, 'A4');
+        $tmpPath = tempnam(storage_path(), 'tmp-participant-');
+        IOFactory::createWriter($spreadsheet, 'Xlsx')->save($tmpPath);
+
+        return response()->download($tmpPath, $project->getNumber() . ' Project Participants.xlsx')->deleteFileAfterSend(true);
     }
 }

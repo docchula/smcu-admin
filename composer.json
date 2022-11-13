@@ -18,6 +18,7 @@
         "laravel/tinker": "^2.7",
         "lcobucci/jwt": "^4.1",
         "openpsa/ranger": "^0.5.2",
+        "phpoffice/phpspreadsheet": "^1.25",
         "phpoffice/phpword": "^0.18.2",
         "sentry/sentry-laravel": "^3.1",
         "spatie/simple-excel": "^2.4",

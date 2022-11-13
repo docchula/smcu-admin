@@ -213,11 +213,17 @@
                     <h3 class="text-lg leading-6 font-medium text-gray-900 inline-block">
                         นิสิตผู้เกี่ยวข้อง
                     </h3>
-                    <a v-if="item.can['update-project']" @click="showImportParticipantDialog = true"
+                    <template v-if="item.can['update-project']">
+                        <a @click="showImportParticipantDialog = true"
                            class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                        <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline" />
-                        <span>นำเข้าด้วยไฟล์ Excel</span>
-                    </a>
+                            <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline"/>
+                            <span>นำเข้าด้วยไฟล์ Excel</span>
+                        </a>
+                        <a :href="route('projects.exportParticipant', {project: item.id})" class="text-green-600 text-sm ml-2 inline-block">
+                            <PrinterIcon class="inline-block h-5 w-5"/>
+                            พิมพ์
+                        </a>
+                    </template>
                 </div>
                 <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false" />
                 <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)" @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
@@ -271,7 +277,7 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout'
 import JetButton from '@/Jetstream/Button'
-import {ArrowUpTrayIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {ArrowUpTrayIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import StudentIdDialog from "../Components/StudentIdDialog";
 import _ from "lodash";
 import ImportParticipantDialog from "../Components/ImportParticipantDialog";
@@ -285,6 +291,7 @@ export default {
         XMarkIcon,
         JetButton,
         ArrowUpTrayIcon,
+        PrinterIcon,
     },
     computed: {
         participantsGrouped() {
