@@ -13,6 +13,9 @@
                 </div>
             </div>
         </div>
+        <p class="pb-6 max-w-7xl mx-auto sm:px-6 lg:px-8 text-xs text-gray-400 text-center">
+            สร้างสรรค์โดย ฝ่ายเทคโนโลยีสารสนเทศ สพจ. | <a href="https://github.com/docchula/smcu-admin" target="_blank" class="text-green-400">Source code</a>
+        </p>
     </app-layout>
 </template>
 
