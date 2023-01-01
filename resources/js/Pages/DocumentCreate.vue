@@ -81,7 +81,7 @@
                 </template>
             </jet-form-section>
             <jet-section-border/>
-            <template v-if="!form.tag">
+            <template v-if="!form.tag && !item.id">
                 <jet-form-section @submitted="submit">
                     <template #title>ออกหนังสือหลายฉบับ</template>
                     <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ) ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน</template>
