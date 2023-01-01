@@ -47,6 +47,10 @@
                             <dd v-if="item.user" class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.user.name }}</dd>
                             <dd v-else class="mt-1 text-sm text-gray-400 sm:mt-0 sm:col-span-2">N/A</dd>
                         </div>
+                        <div v-if="item.tag" class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">ประเภท</dt>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ {approval: "ขออนุมัติดำเนินโครงการ", summary: "สรุปผลการดำเนินโครงการ"}[item.tag] ?? item.tag }}</dd>
+                        </div>
                         <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">สร้างเมื่อ</dt>
                             <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.created_at }}</dd>

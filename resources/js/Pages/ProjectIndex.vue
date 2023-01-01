@@ -1,9 +1,22 @@
 <template>
     <app-layout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                โครงการ
-            </h2>
+            <div class="flex flex-wrap gap-y-4 items-center">
+                <div class="flex-grow">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        โครงการ
+                    </h2>
+                </div>
+                <div class="flex-auto flex items-center justify-end">
+                    <inertia-link :href="route('projects.indexOfYear')">
+                        <button type="button"
+                                class="py-2 px-4 flex justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2">
+                            <Bars4Icon class="h-5 w-5 mr-2"/>
+                            สรุปรายปี
+                        </button>
+                    </inertia-link>
+                </div>
+            </div>
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
@@ -73,12 +86,14 @@
 import AppLayout from '@/Layouts/AppLayout'
 import SearchInput from "@/Components/SearchInput";
 import Pagination from "@/Components/Pagination";
+import {Bars4Icon} from "@heroicons/vue/24/solid";
 
 export default {
     components: {
         AppLayout,
         Pagination,
-        SearchInput
+        SearchInput,
+        Bars4Icon,
     },
     data() {
         return {

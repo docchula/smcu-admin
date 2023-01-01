@@ -38,6 +38,8 @@
                         </td>
                         <td class="px-2 py-2 md:px-4 md:py-3">
                             {{ item.title }}
+                            <DocumentChartBarIcon class="text-yellow-700 h-4 w-4 inline-block" v-if="item.tag === 'summary'" />
+                            <DocumentTextIcon class="text-green-700 h-4 w-4 inline-block" v-if="item.tag === 'approval'" />
                         </td>
                         <td v-if="hasDepartment" class="px-2 py-2 md:px-4 md:py-3 text-sm">
                             <span v-if="item.department_id === 33" class="text-gray-400">-</span>
@@ -75,12 +77,15 @@
 import AppLayout from '@/Layouts/AppLayout'
 import SearchInput from "@/Components/SearchInput";
 import Pagination from "@/Components/Pagination";
+import {DocumentChartBarIcon, DocumentTextIcon} from '@heroicons/vue/20/solid';
 
 export default {
     components: {
         AppLayout,
         Pagination,
-        SearchInput
+        SearchInput,
+        DocumentChartBarIcon,
+        DocumentTextIcon,
     },
     data() {
         return {

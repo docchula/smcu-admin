@@ -40,6 +40,22 @@ class ProjectController extends Controller {
         ]);
     }
 
+    public function indexOfYear(Request $request): Response {
+        $keyword = $request->input('search');
+
+        return Inertia::render('ProjectYearIndex', [
+            'list' => Project::searchQuery($keyword)->with(['documents' => function ($query) {
+                $query->select('id', 'year','number','number_to','title','tag', 'project_id');
+                $query->whereNotNull('tag');
+            }])
+                ->withCount('participants')
+                ->orderBy('department_id')->orderByDesc('id')
+                ->limit(500)->get()->groupBy('department_id'),
+            'keyword' => $keyword,
+            'static_departments' => Department::optionList(),
+        ]);
+    }
+
     public function search(string $keyword): \Illuminate\Http\JsonResponse {
         return response()->json(Project::searchQuery($keyword)->take(5)->get());
     }

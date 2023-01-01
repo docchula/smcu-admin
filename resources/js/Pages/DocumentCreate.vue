@@ -52,24 +52,52 @@
                         </select>
                         <jet-input-error v-if="form.errors.department_id" :message="form.errors.department_id" class="mt-2"/>
                     </div>
+                    <fieldset class="col-span-6">
+                        <div class="flex gap-x-8">
+                            <div class="flex items-center">
+                                <input id="tag_none" v-model="form.tag" name="tag" value="" type="radio" required
+                                       class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                <label for="tag_none" class="ml-3 block text-sm font-medium text-gray-700">
+                                    หนังสือทั่วไป
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="tag_approval" v-model="form.tag" name="tag" value="approval" type="radio"
+                                       class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                <label for="tag_approval" class="ml-3 block text-sm font-medium text-gray-700">
+                                    ขออนุมัติดำเนินโครงการ <i>(เปิดโครง)</i>
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="tag_summary" v-model="form.tag" name="tag" value="summary" type="radio"
+                                       class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                <label for="tag_summary" class="ml-3 block text-sm font-medium text-gray-700">
+                                    สรุปผลการดำเนินโครงการ <i>(ปิดโครง)</i>
+                                </label>
+                            </div>
+                        </div>
+                        <jet-input-error :message="form.errors.tag" class="mt-2"/>
+                    </fieldset>
                 </template>
             </jet-form-section>
             <jet-section-border/>
-            <jet-form-section @submitted="submit">
-                <template #title>ออกหนังสือหลายฉบับ</template>
-                <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ) ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน</template>
-                <template #form>
-                    <div class="col-span-6">
-                        <jet-label for="amount" value="จำนวนหนังสือ"/>
-                        <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1" min="1" max="500" :disabled="item.id"/>
-                        <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
-                        <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
-                            อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
-                        </p>
-                    </div>
-                </template>
-            </jet-form-section>
-            <jet-section-border/>
+            <template v-if="!form.tag">
+                <jet-form-section @submitted="submit">
+                    <template #title>ออกหนังสือหลายฉบับ</template>
+                    <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ) ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน</template>
+                    <template #form>
+                        <div class="col-span-6">
+                            <jet-label for="amount" value="จำนวนหนังสือ"/>
+                            <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1" min="1" max="500" :disabled="item.id"/>
+                            <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
+                            <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
+                                อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
+                            </p>
+                        </div>
+                    </template>
+                </jet-form-section>
+                <jet-section-border/>
+            </template>
             <jet-form-section>
                 <template #title>โครงการ</template>
                 <template #description>
@@ -110,7 +138,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-start">
+                        <div v-if="!form.tag || form.is_non_project" class="flex items-start">
                             <div class="flex items-center h-5">
                                 <Checkbox id="is_non_project" :checked="form.is_non_project" @update:checked="newValue => form.is_non_project = newValue"/>
                             </div>
@@ -220,6 +248,7 @@ export default {
                 project_id: this.item.project_id,
                 attachment: null,
                 is_non_project: this.item.id ? !this.item.project_id : false,
+                tag: this.item.tag ?? "",
             }),
         }
     },
@@ -242,6 +271,9 @@ export default {
             } else if (!this.selectedProject && !this.form.is_non_project) {
                 this.form.errors.project_id = "กรุณาเลือกโครงการ";
             } else {
+                if (this.form.tag) {
+                    this.form.amount = 1;
+                }
                 this.form.project_id = this.selectedProject ? this.selectedProject.id : null;
                 this.form.post(this.item.id
                     ? this.route('documents.update', {document: this.item.id})

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null    $number_to
  * @property string      $title
  * @property string|null $recipient
+ * @property string|null $tag
  * @property int|null    $user_id
  * @property int|null    $project_id
  * @property int|null    $department_id
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model {
     use HasFactory;
 
-    protected $fillable = ['title', 'recipient', 'department_id', 'project_id', 'user_id'];
+    protected $fillable = ['title', 'recipient', 'tag', 'department_id', 'project_id', 'user_id'];
     protected $casts = ['created_at' => 'datetime:j M Y'];
     protected $hidden = ['user_id', 'attachment_path'];
 

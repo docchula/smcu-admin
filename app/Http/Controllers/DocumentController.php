@@ -104,6 +104,7 @@ class DocumentController extends Controller {
             'recipient' => 'required|filled|string|max:255',
             'department_id' => 'required|integer|min:1',
             'amount' => 'nullable|integer|min:1|max:500',
+            'tag' => 'nullable|string|in:approval,summary',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000' // File size limit: 20,000 KB
         ]);
         $this->authorize('update-document', $document);
