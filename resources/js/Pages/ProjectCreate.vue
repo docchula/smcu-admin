@@ -411,7 +411,7 @@ export default {
     data() {
         const now = new Date();
         const defaultYear = new Date();
-        defaultYear.setMonth(now.getMonth() - 1);
+        defaultYear.setMonth(now.getMonth() - 2);
         return {
             form: this.$inertia.form({
                 _method: this.item.id ? 'PUT' : 'POST',

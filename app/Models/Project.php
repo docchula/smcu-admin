@@ -35,7 +35,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model {
     use HasFactory;
 
-    protected $guarded = ['id', 'created_at', 'updated_at', 'approval_document_id', 'user_id'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'approval_document_id', 'user_id', 'year', 'number'];
     protected $casts = [
         'created_at' => 'datetime:j F Y',
         'updated_at' => 'datetime:j F Y',

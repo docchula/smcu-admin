@@ -156,7 +156,7 @@ class ProjectController extends Controller {
             $project->fill(['period_start' => $project->period_end, 'period_end' => $project->period_start]);
         }
         if (!$project->id) {
-            $project->year = Helper::buddhistYear();
+            $project->year = $request->input('year', Helper::buddhistYear());
             $previousRecord = Project::latestOfYear($project->year);
             $project->number = $previousRecord ? ($previousRecord->number + 1) : 1;
         }
