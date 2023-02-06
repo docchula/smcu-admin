@@ -94,4 +94,9 @@ class User extends Authenticatable {
         $participants->load('project');
         return $participants;
     }
+
+
+    public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(Project::class);
+    }
 }
