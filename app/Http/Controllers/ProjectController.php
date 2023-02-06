@@ -93,6 +93,8 @@ class ProjectController extends Controller {
 
             return $participant;
         });
+        $project->shouldBeClosed = ($canUpdateProject and $project->created_at->isBetween(now()->subYear(),
+            now()->subWeeks(3)) and $project->documents->isNotEmpty() and $project->documents->where('tag', 'summary')->isEmpty() and !in_array($project->department_id, [32, 38, 39]));
 
         return Inertia::render('ProjectShow', [
             'item' => $project
@@ -218,7 +220,7 @@ class ProjectController extends Controller {
             'date' => Carbon::now()->locale('th')->isoFormat('D MMMM ') . Helper::buddhistYear(),
             'name' => $project->name,
             'number' => $project->getNumber(),
-            'department' => ($project->department_id == 33) ? 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย' : $project->department->name,
+            'department' => in_array($project->department->sequence, [2, 3, 4]) ? $project->department->name : 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย',
             'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ') . $ranger->format($project->period_start, $project->period_end),
             'aims' => call_user_func(function ($text) {
                 $aims = explode("\n", $text);
@@ -277,6 +279,59 @@ class ProjectController extends Controller {
         $template->saveAs($tmpPath);
 
         return response()->download($tmpPath, $project->getNumber() . ' Project Approval.docx')->deleteFileAfterSend(true);
+    }
+
+    /**
+     * @throws \PhpOffice\PhpWord\Exception\CopyFileException
+     * @throws \PhpOffice\PhpWord\Exception\CreateTemporaryFileException
+     */
+    public function generateSummaryDocument(Request $request, Project $project) {
+        $project->load('department', 'participants', 'participants.user');
+        $ranger = (new Ranger('th'))->setDateType(IntlDateFormatter::LONG);
+        $template = new TemplateProcessor(storage_path('project_summary_template.docx'));
+        $template->setValues([
+            'doc_number' => '...../' . Helper::buddhistYear(),
+            'date' => Carbon::now()->locale('th')->isoFormat('D MMMM ') . Helper::buddhistYear(),
+            'name' => $project->name,
+            'number' => $project->getNumber(),
+            'department' => in_array($project->department->sequence, [2, 3, 4]) ? $project->department->name : 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย',
+            'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ') . $ranger->format($project->period_start, $project->period_end),
+            'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
+                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'กองทุนอื่นของคณะ']);
+            })) ? 'พร้อมงบประมาณสนับสนุน' : '',
+            'contact_name' => $request->user()->name,
+            'contact_phone' => '.............',
+            'signer_advisor_name' => $project->advisor,
+        ]);
+        if ($organizer = $project->participants->where('type', 'organizer')->first()) {
+            $template->setValues([
+                'signer_s1_name' => $organizer->user->name,
+            ]);
+        }
+        $template->cloneRowAndSetValues('organizers_number', $project->participants->where('type', 'organizer')->map(fn(ProjectParticipant $participant, int $i) => [
+            'organizers_number' => $i + 1,
+            'organizers_name' => $participant->user->name,
+            'organizers_id' => $participant->user->student_id
+        ]));
+        $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
+            return ['expense_name' => $ex['name'] ?? '', 'expense_source' => $ex['source'] ?? '', 'expense_amount' => number_format($ex['amount'] ?? 0, 2)];
+        }, $project->expense));
+        $aims = explode("\n", $project->aims);
+        $objectives = array_map(fn($objective) => $objective['goal'], $project->objectives);
+        $objectiveCount = max(count($aims), count($objectives));
+        $objectiveSum = [];
+        for ($i = 0; $i < $objectiveCount; $i++) {
+            $objectiveSum []= [
+                'objectives_goal' => $objectives[$i] ?? '...',
+                'aims_text' => $aims[$i] ?? '...',
+            ];
+        }
+        $template->cloneRowAndSetValues('objectives_goal', $objectiveSum);
+
+        $tmpPath = tempnam(storage_path(), 'tmp-projectsummary-');
+        $template->saveAs($tmpPath);
+
+        return response()->download($tmpPath, $project->getNumber() . ' Project Summary.docx')->deleteFileAfterSend();
     }
 
     public function searchNewParticipant(Request $request) {

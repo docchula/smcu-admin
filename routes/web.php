@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     ]);
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::get('projects/{project}/generateApprovalDocument', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
+    Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');
     Route::get('projects/search/{keyword}', [ProjectController::class, 'search'])->name('projects.search');
     Route::post('projects/{project}/addParticipant', [ProjectController::class, 'addParticipant'])->name('projects.addParticipant');
     Route::post('projects/{project}/importParticipantUpload', [ProjectController::class, 'importParticipantUpload'])->name('projects.importParticipantUpload');

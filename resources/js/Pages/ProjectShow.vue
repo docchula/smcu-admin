@@ -15,6 +15,32 @@
             <p class="mb-2 px-4 sm:px-0 font-semibold text-3xl text-gray-800 leading-tight">
                 {{ item.name }}
             </p>
+            <div v-if="item.can['update-project'] && item.documents.length === 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-yellow-400">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        สร้างเอกสารขออนุมัติโครงการ
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200 p-4 sm:px-6">
+                    <a :href="route('projects.generateApprovalDocument', {project: item.id})"
+                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบขออนุมัติโครงการ</a>
+                    <p class="text-sm text-gray-700">เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
+                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
+                        ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่ฝ่ายกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
+                </div>
+            </div>
+            <div v-if="item.shouldBeClosed" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-blue-400">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        รายงานผลการดำเนินโครงการ
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200 p-4 sm:px-6">
+                    <p class="text-sm text-gray-700">เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี) ให้เรียบร้อยโดยเร็ว</p>
+                    <a :href="route('projects.generateSummaryDocument', {project: item.id})"
+                       class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบรายงานผลโครงการ</a>
+                </div>
+            </div>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -248,20 +274,6 @@
                             </dd>
                         </div>
                     </dl>
-                </div>
-            </div>
-            <div v-if="item.can['update-project'] && item.documents.length === 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        สร้างเอกสารขออนุมัติโครงการ
-                    </h3>
-                </div>
-                <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <a :href="route('projects.generateApprovalDocument', {project: item.id})"
-                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">สร้างเอกสารขออนุมัติโครงการ</a>
-                    <p>เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
-                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
-                        ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่ฝ่ายกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
                 </div>
             </div>
             <p class="mt-1 text-sm text-gray-500 text-right">
