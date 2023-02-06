@@ -133,7 +133,7 @@ class ProjectController extends Controller {
             'department_id' => 'required|integer|min:1',
             'background' => 'required|string',
             'aims' => 'required|string',
-            'outcomes' => 'required|string',
+            'outcomes' => 'nullable|string',
             'objectives' => 'required|array',
             'expense' => 'nullable|array',
             'expense.*.name' => 'required|string',
