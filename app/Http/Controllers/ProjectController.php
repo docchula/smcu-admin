@@ -44,7 +44,7 @@ class ProjectController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ProjectYearIndex', [
-            'list' => Project::searchQuery($keyword)->with([
+            'list' => Project::searchQuery($keyword)->addSelect(['advisor'])->with([
                 'documents' => function ($query) {
                     $query->select('id', 'year', 'number', 'number_to', 'title', 'tag', 'project_id');
                     $query->whereNotNull('tag');
