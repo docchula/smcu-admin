@@ -21,8 +21,14 @@
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
+                        <inertia-link v-if="item.can['update-document']" :href="route('documents.edit', {document: item.id})" class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                            </svg>
+                            แก้ไข
+                        </inertia-link>
                     </h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">หากต้องการแก้ไขข้อมูล กรุณาติดต่อผู้ดูแลระบบ</p>
+                    <p v-if="!item.can['update-document']" class="mt-1 max-w-2xl text-sm text-gray-500">หากต้องการแก้ไขข้อมูล กรุณาติดต่อผู้ดูแลระบบ</p>
                 </div>
                 <div class="border-t border-gray-200">
                     <dl class="grid grid-cols-2 text-gray-900">
