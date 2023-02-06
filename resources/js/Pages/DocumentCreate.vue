@@ -72,7 +72,7 @@
                                 <input id="tag_summary" v-model="form.tag" name="tag" value="summary" type="radio"
                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                                 <label for="tag_summary" class="ml-3 block text-sm font-medium text-gray-700">
-                                    สรุปผลการดำเนินโครงการ <i>(ปิดโครง)</i>
+                                    รายงานผลการดำเนินโครงการ <i>(ปิดโครง)</i>
                                 </label>
                             </div>
                         </div>

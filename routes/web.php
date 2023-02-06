@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\DocumentController;
@@ -31,9 +32,7 @@ Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/manual', function () {
         return redirect('https://tasteful-silk-0e3.notion.site/SMCU-Activity-Manual-46105744f57645a2afaa7a30f8ce1d06');
     })->name('manual');

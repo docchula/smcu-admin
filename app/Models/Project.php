@@ -54,6 +54,22 @@ class Project extends Model {
         return $this->hasMany(Document::class);
     }
 
+    public function approvalDocument(): \Illuminate\Database\Eloquent\Relations\HasOne {
+        return $this->hasOne(Document::class)->ofMany([
+            'id' => 'max',
+        ], function ($query) {
+            $query->where('tag', 'approval');
+        });
+    }
+
+    public function summaryDocument(): \Illuminate\Database\Eloquent\Relations\HasOne {
+        return $this->hasOne(Document::class)->ofMany([
+            'id' => 'max',
+        ], function ($query) {
+            $query->where('tag', 'summary');
+        });
+    }
+
     public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany {
         return $this->hasMany(ProjectParticipant::class);
     }

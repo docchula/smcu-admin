@@ -8,8 +8,23 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div v-if="projectsAwaitingSummary.length > 0" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded p-4 mb-6" role="alert">
+                    <p class="font-bold">
+                        มี {{ projectsAwaitingSummary.length }} โครงการที่กำลังดำเนินงานอยู่
+                    </p>
+                    <p>เมื่อเสร็จสิ้นโครงการแล้ว ให้ส่งรายงานผลการดำเนินโครงการ</p>
+                    <table class="text-sm">
+                        <inertia-link v-for="project in projectsAwaitingSummary" :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
+                            <tr>
+                                <td>•</td>
+                                <td class="px-2 text-xs">{{ project.year }}-{{ project.number }}</td>
+                                <td>{{ project.name }}</td>
+                            </tr>
+                        </inertia-link>
+                    </table>
+                </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <welcome />
+                    <welcome/>
                 </div>
             </div>
         </div>
@@ -21,13 +36,16 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout'
-    import Welcome from '@/Jetstream/Welcome'
+import AppLayout from '@/Layouts/AppLayout'
+import Welcome from '@/Jetstream/Welcome'
 
-    export default {
-        components: {
-            AppLayout,
-            Welcome,
-        },
-    }
+export default {
+    components: {
+        AppLayout,
+        Welcome,
+    },
+    props: {
+        projectsAwaitingSummary: Array,
+    },
+}
 </script>
