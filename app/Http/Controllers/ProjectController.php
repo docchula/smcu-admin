@@ -44,13 +44,12 @@ class ProjectController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ProjectYearIndex', [
-            'list' => Project::searchQuery($keyword)->with(['documents' => function ($query) {
-                $query->select('id', 'year','number','number_to','title','tag', 'project_id');
-                $query->whereNotNull('tag');
-            }])
-                ->withCount('participants')
-                ->orderBy('department_id')->orderByDesc('id')
-                ->limit(500)->get()->groupBy('department_id'),
+            'list' => Project::searchQuery($keyword)->with([
+                'documents' => function ($query) {
+                    $query->select('id', 'year', 'number', 'number_to', 'title', 'tag', 'project_id');
+                    $query->whereNotNull('tag');
+                }
+            ])->withCount('participants')->orderBy('department_id')->orderByDesc('id')->limit(500)->get()->groupBy('department_id'),
             'keyword' => $keyword,
             'static_departments' => Department::optionList(),
         ]);
@@ -372,15 +371,27 @@ class ProjectController extends Controller {
                     break;
                 }
             }
-            if (isset($student) and $project->participants->where('user_id', $student->id)->isEmpty()) {
+            if ($existingParticipant = $project->participants->where('user_id', $student->id)->first()) {
+                if ($existingParticipant->type != $row['type'] or $existingParticipant->title != $row['title']) {
+                    $toAdd->add([
+                        'user_id' => $student->id,
+                        'user_name' => $student->name,
+                        'type' => $row['type'],
+                        'title' => $row['title'] ?? NULL,
+                        'existing' => true,
+                    ]);
+                    $messages [] = 'WARNING: ' . $row['student_id'] . ' มีอยู่แล้วแต่ข้อมูลไม่ตรงกัน ระบบจะบันทึกข้อมูลใหม่';
+                } else {
+                    $messages [] = 'WARNING: ' . $row['student_id'] . ' มีอยู่แล้ว';
+                }
+            } else {
                 $toAdd->add([
                     'user_id' => $student->id,
                     'user_name' => $student->name,
                     'type' => $row['type'],
                     'title' => $row['title'] ?? NULL,
+                    'existing' => false,
                 ]);
-            } else {
-                $messages [] = 'WARNING: ' . $row['student_id'] . ' มีอยู่แล้ว';
             }
         }
         if (count($toAdd) > 0) {
@@ -417,15 +428,14 @@ class ProjectController extends Controller {
         } catch (DecryptException) {
             return back()->with('flash.banner', 'Unable to parse participant data.')->with('flash.bannerStyle', 'danger');
         }
-        $project->participants()->createMany(collect($toAdd)->map(function ($item) {
-            return [
-                'user_id' => $item['user_id'],
+        foreach ($toAdd as $item) {
+            $project->participants()->updateOrCreate(['user_id' => $item['user_id']], [
                 'type' => $item['type'],
                 'title' => $item['title'] ?? NULL,
-            ];
-        }));
+            ]);
+        }
 
-        return back()->with('flash.banner', 'เพิ่มนิสิตผู้เกี่ยวข้อง ' . count($toAdd) . ' คนแล้ว')->with('flash.bannerStyle', 'success');
+        return back()->with('flash.banner', 'เพิ่ม/แก้ไขนิสิตผู้เกี่ยวข้อง ' . count($toAdd) . ' คนแล้ว')->with('flash.bannerStyle', 'success');
     }
 
     /**

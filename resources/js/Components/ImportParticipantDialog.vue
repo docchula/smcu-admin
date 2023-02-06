@@ -26,11 +26,11 @@
                     </label>
                 </li>
             </ol>
-            <div v-if="importData.messages.count > 0" class="p-2 m-4 text-red-500 border rounded border-red-500">
+            <div v-if="importData.messages.length > 0" class="p-2 m-4 text-red-500 border rounded border-red-500">
                 <p v-for="message in importData.messages">{{ message }}</p>
             </div>
             <div class="px-4 py-2 sm:px-6 border border-gray-200" v-if="importData.preview">
-                <p class="mb-2 text-xs text-gray-400">ข้อมูลที่จะนำเข้า :</p>
+                <p class="mb-2 text-xs text-gray-400">ข้อมูลที่จะนำเข้า ({{ importData.preview.length }} คน):</p>
                 <table class="divide-y divide-gray-200">
                     <thead>
                     <tr>
@@ -47,7 +47,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="e in importData.preview">
-                        <td class="p-2">
+                        <td class="p-2" :class="{'bg-yellow-200': e.existing}">
                             {{ e.user_name }}
                         </td>
                         <td class="p-2">
