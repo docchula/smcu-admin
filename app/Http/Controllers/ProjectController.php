@@ -233,8 +233,8 @@ class ProjectController extends Controller {
             'contact_name' => $request->user()->name,
             'contact_phone' => '.............',
             'signer_advisor_name' => $project->advisor,
-            'signer_s2_title' => 'หัวหน้าฝ่าย/ประธานนิสิตแพทย์ชั้นปีที่.....',
-            'signer_s3_title' => 'อุปนายกสโมสรนิสิต คนที่ .....',
+            'signer_s2_title' => 'ประธานฝ่าย/ประธานนิสิตแพทย์ชั้นปีที่.....',
+            'signer_s3_title' => 'อุปนายกสโมสรฝ่าย .....',
             'signer_s4_title' => "นายกสโมสรนิสิต\nคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
             'background' => $project->background
         ]);
