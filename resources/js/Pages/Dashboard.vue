@@ -14,13 +14,19 @@
                     </p>
                     <p>เมื่อเสร็จสิ้นโครงการแล้ว ให้ส่งรายงานผลการดำเนินโครงการ</p>
                     <table class="text-sm">
-                        <inertia-link v-for="project in projectsAwaitingSummary" :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
-                            <tr>
-                                <td>•</td>
-                                <td class="px-2 text-xs">{{ project.year }}-{{ project.number }}</td>
-                                <td>{{ project.name }}</td>
-                            </tr>
-                        </inertia-link>
+                        <tr v-for="project in projectsAwaitingSummary">
+                            <td>•</td>
+                            <td class="px-2">
+                                <inertia-link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600 text-xs">
+                                    {{ project.year }}-{{ project.number }}
+                                </inertia-link>
+                            </td>
+                            <td>
+                                <inertia-link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
+                                    {{ project.name }}
+                                </inertia-link>
+                            </td>
+                        </tr>
                     </table>
                 </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
