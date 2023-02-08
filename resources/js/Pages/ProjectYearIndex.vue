@@ -8,6 +8,7 @@
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
+            <p class="text-xs text-gray-300"><a class="cursor-pointer" @click="toggleTableMode">แสดงแบบตาราง</a></p>
             <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -17,6 +18,9 @@
                         </th>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             ชื่อ
+                        </th>
+                        <th v-if="tableMode" scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            ส่วนงาน
                         </th>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             วันที่จัด
@@ -31,7 +35,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                     <template v-for="(projects, department_id) in list" :key="department_id">
-                        <tr class="bg-gray-200 text-gray-700">
+                        <tr v-if="!tableMode" class="bg-gray-200 text-gray-700">
                             <td class="px-2 py-1 md:px-4"></td>
                             <td class="px-2 py-1 md:px-4" colspan="2">{{ static_departments.find(a => parseInt(a.id) === parseInt(department_id))?.name ?? department_id }}</td>
                             <td class="px-2 py-1 md:px-4 text-sm text-right" colspan="2">{{ projects.length }} โครงการ</td>
@@ -48,6 +52,9 @@
                                         {{ item.name }}
                                     </inertia-link>
                                 </td>
+                                <td v-if="tableMode" class="px-2 py-2 md:px-4">
+                                    {{ item.department.name }}
+                                </td>
                                 <td class="px-2 py-2 md:px-4 text-gray-600 text-sm">
                                     {{ item.period_start }}
                                     <span v-if="item.period_start !== item.period_end">- {{ item.period_end }}</span>
@@ -60,7 +67,7 @@
                                     {{ item.participants_count }} 👤
                                 </td>
                             </tr>
-                            <tr v-for="document in item.documents" :key="document.id" class="text-sm text-gray-700">
+                            <tr v-if="!tableMode" v-for="document in item.documents" :key="document.id" class="text-sm text-gray-700">
                                 <td class="px-2 py-1 md:px-4 text-right">
                                     <inertia-link :href="route('documents.show', {document: document.id})">
                                         {{ document.number }}<span v-if="document.number_to">-{{ item.number_to }}</span>
@@ -101,7 +108,8 @@ export default {
     data() {
         return {
             searchKeyword: this.keyword ?? "",
-            searchMessage: ""
+            searchMessage: "",
+            tableMode: false
         };
     },
     methods: {
@@ -112,6 +120,9 @@ export default {
             });
             this.searchMessage = "";
         },
+        toggleTableMode() {
+            this.tableMode = !this.tableMode;
+        }
     },
     watch: {
         // whenever question changes, this function will run
