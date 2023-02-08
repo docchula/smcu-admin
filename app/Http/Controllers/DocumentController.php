@@ -60,7 +60,8 @@ class DocumentController extends Controller {
     public function show(Request $request, Document $document): \Inertia\Response {
         $isAuthorized = $request->user()->can('update-document', $document);
         $document->can = [
-            'update-document' => $isAuthorized && $document->created_at->isCurrentWeek(),
+            'download-document' => $isAuthorized,
+            'update-document' => $isAuthorized AND $document->created_at->isCurrentWeek(),
         ];
         $document->has_attachment = $isAuthorized && !empty($document->attachment_path);
         $document->load(['user:id,name', 'department:id,name', 'project:id,name']);
