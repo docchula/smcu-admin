@@ -14,14 +14,15 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * App\Student
  *
- * @property int         $id
- * @property string      $name
+ * @property int $id
+ * @property string $name
  * @property string|null $email
  * @property string|null $google_id
  * @property string|null $student_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string      $roles
+ * @property string $roles
+ * @property \Illuminate\Database\Eloquent\Collection<\App\Models\ProjectParticipant> $participants
  */
 class User extends Authenticatable {
     use HasApiTokens;
@@ -89,10 +90,14 @@ class User extends Authenticatable {
     /**
      * @return Collection<ProjectParticipant>
      */
-    public function participantAndProjects(): Collection {
-        $participants = $this->participants;
-        $participants->load('project');
-        return $participants;
+    public function participantAndProjects(): Collection
+    {
+        $this->load([
+            'participants',
+            'participants.project', 'participants.project.approvalDocument', 'participants.project.summaryDocument',
+        ]);
+
+        return $this->participants->whereNotNull('project.approvalDocument')->sortByDesc('id')->values();
     }
 
 
