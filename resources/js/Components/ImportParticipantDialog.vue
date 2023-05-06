@@ -24,6 +24,8 @@
                                accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                                @input="uploadFile($event.target.files[0])">
                     </label>
+                    <p class="text-gray-500 text-sm">ระบบอาจจำกัดการประมวลผลหากอัปโหลดรายชื่อนิสิตจำนวนมาก หากพบว่ารายชื่อปรากฏไม่ครบ ให้รอ 5
+                        นาทีแล้วอัปโหลดไฟล์เดิมซ้ำ</p>
                 </li>
             </ol>
             <div v-if="importData.messages.length > 0" class="p-2 m-4 text-red-500 border rounded border-red-500">
@@ -97,7 +99,6 @@ const uploadFile = (file) => {
     }).then((response) => {
         uploading.value = false;
         importData.value = response.data.data;
-        console.log(importData);
     })
 };
 const importCommit = () => {
