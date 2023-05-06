@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Crypt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,7 @@ class ProjectController extends Controller {
         ]);
     }
 
-    public function search(string $keyword): \Illuminate\Http\JsonResponse {
+    public function search(string $keyword): JsonResponse {
         return response()->json(Project::searchQuery($keyword)->take(5)->get());
     }
 
@@ -343,10 +344,10 @@ class ProjectController extends Controller {
             $vestaResponse = VestaClient::retrieveStudent($q, $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
             if ($vestaResponse->successful()) {
                 $data = $vestaResponse->json();
-                $student = User::firstOrCreate([
+                $student = User::updateOrCreate([
                     'email' => $data['email'],
                 ], [
-                    'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
+                    'name' => ($data['title'] ?? '').$data['first_name'].' '.$data['last_name'],
                     'student_id' => $data['student_id'],
                 ]);
                 $student->nickname = $data['nickname'];
@@ -415,10 +416,10 @@ class ProjectController extends Controller {
                 $vestaResponse = VestaClient::retrieveStudent($row['student_id'], $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
                 if ($vestaResponse->successful()) {
                     $data = $vestaResponse->json();
-                    $student = User::firstOrCreate([
+                    $student = User::updateOrCreate([
                         'email' => $data['email'],
                     ], [
-                        'name' => ($data['title'] ?? '') . $data['first_name'] . ' ' . $data['last_name'],
+                        'name' => ($data['title'] ?? '').$data['first_name'].' '.$data['last_name'],
                         'student_id' => $data['student_id'],
                     ]);
                 } else {
