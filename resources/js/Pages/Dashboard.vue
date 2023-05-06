@@ -7,7 +7,7 @@ const lastYear = new Date();
 lastYear.setMonth(lastYear.getMonth() - 18);
 const participants = props.myProjects.map(participant => {
     participant.project.awaitingSummary = participant.project.approval_document && !participant.project.summary_document && ![32, 38, 39].includes(participant.project.department_id) && (new Date(participant.project.created_at) > lastYear);
-    participant.project.awaitingSummaryAlert = participant.project.awaitingSummary && (new Date(participant.project.created_at) > lastYear);
+    participant.project.awaitingSummaryAlert = participant.project.awaitingSummary && (new Date(participant.project.created_at) > lastYear) && (participant.type === 'organizer');
     return participant;
 });
 const projectsAwaitingSummary = props.myProjects.map(participant => participant.project).filter(project => project.awaitingSummaryAlert);
