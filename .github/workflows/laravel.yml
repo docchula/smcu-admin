@@ -18,7 +18,7 @@ jobs:
     - name: Install Dependencies
       run: php8.1 /sites/composer.phar install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Install JS Dependencies
-      run: npm install
+      run: pnpm install
     - name: Generate key
       run: php8.1 artisan key:generate
     - name: Directory Permissions
@@ -28,11 +28,11 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
     - name: Build JS assets
-      run: npm run build
+      run: pnpm build
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php8.1 artisan test
     - name: Deploy
-      run: git -C /sites/smcu-admin pull https://keenthekeen:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git && php8.1 /sites/composer.phar install -d /sites/smcu-admin --no-dev && npm --prefix /sites/smcu-admin install && npm --prefix /sites/smcu-admin run prod
+      run: git -C /sites/smcu-admin pull https://keenthekeen:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git && php8.1 /sites/composer.phar install -d /sites/smcu-admin --no-dev && pnpm --prefix /sites/smcu-admin install && pnpm --prefix /sites/smcu-admin build
