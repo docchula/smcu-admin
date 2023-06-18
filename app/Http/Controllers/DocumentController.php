@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Helper;
 use App\Models\Department;
 use App\Models\Document;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): \Inertia\Response {
+    public function index(Request $request): Response {
         $keyword = $request->input('search');
         $query = Document::query()->with(['department']);
         if (empty($keyword)) {
@@ -43,21 +46,21 @@ class DocumentController extends Controller {
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request): \Inertia\Response {
+    public function create(Request $request): Response {
         return $this->edit(new Document([]));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse {
+    public function store(Request $request): RedirectResponse {
         return $this->update($request, new Document());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Document $document): \Inertia\Response {
+    public function show(Request $request, Document $document): Response {
         $isAuthorized = $request->user()->can('update-document', $document);
         $document->can = [
             'download-document' => $isAuthorized,
@@ -73,7 +76,7 @@ class DocumentController extends Controller {
         ]);
     }
 
-    public function download(Document $document): \Symfony\Component\HttpFoundation\StreamedResponse {
+    public function download(Document $document): StreamedResponse {
         $this->authorize('update-document', $document);
         abort_if(empty($document->attachment_path), 404);
         abort_if(Storage::missing($document->attachment_path), 404);
@@ -87,7 +90,7 @@ class DocumentController extends Controller {
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Document $document): \Inertia\Response {
+    public function edit(Document $document): Response {
         $this->authorize('update-document', $document);
         return Inertia::render('DocumentCreate', [
             'item' => $document->load('project', 'project.department'),
@@ -99,7 +102,7 @@ class DocumentController extends Controller {
      * Update the specified resource in storage.
      * @throws \Throwable
      */
-    public function update(Request $request, Document $document): \Illuminate\Http\RedirectResponse {
+    public function update(Request $request, Document $document): RedirectResponse {
         $this->validate($request, [
             'title' => 'required|filled|string|min:5|max:255',
             'recipient' => 'required|filled|string|max:255',
@@ -134,7 +137,10 @@ class DocumentController extends Controller {
         }
         $document->saveOrFail();
 
-        return redirect()->route('documents.index')->with('flash.banner', 'บันทึกเอกสาร เลขที่ ' . $document->number . '/' . $document->year . ' แล้ว')->with('flash.bannerStyle', 'success');
+        return redirect()
+            ->route('documents.show', ['document' => $document->id])
+            ->with('flash.banner', 'บันทึกเอกสารแล้ว')
+            ->with('flash.bannerStyle', 'success');
     }
 
     /**
