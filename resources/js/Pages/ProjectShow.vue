@@ -287,12 +287,12 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import JetButton from '@/Jetstream/Button'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import JetButton from '@/Jetstream/Button.vue'
 import {ArrowUpTrayIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
-import StudentIdDialog from "../Components/StudentIdDialog";
+import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import _ from "lodash";
-import ImportParticipantDialog from "../Components/ImportParticipantDialog";
+import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
 
 export default {
     components: {

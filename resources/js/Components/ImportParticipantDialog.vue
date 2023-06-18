@@ -77,9 +77,9 @@
 </template>
 
 <script setup>
-import JetDialogModal from "../Jetstream/DialogModal";
-import JetButton from "../Jetstream/Button";
-import JetSecondaryButton from "../Jetstream/SecondaryButton";
+import JetDialogModal from "../Jetstream/DialogModal.vue";
+import JetButton from "../Jetstream/Button.vue";
+import JetSecondaryButton from "../Jetstream/SecondaryButton.vue";
 import {Inertia} from '@inertiajs/inertia';
 import {ref} from "vue";
 

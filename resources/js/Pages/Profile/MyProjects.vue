@@ -55,7 +55,7 @@
 
 <script setup>
 import {InertiaLink} from '@inertiajs/inertia-vue3'
-import JetActionSection from '../../Jetstream/ActionSection'
+import JetActionSection from '../../Jetstream/ActionSection.vue'
 import {PrinterIcon} from '@heroicons/vue/24/solid'
 
 const props = defineProps({
