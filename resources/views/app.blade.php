@@ -10,9 +10,6 @@
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">
 
-        <!-- Styles -->
-        @vite('resources/css/app.css')
-
         <!-- Scripts -->
         @routes
         @vite('resources/js/app.js')
