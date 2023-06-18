@@ -76,6 +76,23 @@
                     <p v-else class="text-gray-500">ไม่พบไฟล์</p>
                 </div>
             </div>
+
+            <!-- File Naming Instruction -->
+            <div v-if="item.can['update-document']" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded p-4 mb-6" role="alert">
+                <p class="font-bold">
+                    กรณีส่งลงลายมือชื่อผ่านทางระบบอิเล็กทรอนิกส์ (DocHub)
+                </p>
+                <p class="mb-1">
+                    กรุณาตั้งชื่อไฟล์ในรูปแบบ “สพจ xx-256x หัวเรื่อง” เช่น
+                </p>
+                <span class="text-lg py-1 px-2 bg-blue-200 text-blue-600">
+                    สพจ <span class="font-mono">{{ item.number }}-{{ item.year }}</span> {{ item.title }}<span class="font-mono">.pdf</span>
+                </span>
+                <p class="mt-1 text-xs text-blue-400">
+                    ท่านสามารถศึกษาคู่มือการใช้งานระบบลงลายมือชื่อแบบอิเล็กทรอนิกส์ ได้ที่เมนู
+                    <a :href="route('manual')" class="text-blue-500" target="_blank">คู่มือ</a> > การส่งหนังสือสพจ.
+                </p>
+            </div>
         </div>
     </app-layout>
 </template>
