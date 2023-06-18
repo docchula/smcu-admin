@@ -1,6 +1,6 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout';
-import Welcome from '@/Jetstream/Welcome';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Welcome from '@/Jetstream/Welcome.vue';
 
 const props = defineProps({myProjects: Array});
 const lastYear = new Date();

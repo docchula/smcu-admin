@@ -208,17 +208,17 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import JetActionMessage from '@/Jetstream/ActionMessage'
-import JetButton from '@/Jetstream/Button'
-import JetFormSection from '@/Jetstream/FormSection'
-import JetInput from '@/Jetstream/Input'
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
-import JetSectionBorder from '@/Jetstream/SectionBorder'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import JetActionMessage from '@/Jetstream/ActionMessage.vue'
+import JetButton from '@/Jetstream/Button.vue'
+import JetFormSection from '@/Jetstream/FormSection.vue'
+import JetInput from '@/Jetstream/Input.vue'
+import JetInputError from '@/Jetstream/InputError.vue'
+import JetLabel from '@/Jetstream/Label.vue'
+import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import {isNumber} from "lodash";
 import _ from "lodash";
-import Checkbox from "../Jetstream/Checkbox";
+import Checkbox from "../Jetstream/Checkbox.vue";
 
 export default {
     components: {

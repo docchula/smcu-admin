@@ -382,17 +382,17 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import JetActionMessage from '@/Jetstream/ActionMessage'
-import JetButton from '@/Jetstream/Button'
-import JetFormSection from '@/Jetstream/FormSection'
-import JetInput from '@/Jetstream/Input'
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
-import JetSectionBorder from '@/Jetstream/SectionBorder'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import JetActionMessage from '@/Jetstream/ActionMessage.vue'
+import JetButton from '@/Jetstream/Button.vue'
+import JetFormSection from '@/Jetstream/FormSection.vue'
+import JetInput from '@/Jetstream/Input.vue'
+import JetInputError from '@/Jetstream/InputError.vue'
+import JetLabel from '@/Jetstream/Label.vue'
+import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Datepicker from 'vue3-datepicker'
 import draggable from 'vuedraggable'
-import StudentIdDialog from "../Components/StudentIdDialog";
+import StudentIdDialog from "../Components/StudentIdDialog.vue";
 
 export default {
     components: {

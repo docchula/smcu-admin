@@ -153,7 +153,7 @@
 </template>
 
 <script>
-import JetBanner from '@/Jetstream/Banner';
+import JetBanner from '@/Jetstream/Banner.vue';
 
 export default {
     components: {

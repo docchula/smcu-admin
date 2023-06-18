@@ -92,9 +92,9 @@
 </template>
 
 <script>
-import AppLayout from '@/Layouts/AppLayout'
-import SearchInput from "@/Components/SearchInput";
-import Pagination from "@/Components/Pagination";
+import AppLayout from '@/Layouts/AppLayout.vue'
+import SearchInput from "@/Components/SearchInput.vue";
+import Pagination from "@/Components/Pagination.vue";
 import {DocumentChartBarIcon, DocumentTextIcon} from "@heroicons/vue/20/solid";
 
 export default {
