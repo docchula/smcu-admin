@@ -28,6 +28,7 @@
                                         Log in with Docchula
                                     </a>
                                 </div>
+                                <p class="pt-4 text-xs text-gray-400">ท่านอาจไม่สามารถเข้าสู่ระบบได้จาก in-app browser (เช่น Facebook หรือ LINE) ให้นำ URL ไปเปิดในเว็บเบราเซอร์ เช่น Chrome หรือ Safari</p>
                             </div>
                         </div>
                     </div>
