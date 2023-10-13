@@ -38,8 +38,8 @@
                                 {{ item.title }}
                             </inertia-link>
                             <span class="pl-1">
-                                <DocumentChartBarIcon v-if="item.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
                                 <DocumentTextIcon v-if="item.tag === 'approval'" class="text-purple-700 h-4 w-4 inline-block"/>
+                                <DocumentChartBarIcon v-if="item.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
                                 <DocumentCheckIcon v-if="item.status === 'APPROVED'" class="text-green-700 h-4 w-4 inline-block"/>
                                 <ExclamationCircleIcon v-if="item.status === 'REJECTED'" class="text-amber-700 h-4 w-4 inline-block"/>
                             </span>

@@ -76,7 +76,7 @@
                                 </td>
                                 <td class="px-2 py-1 md:px-4" colspan="4">
                                     <DocumentChartBarIcon class="text-yellow-700 h-4 w-4 inline-block" v-if="document.tag === 'summary'" />
-                                    <DocumentTextIcon class="text-green-700 h-4 w-4 inline-block" v-if="document.tag === 'approval'" />
+                                    <DocumentTextIcon class="text-purple-700 h-4 w-4 inline-block" v-if="document.tag === 'approval'"/>
                                     <inertia-link :href="route('documents.show', {document: document.id})">
                                         {{ document.title }}
                                     </inertia-link>

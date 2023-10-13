@@ -34,6 +34,8 @@
                         <jet-input-error v-if="form.errors.name" :message="form.errors.name" class="mt-2"/>
                         <jet-input-error v-else-if="form.name.startsWith('โครงการ')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "โครงการ"' class="mt-2"/>
                         <jet-input-error v-else-if="form.name.startsWith('ขออนุมัติ')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "ขออนุมัติ"' class="mt-2"/>
+                        <jet-input-error v-else-if="form.name.includes('รายงานผล')"
+                                         message='หากต้องการรายงานผล ให้อ้างถึงโครงการที่ได้บันทึกไว้แล้ว โดยไม่ต้องสร้างโครงการใหม่' class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>

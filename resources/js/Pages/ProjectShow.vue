@@ -226,7 +226,11 @@
                                     <span v-else>-</span>
                                 </td>
                                 <td class="p-2">
-                                    {{ e.title }}
+                                    <inertia-link :href="route('documents.show', {document: e.id})">
+                                        <DocumentChartBarIcon v-if="e.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
+                                        <DocumentTextIcon v-if="e.tag === 'approval'" class="text-purple-700 h-4 w-4 inline-block"/>
+                                        {{ e.title }}
+                                    </inertia-link>
                                 </td>
                             </tr>
                             </tbody>
@@ -289,13 +293,14 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
-import {ArrowUpTrayIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {ArrowUpTrayIcon, DocumentChartBarIcon, DocumentTextIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import _ from "lodash";
 import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
 
 export default {
     components: {
+        DocumentChartBarIcon, DocumentTextIcon,
         ImportParticipantDialog,
         StudentIdDialog,
         AppLayout,

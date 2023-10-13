@@ -37,9 +37,6 @@
                             <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                 วันที่จัด
                             </th>
-                            <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
-                                <span class="sr-only">Edit</span>
-                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -51,6 +48,12 @@
                                 <inertia-link :href="route('projects.show', {project: item.id})">
                                     {{ item.name }}
                                 </inertia-link>
+                                <span class="pl-1">
+                                    <inertia-link v-for="document in item.documents" :href="route('documents.show', {document: document.id})">
+                                        <DocumentTextIcon v-if="document.tag === 'approval'" class="text-gray-300 h-3 w-3 inline-block"/>
+                                        <DocumentChartBarIcon v-if="document.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
+                                    </inertia-link>
+                                </span>
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
                                 <span v-if="item.department_id === 33" class="text-gray-400">-</span>
@@ -59,9 +62,6 @@
                             <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-xs">
                                 {{ item.period_start }}
                                 <span v-if="item.period_start !== item.period_end">- {{ item.period_end }}</span>
-                            </td>
-                            <td class="px-2 py-2 md:px-4 md:py-3 text-right text-sm font-medium hidden md:table-cell">
-                                <inertia-link :href="route('projects.show', {project: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
                             </td>
                         </tr>
                     </tbody>
@@ -87,9 +87,12 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {Bars4Icon} from "@heroicons/vue/24/solid";
+import {DocumentChartBarIcon} from "@heroicons/vue/20/solid";
+import {DocumentTextIcon} from "@heroicons/vue/24/outline";
 
 export default {
     components: {
+        DocumentChartBarIcon, DocumentTextIcon,
         AppLayout,
         Pagination,
         SearchInput,

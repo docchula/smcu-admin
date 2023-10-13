@@ -36,7 +36,12 @@ class ProjectController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ProjectIndex', [
-            'list' => Project::searchQuery($keyword)->orderByDesc('year')->orderByDesc('number')->paginate(15)->withQueryString(),
+            'list' => Project::searchQuery($keyword)->orderByDesc('year')->orderByDesc('number')->with([
+                'documents' => function ($query) {
+                    $query->select('id', 'tag', 'project_id');
+                    $query->whereNotNull('tag');
+                },
+            ])->paginate(15)->withQueryString(),
             'keyword' => $keyword
         ]);
     }
