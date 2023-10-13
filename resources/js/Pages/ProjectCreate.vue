@@ -31,7 +31,9 @@
                     <div class="col-span-6">
                         <jet-label for="name" value="ชื่อโครงการ"/>
                         <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" ref="name" required placeholder="ไม่ต้องมีคำว่าโครงการนำหน้า"/>
-                        <jet-input-error :message="form.errors.name" class="mt-2"/>
+                        <jet-input-error v-if="form.errors.name" :message="form.errors.name" class="mt-2"/>
+                        <jet-input-error v-else-if="form.name.startsWith('โครงการ')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "โครงการ"' class="mt-2"/>
+                        <jet-input-error v-else-if="form.name.startsWith('ขออนุมัติ')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "ขออนุมัติ"' class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>

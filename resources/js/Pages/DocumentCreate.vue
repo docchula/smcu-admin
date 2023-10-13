@@ -31,6 +31,7 @@
                         <jet-label for="title" value="หัวเรื่อง"/>
                         <jet-input id="title" type="text" class="mt-1 block w-full" v-model.trim="form.title" ref="title" required/>
                         <jet-input-error v-if="form.errors.title" :message="form.errors.title" class="mt-2"/>
+                        <jet-input-error v-else-if="form.title.startsWith('เอกสาร')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "เอกสาร"' class="mt-2"/>
                         <p v-else class="mt-2 text-xs text-gray-500">ข้อความสั้น ๆ ที่ทำให้ผู้รับเข้าใจความประสงค์หรือเนื้อหาโดยสังเขป</p>
                     </div>
                     <div class="col-span-6">
@@ -216,8 +217,7 @@ import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-import {isNumber} from "lodash";
-import _ from "lodash";
+import _, {isNumber} from "lodash";
 import Checkbox from "../Jetstream/Checkbox.vue";
 
 export default {
