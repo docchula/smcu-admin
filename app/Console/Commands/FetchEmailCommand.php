@@ -58,7 +58,7 @@ class FetchEmailCommand extends Command
         $gmailService = new Gmail($googleClient);
         $messageListQuery = $gmailService->users_messages->listUsersMessages(GoogleController::ADMIN_ACCOUNT_EMAIL, [
             'includeSpamTrash' => false,
-            'q' => 'from:(no-reply@dochub.com) subject:(FINALIZED: สพจ)',
+            'q' => 'from:(no-reply@dochub.com) subject:(สพจ)',
             'maxResults' => (int) $this->argument('max'),
         ]);
 
