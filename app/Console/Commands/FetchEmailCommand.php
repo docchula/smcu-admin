@@ -88,9 +88,12 @@ class FetchEmailCommand extends Command
                     $headers[$header->getName()] = $header->getValue();
                 }
 
+                $fetchHistory['processed_messages']->push($message->getId());
+                Storage::put(self::LAST_FETCH_FILE, Crypt::encrypt($fetchHistory));
+
                 // Message must be sent from DocHub
                 if (!str_contains($headers['From'], 'no-reply@dochub.com')) {
-                    break;
+                    continue;
                 }
 
                 // Get document number
@@ -105,7 +108,7 @@ class FetchEmailCommand extends Command
                             if ($document->status == Document::STATUS_APPROVED and $document->approved_path and Carbon::parse($headers['Date'])
                                     ->isBefore($document->updated_at)) {
                                 $this->line('- Document is already approved, skipping...');
-                                break;
+                                continue;
                             }
                             // Save file
                             $filename = 'documents/'.$document->id.'_'.$document->number.'-'.$document->year.'_Signed.pdf';
@@ -128,9 +131,6 @@ class FetchEmailCommand extends Command
                         }
                     }
                 }
-
-                $fetchHistory['processed_messages']->push($message->getId());
-                Storage::put(self::LAST_FETCH_FILE, Crypt::encrypt($fetchHistory));
             }
         }
 
