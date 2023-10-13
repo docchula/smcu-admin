@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\Dashboard;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +29,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('auth/google/itdivision', [GoogleController::class, 'redirectToGoogleWithGmailAccess']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -47,6 +48,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'projects' => ProjectController::class,
     ]);
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('documents/{document}/downloadApproved', [DocumentController::class, 'downloadApproved'])->name('documents.downloadApproved');
     Route::get('projects/{project}/generateApprovalDocument', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
     Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');
     Route::get('projects/search/{keyword}', [ProjectController::class, 'search'])->name('projects.search');

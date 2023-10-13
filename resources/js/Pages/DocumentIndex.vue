@@ -24,9 +24,6 @@
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             สร้างเมื่อ
                         </th>
-                        <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
-                            <span class="sr-only">Edit</span>
-                        </th>
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -37,9 +34,15 @@
                             </inertia-link>
                         </td>
                         <td class="px-2 py-2 md:px-4 md:py-3">
-                            {{ item.title }}
-                            <DocumentChartBarIcon class="text-yellow-700 h-4 w-4 inline-block" v-if="item.tag === 'summary'" />
-                            <DocumentTextIcon class="text-green-700 h-4 w-4 inline-block" v-if="item.tag === 'approval'" />
+                            <inertia-link :href="route('documents.show', {document: item.id})">
+                                {{ item.title }}
+                            </inertia-link>
+                            <span class="pl-1">
+                                <DocumentChartBarIcon v-if="item.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
+                                <DocumentTextIcon v-if="item.tag === 'approval'" class="text-purple-700 h-4 w-4 inline-block"/>
+                                <DocumentCheckIcon v-if="item.status === 'APPROVED'" class="text-green-700 h-4 w-4 inline-block"/>
+                                <ExclamationCircleIcon v-if="item.status === 'REJECTED'" class="text-amber-700 h-4 w-4 inline-block"/>
+                            </span>
                         </td>
                         <td v-if="hasDepartment" class="px-2 py-2 md:px-4 md:py-3 text-sm">
                             <span v-if="item.department_id === 33" class="text-gray-400">-</span>
@@ -50,9 +53,6 @@
                                     {{ item.created_at }}
                                 </span>
                             <span v-else>-</span>
-                        </td>
-                        <td class="px-2 py-2 md:px-4 md:py-3 whitespace-nowrap text-right text-sm font-medium hidden md:table-cell">
-                            <inertia-link :href="route('documents.show', {document: item.id})" class="text-indigo-600 hover:text-indigo-900">View</inertia-link>
                         </td>
                     </tr>
                     </tbody>
@@ -78,6 +78,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {DocumentChartBarIcon, DocumentTextIcon} from '@heroicons/vue/20/solid';
+import {DocumentCheckIcon, ExclamationCircleIcon} from "@heroicons/vue/24/outline";
 
 export default {
     components: {
@@ -85,7 +86,9 @@ export default {
         Pagination,
         SearchInput,
         DocumentChartBarIcon,
+        DocumentCheckIcon,
         DocumentTextIcon,
+        ExclamationCircleIcon,
     },
     data() {
         return {

@@ -67,6 +67,7 @@ class DocumentController extends Controller {
             'update-document' => $isAuthorized AND $document->created_at->isCurrentWeek(),
         ];
         $document->has_attachment = $isAuthorized && !empty($document->attachment_path);
+        $document->has_approved = $isAuthorized && !empty($document->approved_path);
         $document->load(['user:id,name', 'department:id,name', 'project:id,name']);
         if ($document->user) {
             unset($document->user->id);
@@ -81,10 +82,21 @@ class DocumentController extends Controller {
         abort_if(empty($document->attachment_path), 404);
         abort_if(Storage::missing($document->attachment_path), 404);
 
-        return Storage::download(
+        return Storage::response(
             $document->attachment_path,
-            'สพจ ' . $document->number . '-' . $document->year . ' ' . substr($document->title, 0, 25)
+            'SMCU '.$document->number.'-'.$document->year.' '.substr($document->title, 0, 25).' Draft.'.Str::after($document->approved_path, '.')
         );
+    }
+
+    public function downloadApproved(Document $document): \Illuminate\Http\Response
+    {
+        $this->authorize('update-document', $document);
+        abort_if(empty($document->approved_path), 404);
+        abort_if(Storage::missing($document->approved_path), 404);
+
+        // This only works with PDF
+        return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Storage::get($document->approved_path))]);
+        // 'SMCU '.$document->number.'-'.$document->year.' '.substr($document->title, 0, 25).' Signed.'.Str::after($document->approved_path, '.')
     }
 
     /**

@@ -9,6 +9,7 @@
         "ext-intl": "*",
         "barryvdh/laravel-dompdf": "^2.0",
         "docchula/vesta-client": "^0.0.3",
+        "google/apiclient": "2.15.0",
         "guzzlehttp/guzzle": "^7.3",
         "inertiajs/inertia-laravel": "^0.6.3",
         "laravel/framework": "^9.19",
@@ -45,6 +46,9 @@
         }
     },
     "scripts": {
+        "pre-autoload-dump": [
+            "Google\\Task\\Composer::cleanup"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -59,7 +63,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
-        }
+        },
+        "google/apiclient-services": [
+            "Gmail",
+            "PeopleService"
+        ]
     },
     "config": {
         "optimize-autoloader": true,

@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int         $id
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null    $project_id
  * @property int|null    $department_id
  * @property string|null $attachment_path
+ * @property string|null $approved_path
+ * @property string|null $status
  * @property Carbon      $created_at
  * @property Carbon|null $updated_at
  */
@@ -26,17 +29,20 @@ class Document extends Model {
 
     protected $fillable = ['title', 'recipient', 'tag', 'department_id', 'project_id', 'user_id'];
     protected $casts = ['created_at' => 'datetime:j M Y'];
-    protected $hidden = ['user_id', 'attachment_path'];
+    protected $hidden = ['user_id', 'attachment_path', 'approved_path'];
 
-    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    public const STATUS_APPROVED = 'APPROVED';
+    public const STATUS_REJECTED = 'REJECTED';
+
+    public function department(): BelongsTo {
         return $this->belongsTo(Department::class)->select('id', 'name');
     }
 
-    public function project(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    public function project(): BelongsTo {
         return $this->belongsTo(Project::class)->select('id', 'name', 'number', 'year', 'department_id');
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class)->select('id', 'name');
     }
 
