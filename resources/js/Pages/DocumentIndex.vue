@@ -42,6 +42,7 @@
                                 <DocumentChartBarIcon v-if="item.tag === 'summary'" class="text-yellow-700 h-4 w-4 inline-block"/>
                                 <DocumentCheckIcon v-if="item.status === 'APPROVED'" class="text-green-700 h-4 w-4 inline-block"/>
                                 <ExclamationCircleIcon v-if="item.status === 'REJECTED'" class="text-amber-700 h-4 w-4 inline-block"/>
+                                <PaperAirplaneIcon v-if="item.status === 'UNDELIVERED'" class="text-red-600 h-4 w-4 inline-block"/>
                             </span>
                         </td>
                         <td v-if="hasDepartment" class="px-2 py-2 md:px-4 md:py-3 text-sm">
@@ -78,7 +79,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {DocumentChartBarIcon, DocumentTextIcon} from '@heroicons/vue/20/solid';
-import {DocumentCheckIcon, ExclamationCircleIcon} from "@heroicons/vue/24/outline";
+import {DocumentCheckIcon, ExclamationCircleIcon, PaperAirplaneIcon} from "@heroicons/vue/24/outline";
 
 export default {
     components: {
@@ -89,6 +90,7 @@ export default {
         DocumentCheckIcon,
         DocumentTextIcon,
         ExclamationCircleIcon,
+        PaperAirplaneIcon,
     },
     data() {
         return {

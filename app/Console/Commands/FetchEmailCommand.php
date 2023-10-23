@@ -97,13 +97,15 @@ class FetchEmailCommand extends Command
                 }
 
                 // Get document number
-                $this->line('- Processing message '.$headers['Subject']);
+                $subject = $headers['Subject'];
+                $this->line('- Processing message '.$subject);
+                $subject = str_replace(['Copy of ', 'สำเนา '], '', $subject);
                 $list = [];
-                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s){1,2}(\d+)-(25\d\d)\s.+/i', $headers['Subject'], $list, PREG_UNMATCHED_AS_NULL)) {
+                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s|-){1,2}(\d+)(?:_|-)(25\d\d)(?:\s|-).+/i', $subject, $list, PREG_UNMATCHED_AS_NULL)) {
                     $document = Document::where('number', $list[1])->where('year', $list[2])->first();
                     if ($document) {
                         $this->line('- Found update of document '.$document->id.' ('.$document->number.'/'.$document->year.') '.$document->title);
-                        if (str_starts_with($headers['Subject'], 'FINALIZED:')) {
+                        if (str_starts_with($subject, 'FINALIZED:')) {
                             // Skip if document is already approved
                             if ($document->status == Document::STATUS_APPROVED and $document->approved_path and Carbon::parse($headers['Date'])
                                     ->isBefore($document->updated_at)) {
@@ -125,8 +127,11 @@ class FetchEmailCommand extends Command
                                     break;
                                 }
                             }
-                        } elseif (str_starts_with($headers['Subject'], 'REJECTED:') and $document->status != Document::STATUS_REJECTED) {
+                        } elseif (str_starts_with($subject, 'REJECTED:') and $document->status != Document::STATUS_REJECTED) {
                             $document->status = Document::STATUS_REJECTED;
+                            $document->save();
+                        } elseif (str_starts_with($subject, 'Email delivery failure:') and $document->status != Document::STATUS_UNDELIVERED) {
+                            $document->status = Document::STATUS_UNDELIVERED;
                             $document->save();
                         }
                     }

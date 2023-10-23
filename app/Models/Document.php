@@ -33,6 +33,7 @@ class Document extends Model {
 
     public const STATUS_APPROVED = 'APPROVED';
     public const STATUS_REJECTED = 'REJECTED';
+    public const STATUS_UNDELIVERED = 'UNDELIVERED'; // Email delivery failure
 
     public function department(): BelongsTo {
         return $this->belongsTo(Department::class)->select('id', 'name');

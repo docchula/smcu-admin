@@ -60,7 +60,7 @@
                         <div v-if="item.status" class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">สถานะการพิจารณา (DocHub)</dt>
                             <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{
-                                    {APPROVED: "อนุมัติ", REJECTED: "ปฏิเสธ"}[item.status] ?? item.status
+                                    {APPROVED: "อนุมัติ", REJECTED: "ปฏิเสธ", UNDELIVERED: "ที่อยู่อีเมลผิด"}[item.status] ?? item.status
                                 }}
                             </dd>
                         </div>
@@ -84,18 +84,17 @@
                 </div>
             </div>
 
-            <div v-if="item.status === 'APPROVED'" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.has_approved" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารได้รับการอนุมัติแล้ว
                     </h3>
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <inertia-link v-if="item.has_approved" :href="route('documents.downloadApproved', {document: item.id})"
+                    <inertia-link :href="route('documents.downloadApproved', {document: item.id})"
                                   class="inline-block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
                         ดูเอกสาร
                     </inertia-link>
-                    <p v-else class="text-gray-500">ไม่พบไฟล์</p>
                 </div>
             </div>
             <!-- File Naming Instruction -->
