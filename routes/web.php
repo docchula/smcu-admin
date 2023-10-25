@@ -4,6 +4,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserProfileController;
@@ -46,6 +47,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resources([
         'documents' => DocumentController::class,
         'projects' => ProjectController::class,
+        'personnels' => PersonnelController::class,
     ]);
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::get('documents/{document}/downloadApproved', [DocumentController::class, 'downloadApproved'])->name('documents.downloadApproved');
@@ -58,6 +60,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('projects/removeParticipant/{participant}', [ProjectController::class, 'removeParticipant'])->name('projects.removeParticipant');
     Route::get('projects/{project}/exportParticipant', [ProjectController::class, 'exportParticipant'])->name('projects.exportParticipant');
     Route::get('search-participants', [ProjectController::class, 'searchNewParticipant'])->name('projects.searchNewParticipant');
+    Route::get('search-student', [PersonnelController::class, 'searchStudent'])->name('personnels.searchStudent');
 
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
     Route::get('/user/profile/printMyProjects', [UserProfileController::class, 'printMyProjects'])->name('profile.printMyProjects');

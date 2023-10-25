@@ -6,7 +6,7 @@
                     <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
                 </svg>
             </div>
-            <input type="text" id="searchFood" placeholder="Search" ref="keyword" :autofocus="autofocus"
+            <input type="text" id="searchFood" :placeholder="placeholder" ref="keyword" :autofocus="autofocus"
                    class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-8 sm:text-sm border-gray-300 rounded-md"
                    :value="modelValue"
                    @input="$emit('update:modelValue', $event.target.value)"/>
@@ -23,6 +23,10 @@ export default {
         autofocus: {
             type: Boolean,
             default: false
+        },
+        placeholder: {
+            type: String,
+            default: 'Search'
         }
     },
     emits: ['update:modelValue']
