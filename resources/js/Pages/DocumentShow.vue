@@ -98,7 +98,7 @@
                 </div>
             </div>
             <!-- File Naming Instruction -->
-            <div v-else-if="item.can['update-document']" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded p-4 mb-6" role="alert">
+            <div v-else-if="item.can['update-document']" class="bg-blue-100 border-blue-500 text-blue-600 border-l-4 rounded p-4 mb-6" role="alert">
                 <p class="font-bold">
                     กรณีส่งลงลายมือชื่อผ่านทางระบบอิเล็กทรอนิกส์
                 </p>
@@ -108,6 +108,19 @@
                 <span class="text-lg py-1 px-2 bg-blue-200 text-blue-600">
                     สพจ <span class="font-mono">{{ item.number }}-{{ item.year }}</span> {{ item.title.substring(0, 90) }}<span class="font-mono">.pdf</span>
                 </span>
+                <template v-if="item.signers">
+                    <p class="mt-2">
+                        และส่งให้ผู้เกี่ยวข้องลงลายมือชื่อตามลำดับ
+                    </p>
+                    <table>
+                        <tr v-for="signer in item.signers">
+                            <td class="px-1">-</td>
+                            <td class="px-2">{{ signer.name }}</td>
+                            <td class="px-2">{{ signer.position }}</td>
+                            <td class="px-2 font-mono">{{ signer.email }}</td>
+                        </tr>
+                    </table>
+                </template>
                 <p class="mt-1 text-xs text-blue-400">
                     ท่านสามารถศึกษาคู่มือการใช้งานระบบลงลายมือชื่อแบบอิเล็กทรอนิกส์ (DocHub) ได้ที่เมนู
                     <a :href="route('manual')" class="text-blue-500" target="_blank">คู่มือ</a> > การส่งหนังสือสพจ.

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper;
 use App\Models\Department;
 use App\Models\Document;
+use App\Models\Personnel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,6 +73,20 @@ class DocumentController extends Controller {
         if ($document->user) {
             unset($document->user->id);
         }
+
+        // Get signers
+        $personnels = Personnel::where('year', $document->year)->get();
+        $signers = [];
+        if ($personnels->isNotEmpty() and $person = $personnels->where('department_id', $document->department_id)->first()) {
+            $i = 0;
+            do {
+                $signers[] = $person;
+                $person = $person->supervisor ? $personnels->where('id', $person->supervisor)->first() : null;
+                $i++;
+            } while (!empty($person) and $i < 10);
+        }
+        $document->signers = $signers;
+
         return Inertia::render('DocumentShow', [
             'item' => $document
         ]);

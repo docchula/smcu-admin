@@ -71,9 +71,9 @@ class PersonnelController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|filled|string|min:5|max:250',
-            'name_en' => 'required|filled|string|min:5|max:250',
+            'name_en' => 'nullable|string|min:5|max:250',
             'position' => 'required|filled|string|min:5|max:250',
-            'position_en' => 'required|filled|string|min:5|max:250',
+            'position_en' => 'nullable|string|min:5|max:250',
             'email' => 'required|email|max:100',
             'department_id' => 'required|integer|min:1',
             'year' => 'required|integer|min:2480|max:2700',
@@ -82,6 +82,9 @@ class PersonnelController extends Controller
             'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png',
         ]);
         $this->authorize('admin-action');
+        if ($personnel->id and $request->input('supervisor') == $personnel->id) {
+            return back()->withErrors(['supervisor' => 'Invalid ID']);
+        }
         $personnel->fill($request->all());
 
         if ($request->hasFile('attachment')) {

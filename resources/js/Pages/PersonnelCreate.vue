@@ -84,14 +84,6 @@
                         <jet-input-error :message="form.errors.name_en" class="mt-2"/>
                     </div>
                 </template>
-                <template #actions>
-                    <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                        Saved.
-                    </jet-action-message>
-                    <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
-                        Save
-                    </jet-button>
-                </template>
             </jet-form-section>
 
             <jet-section-border/>
