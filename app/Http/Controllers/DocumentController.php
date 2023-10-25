@@ -65,11 +65,11 @@ class DocumentController extends Controller {
         $isAuthorized = $request->user()->can('update-document', $document);
         $document->can = [
             'download-document' => $isAuthorized,
-            'update-document' => $isAuthorized AND $document->created_at->isCurrentWeek(),
+            'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
         ];
         $document->has_attachment = $isAuthorized && !empty($document->attachment_path);
         $document->has_approved = $isAuthorized && !empty($document->approved_path);
-        $document->load(['user:id,name', 'department:id,name', 'project:id,name']);
+        $document->load(['user:id,name', 'department:id,name', 'project:id,name,advisor']);
         if ($document->user) {
             unset($document->user->id);
         }

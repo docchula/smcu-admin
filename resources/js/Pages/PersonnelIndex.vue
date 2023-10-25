@@ -13,6 +13,9 @@
                     <thead class="bg-gray-50">
                     <tr>
                         <th class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider" scope="col">
+                            #
+                        </th>
+                        <th class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider" scope="col">
                             Name / Email
                         </th>
                         <th class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider" scope="col">
@@ -28,6 +31,9 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="item in list" :id="'row-'+item.id" :key="item.id">
+                        <td class="px-2 py-2 md:px-4 md:py-3 text-xs">
+                            {{ item.id }}
+                        </td>
                         <td class="px-2 py-2 md:px-4 md:py-3">
                             <inertia-link :href="is_admin ? route('personnels.edit', {personnel: item.id}) : ('#row-'+item.id)">{{
                                     item.name

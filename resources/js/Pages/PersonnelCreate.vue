@@ -15,7 +15,7 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <jet-form-section>
+            <jet-form-section @submit="submit">
                 <template #title>Office</template>
                 <template #description></template>
                 <template #form>
@@ -61,7 +61,7 @@
                 </template>
             </jet-form-section>
             <jet-section-border/>
-            <jet-form-section>
+            <jet-form-section @submit="submit">
                 <template #title>Student</template>
                 <template #description>
                     For current students, enter email or student ID to search.

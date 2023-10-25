@@ -108,9 +108,9 @@
                 <span class="text-lg py-1 px-2 bg-blue-200 text-blue-600">
                     สพจ <span class="font-mono">{{ item.number }}-{{ item.year }}</span> {{ item.title.substring(0, 90) }}<span class="font-mono">.pdf</span>
                 </span>
-                <template v-if="item.signers">
+                <template v-if="item.signers && item.signers.length > 0">
                     <p class="mt-2">
-                        และส่งให้ผู้เกี่ยวข้องลงลายมือชื่อตามลำดับ
+                        และส่งให้ผู้เกี่ยวข้องลงลายมือชื่อตามลำดับ ซึ่งอาจมีดังนี้
                     </p>
                     <table>
                         <tr v-for="signer in item.signers">
@@ -118,6 +118,28 @@
                             <td class="px-2">{{ signer.name }}</td>
                             <td class="px-2">{{ signer.position }}</td>
                             <td class="px-2 font-mono">{{ signer.email }}</td>
+                        </tr>
+                        <tr v-if="item.project_id">
+                            <td class="px-1">-</td>
+                            <td class="px-2">{{ item.project.advisor }}</td>
+                            <td class="px-2" colspan="2">อาจารย์ที่ปรึกษาโครงการ</td>
+                        </tr>
+                        <tr v-if="item.tag === 'approval'">
+                            <td class="px-1">-</td>
+                            <td class="px-2" colspan="3">แล้วส่งต่อไฟล์ที่ผู้เกี่ยวข้องลงลายมือชื่อผ่านระบบแล้ว ไปยังฝ่ายกิจการนิสิต
+                                (studentmd@chula.md) โดยขอให้เจ้าหน้าที่ฝ่ายกิจการนิสิตพิมพ์และนำเรียนรองคณบดีลงลายมือชื่อบนกระดาษ
+                            </td>
+                        </tr>
+                        <tr v-else-if="item.recipient === 'รองคณบดีฝ่ายกิจการนิสิต'">
+                            <td class="px-1">-</td>
+                            <td class="px-2" colspan="2">รองคณบดีฝ่ายกิจการนิสิต (เป็นผู้รับไม่ต้องมีช่องให้ลงชื่อในเอกสาร)</td>
+                            <td class="px-2 font-mono">sittisak.h@chula.ac.th</td>
+                        </tr>
+                        <tr v-else>
+                            <td class="px-1">-</td>
+                            <td class="px-2">ศ.ดร.นพ.สิทธิศักดิ์ หรรษาเวก</td>
+                            <td class="px-2">รองคณบดีฝ่ายกิจการนิสิต</td>
+                            <td class="px-2 font-mono">sittisak.h@chula.ac.th</td>
                         </tr>
                     </table>
                 </template>
