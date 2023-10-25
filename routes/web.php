@@ -1,5 +1,6 @@
 <?php
 
+use App\Helper;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DocumentController;
@@ -28,6 +29,10 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 })->name('home');
+
+Route::get('/board/{year?}', function (?string $year = null) {
+    return view('personnel', ['year' => $year ?? Helper::buddhistYear()]);
+});
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('auth/google/itdivision', [GoogleController::class, 'redirectToGoogleWithGmailAccess']);

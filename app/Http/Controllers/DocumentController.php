@@ -75,7 +75,7 @@ class DocumentController extends Controller {
         }
 
         // Get signers
-        $personnels = Personnel::where('year', $document->year)->get();
+        $personnels = Personnel::getYear($document->year);
         $signers = [];
         if ($personnels->isNotEmpty() and $person = $personnels->where('department_id', $document->department_id)->first()) {
             $i = 0;

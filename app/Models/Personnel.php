@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Cache;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -13,5 +15,19 @@ class Personnel extends Model
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class)->select('id', 'name');
+    }
+
+    public static function getYear($year = null): Collection
+    {
+        if (empty($year)) {
+            $year = self::getYearList()[0];
+        }
+
+        return Cache::remember('personnel-year-'.$year, 7200, fn() => self::where('year', $year)->orderBy('sequence')->get());
+    }
+
+    public static function getYearList(): array
+    {
+        return Cache::remember('personnel-year-list', 7200, fn() => self::pluck('year')->unique()->sortDesc()->toArray());
     }
 }
