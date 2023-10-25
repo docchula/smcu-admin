@@ -14,7 +14,7 @@ class PersonnelController extends Controller
 {
     public function index(Request $request)
     {
-        $year = $request->input('year', self::getYearList()[0]);
+        $year = $request->input('year', Personnel::getYearList()[0]);
 
         return Inertia::render('PersonnelIndex', [
             'list' => Personnel::query()->with('department')->where('year', $year)->orderBy('sequence')->get(),
