@@ -28,6 +28,6 @@ class Personnel extends Model
 
     public static function getYearList(): array
     {
-        return Cache::remember('personnel-year-list', 7200, fn() => self::pluck('year')->unique()->sortDesc()->toArray());
+        return Cache::remember('personnel-year-list', 7200, fn() => self::pluck('year')->unique()->sortDesc()->values());
     }
 }
