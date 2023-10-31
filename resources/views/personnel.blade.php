@@ -105,7 +105,19 @@
     <h4 style="font-weight:bold;text-align: center">คณะกรรมการสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ปีการศึกษา {{ $year }}</h4>
     <h5 style="text-align:center">The Board of Student Union, Academic Year {{ $year-543 }}-{{ $year-542 }}</h5>
     <div id="person-space">
-        @foreach($list->chunk(4) as $personChunk)
+        @foreach($list->filter(fn($personnel) => $personnel->sequence === 1) as $personnel)
+            <div class="row">
+                <div class="col s12">
+                    @if($personnel->photo_path)
+                        <img class="responsive-img" src="{{ Storage::url($personnel->photo_path) }}"><br>
+                    @endif
+                    <h5>{{ $personnel->name }}</h5>
+                    <h6>{{ $personnel->position }}</h6>
+                    {{ $personnel->name_en }}<br/>{{ $personnel->position_en }}
+                </div>
+            </div>
+        @endforeach
+        @foreach($list->reject(fn($personnel) => $personnel->sequence === 1)->chunk(4) as $personChunk)
             <div class="row">
                 @foreach($personChunk as $personnel)
                     <div class="col s12 m6 l3">
@@ -114,6 +126,7 @@
                         @endif
                         <h5>{{ $personnel->name }}</h5>
                         <h6>{{ $personnel->position }}</h6>
+                        {{ $personnel->name_en }}<br/>{{ $personnel->position_en }}
                     </div>
                 @endforeach
             </div>
