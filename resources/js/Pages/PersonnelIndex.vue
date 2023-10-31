@@ -30,7 +30,7 @@
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="item in list" :id="'row-'+item.id" :key="item.id">
+                    <tr v-for="item in list" :id="'row-'+item.id" :key="item.id" :class="{'text-gray-400': item.sequence >= 200}">
                         <td class="px-2 py-2 md:px-4 md:py-3 text-xs">
                             {{ item.id }}
                         </td>

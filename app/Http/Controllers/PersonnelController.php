@@ -28,7 +28,10 @@ class PersonnelController extends Controller
         $yearList = Personnel::getYearList();
         return response()->json([
             'years' => $yearList,
-            'personnels' => Personnel::getYear($request->input('year', $yearList[0]))->map(function (Personnel $personnel) {
+            'personnels' => Personnel::getYear($request->input('year', $yearList[0]))
+                ->reject(function (Personnel $personnel) {
+                    return $personnel->sequence >= 200;
+                })->map(function (Personnel $personnel) {
                 $personnel->photo_url = $personnel->photo_path ? Storage::disk('public')->url($personnel->photo_path) : null;
                 return $personnel;
             })->setVisible(['id', 'name', 'name_en', 'position', 'position_en', 'year', 'sequence', 'photo_url']),

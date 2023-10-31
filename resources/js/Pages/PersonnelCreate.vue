@@ -32,7 +32,10 @@
                     <div class="col-span-2">
                         <jet-label for="sequence" value="Sequence"/>
                         <jet-input id="sequence" v-model.number="form.sequence" class="mt-1 block w-full" type="number"/>
-                        <jet-input-error :message="form.errors.sequence" class="mt-2"/>
+                        <jet-input-error v-if="form.errors.sequence" :message="form.errors.sequence" class="mt-2"/>
+                        <p v-else class="mt-2 text-xs text-gray-500">
+                            Set >=200 to hide
+                        </p>
                     </div>
                     <div class="col-span-6">
                         <jet-label for="position" value="Position TH"/>

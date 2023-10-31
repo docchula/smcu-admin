@@ -1,5 +1,7 @@
 @php
-    use App\Models\Personnel;$list = Personnel::getYear($year);
+    use App\Models\Personnel;$list = Personnel::getYear($year)->reject(function ($personnel) {
+        return $personnel->sequence >= 200;
+    });
 @endphp
     <!DOCTYPE html>
 <html lang="en">
