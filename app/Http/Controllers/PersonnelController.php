@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper;
 use App\Models\Department;
 use App\Models\Personnel;
+use Cache;
 use Docchula\VestaClient\Facades\VestaClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -110,6 +111,9 @@ class PersonnelController extends Controller
             $personnel->photo_path = $path;
         }
         $personnel->saveOrFail();
+
+        // Invalidate cache
+        Cache::delete('personnel-year-'.$personnel->year);
 
         return redirect()
             ->route('personnels.index', ['year' => $personnel->year])
