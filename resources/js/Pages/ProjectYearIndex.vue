@@ -1,6 +1,12 @@
 <template>
     <app-layout>
         <template #header>
+            <inertia-link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
+                </svg>
+                <p>โครงการ</p>
+            </inertia-link>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 สรุปโครงการ ตามหน่วยงาน
             </h2>

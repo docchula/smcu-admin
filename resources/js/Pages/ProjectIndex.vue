@@ -7,12 +7,20 @@
                         โครงการ
                     </h2>
                 </div>
-                <div class="flex-auto flex items-center justify-end">
+                <div class="flex-auto flex items-center justify-end gap-2">
                     <inertia-link :href="route('projects.indexOfYear')">
                         <button type="button"
-                                class="py-2 px-4 flex justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2">
+                                class="py-2 px-4 flex justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-600 border-yellow-600 border rounded-lg shadow hover:shadow-md focus:ring-yellow-600 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2">
                             <Bars4Icon class="h-5 w-5 mr-2"/>
                             สรุปรายปี
+                        </button>
+                    </inertia-link>
+                    <inertia-link :href="route('projects.indexAgenda')">
+                        <button
+                            class="py-2 px-4 flex justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            type="button">
+                            <CalendarDaysIcon class="h-5 w-5 mr-2"/>
+                            ตารางวันที่
                         </button>
                     </inertia-link>
                 </div>
@@ -87,7 +95,7 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {Bars4Icon} from "@heroicons/vue/24/solid";
-import {DocumentChartBarIcon} from "@heroicons/vue/20/solid";
+import {CalendarDaysIcon, DocumentChartBarIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
 
 export default {
@@ -97,6 +105,7 @@ export default {
         Pagination,
         SearchInput,
         Bars4Icon,
+        CalendarDaysIcon,
     },
     data() {
         return {

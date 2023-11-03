@@ -61,6 +61,27 @@ class ProjectController extends Controller {
         ]);
     }
 
+    public function indexAgenda(): Response
+    {
+        return Inertia::render('ProjectAgenda', [
+            'list' => Project::query()
+                ->select('id', 'year', 'number', 'name', 'department_id', 'created_at', 'period_start', 'period_end')
+                ->with(['department'])
+                ->with([
+                    'documents' => function ($query) {
+                        $query->select('id', 'tag', 'project_id');
+                        $query->whereNotNull('tag');
+                    },
+                ])
+                ->withCount('participants')
+                ->orderBy('period_start')
+                ->orderBy('period_end')
+                ->whereBetween('period_start', [now()->subMonths(3), now()->addYear()])
+                ->orWhereBetween('period_end', [now()->subMonths(3), now()->addYear()])
+                ->get(),
+        ]);
+    }
+
     public function search(string $keyword): JsonResponse {
         return response()->json(Project::searchQuery($keyword)->take(5)->get());
     }

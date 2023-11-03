@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Helper;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int                             $id
@@ -39,22 +43,22 @@ class Project extends Model {
     protected $casts = [
         'created_at' => 'datetime:j F Y',
         'updated_at' => 'datetime:j F Y',
-        'period_start' => 'date:j F Y',
-        'period_end' => 'date:j F Y',
+        'period_start' => 'date:j M Y',
+        'period_end' => 'date:j M Y',
         'objectives' => 'array',
         'expense' => 'array',
     ];
     protected $hidden = ['user_id'];
 
-    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    public function department(): BelongsTo {
         return $this->belongsTo(Department::class)->select('id', 'name');
     }
 
-    public function documents(): \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function documents(): HasMany {
         return $this->hasMany(Document::class);
     }
 
-    public function approvalDocument(): \Illuminate\Database\Eloquent\Relations\HasOne {
+    public function approvalDocument(): HasOne {
         return $this->hasOne(Document::class)->ofMany([
             'id' => 'max',
         ], function ($query) {
@@ -62,7 +66,7 @@ class Project extends Model {
         });
     }
 
-    public function summaryDocument(): \Illuminate\Database\Eloquent\Relations\HasOne {
+    public function summaryDocument(): HasOne {
         return $this->hasOne(Document::class)->ofMany([
             'id' => 'max',
         ], function ($query) {
@@ -70,11 +74,11 @@ class Project extends Model {
         });
     }
 
-    public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function participants(): HasMany {
         return $this->hasMany(ProjectParticipant::class);
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class)->select('id', 'name');
     }
 
@@ -94,7 +98,7 @@ class Project extends Model {
         return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
     }
 
-    public static function searchQuery(?string $keyword = null): \Illuminate\Database\Eloquent\Builder {
+    public static function searchQuery(?string $keyword = null): Builder {
         $query = self::query()->select('id', 'year', 'number', 'name', 'department_id', 'created_at', 'period_start', 'period_end')->with(['department']);
         if (empty($keyword)) {
             $currentBE = Helper::buddhistYear();
