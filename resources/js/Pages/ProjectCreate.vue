@@ -25,8 +25,10 @@
                 <template #title>ข้อมูลพื้นฐาน</template>
                 <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
                     กรณี<a @click="forAcademicPresentation" class="cursor-pointer text-green-500">โครงการนำเสนอผลงานในการประชุมวิชาการ</a>
-                    เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"</template>
-
+                    เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"
+                    <p class="mt-2 text-blue-600">โครงการสังกัดคณะกรรมการบริหาร เช่น <i>โครงการค่ายอยากเป็นหมอ โครงการ MDCU Counseling Unit โครงการ CU
+                        Open House</i> ให้เลือก "คณะกรรมการบริหาร"</p>
+                </template>
                 <template #form>
                     <div class="col-span-6">
                         <jet-label for="name" value="ชื่อโครงการ"/>

@@ -25,7 +25,11 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <jet-form-section @submitted="submit">
                 <template #title>ข้อมูลพื้นฐาน</template>
-                <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล</template>
+                <template #description>
+                    ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
+                    <p class="mt-2 text-blue-600">ยกเลิกตัวเลือกหน่วยงาน <i>โครงการค่ายอยากเป็นหมอ โครงการ MDCU Counseling Unit โครงการ CU Open
+                        House</i> เนื่องจากไม่มีสภาพหน่วยงาน ให้เลือก "คณะกรรมการบริหาร" แทน</p>
+                </template>
                 <template #form>
                     <div class="col-span-6">
                         <jet-label for="title" value="หัวเรื่อง"/>
