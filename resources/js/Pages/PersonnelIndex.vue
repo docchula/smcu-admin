@@ -53,7 +53,7 @@
                             {{ item.sequence }}
                             <p v-if="item.supervisor" class="text-xs">#{{
                                     item.supervisor
-                                }} {{ list.find(i => i.id === item.supervisor)?.email.split('@')[0] }}</p>
+                                }} {{ list.find(i => i.id === item.supervisor)?.name.split(' ')[0] }}</p>
                         </td>
                     </tr>
                     </tbody>

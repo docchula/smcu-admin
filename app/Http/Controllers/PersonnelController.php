@@ -90,7 +90,7 @@ class PersonnelController extends Controller
             'name_en' => 'nullable|string|min:5|max:250',
             'position' => 'required|filled|string|min:5|max:250',
             'position_en' => 'nullable|string|min:5|max:250',
-            'email' => 'required|email|max:100',
+            'email' => 'nullable|email|max:100',
             'department_id' => 'required|integer|min:1',
             'year' => 'required|integer|min:2480|max:2700',
             'sequence' => 'nullable|integer',
@@ -104,7 +104,17 @@ class PersonnelController extends Controller
         $personnel->fill($request->all());
 
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->storePublicly('personnels', 'public');
+            if (!$personnel->id) {
+                $personnel->save();
+            }
+            $fileName = str_replace(' ', '-', strtolower(collect([
+                    $personnel->id,
+                    substr($personnel->name_en, 0, 15),
+                ])->reject(fn($v) => empty($v))->implode('_'))).'.'.$request->file('attachment')->guessExtension();
+            $path = $personnel->id
+                ? $request->file('attachment')
+                    ->storePubliclyAs('personnels', $fileName, 'public')
+                : $request->file('attachment')->storePublicly('personnels', 'public');
             if ($personnel->photo_path) {
                 Storage::disk('public')->delete($personnel->photo_path);
             }
