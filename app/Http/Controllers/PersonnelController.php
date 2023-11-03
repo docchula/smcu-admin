@@ -115,7 +115,7 @@ class PersonnelController extends Controller
                 ? $request->file('attachment')
                     ->storePubliclyAs('personnels', $fileName, 'public')
                 : $request->file('attachment')->storePublicly('personnels', 'public');
-            if ($personnel->photo_path) {
+            if ($personnel->photo_path and $personnel->photo_path != $path) {
                 Storage::disk('public')->delete($personnel->photo_path);
             }
             $personnel->photo_path = $path;

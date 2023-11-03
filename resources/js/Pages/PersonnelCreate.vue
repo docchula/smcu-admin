@@ -1,5 +1,5 @@
 <template>
-    <app-layout>
+    <app-layout @paste="onPaste">
         <template #header>
             <inertia-link :href="route('personnels.index', {year: item.year})"
                           class="mb-4 block flex items-center text-gray-700">
@@ -95,8 +95,9 @@
                 <template #description>The file will be available publicly.</template>
                 <template #form>
                     <div class="col-span-6 sm:flex gap-4">
-                        <div v-if="item.photo_url" class="basis-36">
+                        <div v-if="item.photo_url" class="basis-36 lg:basis-48">
                             <img :src="item.photo_url"/>
+                            <p class="text-xs text-gray-400">Uploaded photo</p>
                         </div>
                         <div class="flex-auto">
                             <p v-if="form.attachment" class="">
@@ -125,16 +126,15 @@
                                             stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"/>
                                     </svg>
-                                    <div class="flex text-sm text-gray-600">
+                                    <div class="text-sm text-gray-600">
                                         <label
                                             class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                                             for="file-upload">
-                                            <span>Upload a file</span>
                                             <input id="file-upload" accept="image/jpeg,image/webp,image/avif" class="sr-only"
                                                    type="file"
                                                    @input="form.attachment = $event.target.files[0]">
-                                        </label>
-                                        <p class="pl-1">or drag and drop</p>
+                                            <span>Upload a file</span>
+                                        </label>, drag and drop, or paste.
                                     </div>
                                     <p class="text-xs text-gray-500">
                                         JPG/WebP up to 500 KB
@@ -197,8 +197,9 @@ const form = useForm({
 });
 
 const submit = () => {
-    if (form.attachment && !(form.attachment.name.endsWith('.jpg') || form.attachment.name.endsWith('.jpeg') || form.attachment.name.endsWith('.webm') || form.attachment.name.endsWith('.avif'))) {
+    if (form.attachment && !(form.attachment.name.endsWith('.jpg') || form.attachment.name.endsWith('.jpeg') || form.attachment.name.endsWith('.webm') || form.attachment.name.endsWith('.avif') || form.attachment.type?.startsWith('image/'))) {
         form.errors.attachment = "Unsupported file type";
+        return;
     }
     form.post(props.item.id
         ? route('personnels.update', {personnel: props.item.id})
@@ -244,5 +245,24 @@ const dropFile = (e) => {
     ([...droppedFiles]).slice(0, 1).forEach(f => {
         form.attachment = f;
     });
+};
+
+const onPaste = async (e) => {
+    e.preventDefault();
+    const clipboardItems = typeof navigator?.clipboard?.read === 'function' ? await navigator.clipboard.read() : e.clipboardData.files;
+
+    for (const clipboardItem of clipboardItems) {
+        if (clipboardItem.type?.startsWith('image/')) {
+            // For files from `e.clipboardData.files`.
+            form.attachment = clipboardItem;
+        } else {
+            // For files from `navigator.clipboard.read()`.
+            const imageTypes = clipboardItem.types?.filter(type => type.startsWith('image/'))
+            for (const imageType of imageTypes) {
+                form.attachment = await clipboardItem.getType(imageType);
+            }
+        }
+        console.log(form.attachment);
+    }
 };
 </script>

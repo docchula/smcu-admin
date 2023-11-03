@@ -42,7 +42,7 @@
                             <p class="text-xs">{{ item.name_en }}</p>
                             <p v-if="item.email" class="text-xs">{{ item.email }}</p>
                         </td>
-                        <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
+                        <td class="px-2 py-2 md:px-4 md:py-3">
                             {{ item.position }}
                             <p class="text-xs">{{ item.position_en }}</p>
                         </td>
