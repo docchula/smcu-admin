@@ -9,6 +9,7 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserProfileController;
+use App\Models\Personnel;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,6 +32,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/board/{year?}', function (?string $year = null) {
+    abort_if($year && (!is_numeric($year) or in_array($year, Personnel::getYearList())), 404);
     return view('personnel', ['year' => $year ?? Helper::buddhistYear()]);
 });
 
