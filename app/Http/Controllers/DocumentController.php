@@ -48,7 +48,7 @@ class DocumentController extends Controller {
      * Show the form for creating a new resource.
      */
     public function create(Request $request): Response {
-        return $this->edit(new Document([]));
+        return $this->edit($request, new Document([]));
     }
 
     /**
@@ -117,11 +117,13 @@ class DocumentController extends Controller {
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Document $document): Response {
+    public function edit(Request $request, Document $document): Response
+    {
         $this->authorize('update-document', $document);
         return Inertia::render('DocumentCreate', [
             'item' => $document->load('project', 'project.department'),
-            'static_departments' => Department::optionList()
+            'static_departments' => Department::optionList(),
+            'is_admin' => $request->user()->can('admin-action'),
         ]);
     }
 
@@ -136,7 +138,8 @@ class DocumentController extends Controller {
             'department_id' => 'required|integer|min:1',
             'amount' => 'nullable|integer|min:1|max:500',
             'tag' => 'nullable|string|in:approval,summary',
-            'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000' // File size limit: 20,000 KB
+            'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20,000 KB
+            'approved_attachment' => 'nullable|file|mimes:pdf|max:20000',
         ]);
         $this->authorize('update-document', $document);
         $document->fill($request->all());
@@ -161,6 +164,14 @@ class DocumentController extends Controller {
                 Storage::delete($document->attachment_path);
             }
             $document->attachment_path = $path;
+        }
+        if ($request->hasFile('approved_attachment')) {
+            if ($document->attachment_path) {
+                Storage::delete($document->attachment_path);
+            }
+            $document->approved_path = $request->file('approved_attachment')
+                ->storeAs('documents', $document->id.'_'.$document->number.'-'.$document->year.'_Signed.pdf');
+            $document->status = Document::STATUS_APPROVED;
         }
         $document->saveOrFail();
 

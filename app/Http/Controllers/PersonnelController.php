@@ -95,7 +95,7 @@ class PersonnelController extends Controller
             'year' => 'required|integer|min:2480|max:2700',
             'sequence' => 'nullable|integer',
             'supervisor' => 'nullable|integer',
-            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png',
+            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png|max:1024',
         ]);
         $this->authorize('admin-action');
         if ($personnel->id and $request->input('supervisor') == $personnel->id) {

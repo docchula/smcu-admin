@@ -163,39 +163,9 @@
                 <template #title>ไฟล์เอกสาร</template>
                 <template #description>กรุณาแนบไฟล์เอกสารทั้งฉบับ รวมเป็นไฟล์เดียว ในรูปแบบ pdf หรือ docx ขนาดไม่เกิน 15 MB</template>
                 <template #form>
-                    <p v-if="form.attachment" class="col-span-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 inline mr-1" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                        {{ form.attachment.name }}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 cursor-pointer ml-4 inline" viewBox="0 0 20 20" fill="currentColor" @click="form.attachment = null">
-                            <path fill-rule="evenodd"
-                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                  clip-rule="evenodd"/>
-                        </svg>
-                    </p>
-                    <div v-else v-cloak @drop.prevent="dropFile" @dragover.prevent class="col-span-6 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                        <div class="space-y-1 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="file-upload"
-                                       class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                    <span>Upload a file</span>
-                                    <input id="file-upload" type="file" class="sr-only"
-                                           accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
-                                           @input="form.attachment = $event.target.files[0]">
-                                </label>
-                                <p class="pl-1">or drag and drop</p>
-                            </div>
-                            <p class="text-xs text-gray-500">
-                                PDF or DOCX up to 15 MB
-                            </p>
-                        </div>
-                    </div>
+                    <AttachmentBox class="col-span-6" v-model="form.attachment"
+                                   accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+                                   description="PDF or DOCX up to 15 MB"/>
                     <jet-input-error :message="form.errors.attachment" class="col-span-6"/>
                 </template>
                 <template #actions>
@@ -209,6 +179,20 @@
                     <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Save
                     </jet-button>
+                </template>
+            </jet-form-section>
+            <jet-section-border/>
+            <jet-form-section v-if="item.id && is_admin">
+                <template #title>เอกสารที่ได้รับอนุมัติแล้ว</template>
+                <template #description>
+                    <p class="text-amber-500">(สำหรับผู้ดูแลระบบ)</p>
+                    อัปโหลดไฟล์เอกสารที่ลงนามอนุมัติแล้ว
+                </template>
+                <template #form>
+                    <AttachmentBox class="col-span-6" v-model="form.approved_attachment"
+                                   accept="application/pdf"
+                                   description="PDF up to 15 MB"/>
+                    <jet-input-error :message="form.errors.approved_attachment" class="col-span-6"/>
                 </template>
             </jet-form-section>
         </div>
@@ -226,9 +210,11 @@ import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import _, {isNumber} from "lodash";
 import Checkbox from "../Jetstream/Checkbox.vue";
+import AttachmentBox from "@/Components/AttachmentBox.vue";
 
 export default {
     components: {
+        AttachmentBox,
         AppLayout,
         Checkbox,
         JetActionMessage,
@@ -254,6 +240,7 @@ export default {
                 amount: this.item.amount ?? 1,
                 project_id: this.item.project_id,
                 attachment: null,
+                approved_attachment: null,
                 is_non_project: this.item.id ? !this.item.project_id : false,
                 tag: this.item.tag ?? "",
             }),
@@ -261,15 +248,6 @@ export default {
     },
 
     methods: {
-        dropFile(e) {
-            // from https://www.raymondcamden.com/2019/08/08/drag-and-drop-file-upload-in-vuejs
-            let droppedFiles = e.dataTransfer.files;
-            if (!droppedFiles) return;
-            // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-            ([...droppedFiles]).slice(0, 1).forEach(f => {
-                this.form.attachment = f;
-            });
-        },
         submit() {
             if (!this.form.attachment && !this.item.id) {
                 this.form.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
@@ -322,6 +300,7 @@ export default {
     props: {
         item: Object,
         static_departments: Array,
+        is_admin: Boolean,
     }
 };
 </script>

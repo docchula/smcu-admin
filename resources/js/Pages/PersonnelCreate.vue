@@ -1,5 +1,5 @@
 <template>
-    <app-layout @paste="onPaste">
+    <app-layout>
         <template #header>
             <inertia-link :href="route('personnels.index', {year: item.year})"
                           class="mb-4 block flex items-center text-gray-700">
@@ -99,49 +99,7 @@
                             <img :src="item.photo_url"/>
                             <p class="text-xs text-gray-400">Uploaded photo</p>
                         </div>
-                        <div class="flex-auto">
-                            <p v-if="form.attachment" class="">
-                                <svg class="h-5 w-5 text-green-600 inline mr-1" fill="currentColor" viewBox="0 0 20 20"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path clip-rule="evenodd"
-                                          d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                                          fill-rule="evenodd"/>
-                                </svg>
-                                {{ form.attachment.name }}
-                                <svg class="h-5 w-5 text-gray-500 cursor-pointer ml-4 inline" fill="currentColor" viewBox="0 0 20 20"
-                                     xmlns="http://www.w3.org/2000/svg" @click="form.attachment = null">
-                                    <path clip-rule="evenodd"
-                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                          fill-rule="evenodd"/>
-                                </svg>
-                            </p>
-                            <div v-cloak v-else class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-                                 @drop.prevent="dropFile"
-                                 @dragover.prevent>
-                                <div class="space-y-1 text-center">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"/>
-                                    </svg>
-                                    <div class="text-sm text-gray-600">
-                                        <label
-                                            class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
-                                            for="file-upload">
-                                            <input id="file-upload" accept="image/jpeg,image/webp,image/avif" class="sr-only"
-                                                   type="file"
-                                                   @input="form.attachment = $event.target.files[0]">
-                                            <span>Upload a file</span>
-                                        </label>, drag and drop, or paste.
-                                    </div>
-                                    <p class="text-xs text-gray-500">
-                                        JPG/WebP up to 500 KB
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif" description="JPG/WebP up to 500 KB"/>
                     </div>
                     <jet-input-error :message="form.errors.attachment" class="col-span-6"/>
                 </template>
@@ -174,6 +132,7 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import _ from "lodash";
 import {useForm} from "@inertiajs/inertia-vue3";
 import {ref, watch} from "vue";
+import AttachmentBox from "@/Components/AttachmentBox.vue";
 
 const props = defineProps({
     item: Object,
@@ -237,32 +196,4 @@ watch(() => form.email, async (newValue) => {
     }
     searchStudent(newValue);
 });
-const dropFile = (e) => {
-    // from https://www.raymondcamden.com/2019/08/08/drag-and-drop-file-upload-in-vuejs
-    let droppedFiles = e.dataTransfer.files;
-    if (!droppedFiles) return;
-    // this tip, convert FileList to array, credit: https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
-    ([...droppedFiles]).slice(0, 1).forEach(f => {
-        form.attachment = f;
-    });
-};
-
-const onPaste = async (e) => {
-    e.preventDefault();
-    const clipboardItems = typeof navigator?.clipboard?.read === 'function' ? await navigator.clipboard.read() : e.clipboardData.files;
-
-    for (const clipboardItem of clipboardItems) {
-        if (clipboardItem.type?.startsWith('image/')) {
-            // For files from `e.clipboardData.files`.
-            form.attachment = clipboardItem;
-        } else {
-            // For files from `navigator.clipboard.read()`.
-            const imageTypes = clipboardItem.types?.filter(type => type.startsWith('image/'))
-            for (const imageType of imageTypes) {
-                form.attachment = await clipboardItem.getType(imageType);
-            }
-        }
-        console.log(form.attachment);
-    }
-};
 </script>
