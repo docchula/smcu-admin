@@ -99,7 +99,7 @@
                             <img :src="item.photo_url"/>
                             <p class="text-xs text-gray-400">Uploaded photo</p>
                         </div>
-                        <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif">
+                        <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif,image/png">
                             <template #description>
                                 JPG/WebP up to 2 MB<br/>
                                 Image larger than 100 kB will be automatically resized and converted to WebP.
