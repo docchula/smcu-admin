@@ -32,7 +32,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/board/{year?}', function (?string $year = null) {
-    abort_if($year && (!is_numeric($year) or in_array($year, Personnel::getYearList())), 404);
+    abort_if($year && (!is_numeric($year) or !in_array($year, Personnel::getYearList())), 404);
     return view('personnel', ['year' => $year ?? Helper::buddhistYear()]);
 });
 
