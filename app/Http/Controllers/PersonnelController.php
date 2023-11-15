@@ -10,6 +10,7 @@ use Docchula\VestaClient\Facades\VestaClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Intervention\Image\Facades\Image;
 
 class PersonnelController extends Controller
 {
@@ -95,7 +96,7 @@ class PersonnelController extends Controller
             'year' => 'required|integer|min:2480|max:2700',
             'sequence' => 'nullable|integer',
             'supervisor' => 'nullable|integer',
-            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png|max:1024',
+            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png|max:2000',
         ]);
         $this->authorize('admin-action');
         if ($personnel->id and $request->input('supervisor') == $personnel->id) {
@@ -110,11 +111,22 @@ class PersonnelController extends Controller
             $fileName = str_replace(' ', '-', strtolower(collect([
                     $personnel->id,
                     substr($personnel->name_en, 0, 15),
-                ])->reject(fn($v) => empty($v))->implode('_'))).'.'.$request->file('attachment')->guessExtension();
-            $path = $personnel->id
-                ? $request->file('attachment')
-                    ->storePubliclyAs('personnels', $fileName, 'public')
-                : $request->file('attachment')->storePublicly('personnels', 'public');
+                ])->reject(fn($v) => empty($v))->implode('_'))).'.';
+
+            if ($request->file('attachment')->getSize() > 100000) {
+                // If image size > 100 kB -> resize and convert to webp
+                $path = 'personnels/'.$fileName.'webp';
+                Storage::disk('public')->put($path, Image::make($request->file('attachment'))
+                    ->resize(600, 700, function ($constraint) {
+                        // resize the image so that the largest side fits within the limit; the smaller
+                        // side will be scaled to maintain the original aspect ratio
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })->encode('webp', 80));
+            } else {
+                $path = $request->file('attachment')
+                    ->storePubliclyAs('personnels', $fileName.$request->file('attachment')->guessExtension(), 'public');
+            }
             if ($personnel->photo_path and $personnel->photo_path != $path) {
                 Storage::disk('public')->delete($personnel->photo_path);
             }

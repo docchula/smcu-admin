@@ -14,7 +14,7 @@
             <h2 v-else class="font-semibold text-xl text-gray-800 leading-tight">Create Personnel Record</h2>
         </template>
 
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8" @keyup.enter="submit">
             <jet-form-section @submit="submit">
                 <template #title>Office</template>
                 <template #description></template>
@@ -99,7 +99,12 @@
                             <img :src="item.photo_url"/>
                             <p class="text-xs text-gray-400">Uploaded photo</p>
                         </div>
-                        <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif" description="JPG/WebP up to 500 KB"/>
+                        <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif">
+                            <template #description>
+                                JPG/WebP up to 2 MB<br/>
+                                Image larger than 100 kB will be automatically resized and converted to WebP.
+                            </template>
+                        </AttachmentBox>
                     </div>
                     <jet-input-error :message="form.errors.attachment" class="col-span-6"/>
                 </template>
