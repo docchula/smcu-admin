@@ -102,7 +102,7 @@
                         <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif,image/png">
                             <template #description>
                                 JPG/WebP up to 2 MB<br/>
-                                Image larger than 100 kB will be automatically resized and converted to WebP.
+                                Image larger than 50 kB will be automatically resized and converted to WebP.
                             </template>
                         </AttachmentBox>
                     </div>

@@ -113,7 +113,8 @@ class PersonnelController extends Controller
                     substr($personnel->name_en, 0, 15),
                 ])->reject(fn($v) => empty($v))->implode('_'))).'.';
 
-            if ($request->file('attachment')->getSize() > 100000) {
+            if ($request->file('attachment')->getSize() > 50000
+                or !in_array($request->file('attachment')->getMimeType(), ['image/jpeg', 'image/webp', 'image/avif'])) {
                 // If image size > 100 kB -> resize and convert to webp
                 $path = 'personnels/'.$fileName.'webp';
                 Storage::disk('public')->put($path, Image::make($request->file('attachment'))
