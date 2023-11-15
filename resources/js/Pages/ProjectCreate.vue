@@ -15,7 +15,11 @@
             </h2>
             <template v-else>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">สร้างโครงการใหม่</h2>
-                <p class="mt-2 text-gray-500">พึงส่งเอกสารล่วงหน้าอย่างน้อย 1 เดือน หรือตามลักษณะของกิจกรรม</p>
+                <p class="mt-2 text-gray-500">
+                    พึงส่งเอกสารล่วงหน้าอย่างน้อย 1 เดือน หรือตามลักษณะของกิจกรรม<br/>
+                    กรอกฟอร์มนี้ก่อนส่งหนังสือขออนุมัติโครงการ (เปิดโครง) เพียง 1 ครั้งต่อโครงการ เมื่อส่งเอกสารอื่นเพิ่มของโครงการเดียวกัน
+                    ให้กดสร้างเอกสารในหน้า "สารบรรณ" แล้วอ้างถึงโครงการเดิม โดยไม่ต้องกรอกฟอร์มนี้อีก
+                </p>
             </template>
         </template>
 
@@ -38,6 +42,9 @@
                         <jet-input-error v-else-if="form.name.startsWith('ขออนุมัติ')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "ขออนุมัติ"' class="mt-2"/>
                         <jet-input-error v-else-if="form.name.includes('รายงานผล')"
                                          message='หากต้องการรายงานผล ให้อ้างถึงโครงการที่ได้บันทึกไว้แล้ว โดยไม่ต้องสร้างโครงการใหม่' class="mt-2"/>
+                        <jet-input-error v-else-if="form.name.startsWith('ขอ')"
+                                         message='หากต้องการออกเลขเอกสารสำหรับโครงการที่มีอยู่แล้ว ให้กดที่หน้า "สารบรรณ" โดยไม่ต้องสร้างโครงการใหม่'
+                                         class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
