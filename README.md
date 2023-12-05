@@ -17,6 +17,7 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 
 - Update personnel index (union committee member) yearly.
 - Grant administrative privileges to the union's executive committee members (set roles to ADMIN in users database table).
+- Update union department list in case of establishment of new club.
 - Delete or edit document/project information as requested (if any).
 
 ## Dependencies
@@ -34,4 +35,4 @@ SMCU developers by generation. Add your name here when you're continuing the leg
 
 ## License
 
-ALL RIGHTS RESERVED. © 2021-2022 by Siwat Techavoranant
+ALL RIGHTS RESERVED. © 2021-2023 by Siwat Techavoranant
