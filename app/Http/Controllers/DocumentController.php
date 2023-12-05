@@ -99,19 +99,25 @@ class DocumentController extends Controller {
 
         return Storage::response(
             $document->attachment_path,
-            'SMCU '.$document->number.'-'.$document->year.' '.substr($document->title, 0, 25).' Draft.'.Str::after($document->approved_path, '.')
+            'SMCU '.$document->number.'-'.$document->year.' '.substr($document->title, 0, 25).' Draft.'.Str::after($document->attachment_path, '.')
         );
     }
 
-    public function downloadApproved(Document $document): \Illuminate\Http\Response
+    public function downloadApproved(Request $request, Document $document): StreamedResponse|\Illuminate\Http\Response
     {
         $this->authorize('update-document', $document);
         abort_if(empty($document->approved_path), 404);
         abort_if(Storage::missing($document->approved_path), 404);
 
-        // This only works with PDF
-        return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Storage::get($document->approved_path))]);
-        // 'SMCU '.$document->number.'-'.$document->year.' '.substr($document->title, 0, 25).' Signed.'.Str::after($document->approved_path, '.')
+        if ($request->filled('download')) {
+            return Storage::response(
+                $document->approved_path,
+                'SMCU '.$document->number.'-'.$document->year.' Signed.'.Str::after($document->approved_path, '.')
+            );
+        } else {
+            // This only works with PDF
+            return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Storage::get($document->approved_path))]);
+        }
     }
 
     /**
