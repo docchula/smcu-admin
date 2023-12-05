@@ -7,7 +7,7 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 ## Features
 
 - Document Index (สารบรรณ) : Records of the union's documents since academic year 2551
-  - Retrieves DocHub document status updates from Gmail
+    - Retrieves DocHub document status updates from Gmail, and notify document's owner of any error via Email
 - Project Index : Records of the union's projects since academic year 2565
   - Record project participants, which can be viewed and printed by each participants
 - Personnel Index : List of the union committee members, accessible to the public at https://admin.docchula.com/board
@@ -24,8 +24,9 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 
 - PHP
 - Relational Database e.g. MySQL
-- Google API for OAuth 2.0 identity provider
+- Google API for OAuth 2.0 identity provider and Gmail read access
 - Vesta service (MDCU Directory) for student status verification
+- SMTP for DocHub document status updates to document owners
 
 ## Developers
 

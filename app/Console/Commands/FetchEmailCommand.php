@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\GoogleController;
+use App\Mail\EmailDeliveryFailureMail;
+use App\Mail\SignRejectedMail;
 use App\Models\Document;
 use Carbon\Carbon;
 use Crypt;
@@ -10,6 +12,7 @@ use Google\Client;
 use Google\Service\Gmail;
 use Google\Service\PeopleService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
 use Storage;
 
 class FetchEmailCommand extends Command
@@ -130,9 +133,17 @@ class FetchEmailCommand extends Command
                         } elseif (str_starts_with($subject, 'REJECTED:') and $document->status != Document::STATUS_REJECTED) {
                             $document->status = Document::STATUS_REJECTED;
                             $document->save();
+
+                            if ($document->user?->email) {
+                                Mail::to($document->user?->email)->send(new SignRejectedMail($document));
+                            }
                         } elseif (str_starts_with($subject, 'Email delivery failure:') and $document->status != Document::STATUS_UNDELIVERED) {
                             $document->status = Document::STATUS_UNDELIVERED;
                             $document->save();
+
+                            if ($document->user?->email) {
+                                Mail::to($document->user?->email)->send(new EmailDeliveryFailureMail($document));
+                            }
                         }
                     }
                 }
