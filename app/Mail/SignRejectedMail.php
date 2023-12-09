@@ -21,14 +21,14 @@ class SignRejectedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'ถูกปฏิเสธการลงลายมือชื่ออิเล็กทรอนิกส์ / E-Sign Request Rejected',
+            subject: 'เอกสารสพจ. '.$this->document->number.'/'.$this->document->year.' ถูกปฏิเสธการลงลายมือชื่ออิเล็กทรอนิกส์ / E-Sign Request Rejected',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.sign-rejected',
+            html: 'emails.sign-rejected',
         );
     }
 

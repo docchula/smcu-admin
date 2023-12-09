@@ -21,7 +21,7 @@ class EmailDeliveryFailureMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'ที่อยู่อีเมลสำหรับลงลายมือชื่ออิเล็กทรอนิกส์ผิด / E-Sign Email Delivery Failure',
+            subject: 'เอกสารสพจ. '.$this->document->number.'/'.$this->document->year.' ที่อยู่อีเมลสำหรับลงลายมือชื่ออิเล็กทรอนิกส์ผิด / E-Sign Email Delivery Failure',
         );
     }
 
