@@ -47,9 +47,8 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-8">
-            <div v-if="myProjects"
-                 class="p-8 sm:px-20 w-full bg-white border border-gray-200 sm:rounded-lg shadow-lg">
+        <div v-if="myProjects?.length > 0" class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-8">
+            <div class="p-8 sm:px-20 w-full bg-white border border-gray-200 sm:rounded-lg shadow-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900">โครงการที่ฉันมีส่วนร่วม</h5>
                     <!-- a class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" href="#">
