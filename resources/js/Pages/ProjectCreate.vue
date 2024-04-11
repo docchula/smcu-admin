@@ -287,14 +287,25 @@
                                 <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.name'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
-                                <select name="department" v-model="member.type" required
+                                <select v-model="member.type" required
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <optgroup label="งบดำเนินงาน">
-                                        <option value="ค่าตอบแทน">ค่าตอบแทน (ให้ผู้ปฏิบัติงาน)</option>
-                                        <option value="ค่าใช้สอย">ค่าใช้สอย (ค่าบริการและอื่น ๆ)</option>
-                                        <option value="ค่าวัสดุ">ค่าวัสดุ (ของที่ใช้ไม่นานหรือหมดไป)</option>
-                                        <option value="ค่าสาธารณูปโภค">ค่าสาธารณูปโภค (เช่น โทรศัพท์ ไปรษณีย์ วิทยุ)</option>
+                                    <optgroup label="งบดำเนินงาน"/>
+                                    <optgroup label="- ค่าตอบแทน">
+                                        <option value="ค่าวิทยากร">ค่าตอบแทนวิทยากร</option>
+                                        <option value="ค่าเจ้าหน้าที่นอกเวลา">ค่าเจ้าหน้าที่นอกเวลา</option>
+                                        <option value="ค่าตอบแทน">ค่าตอบแทนอื่น ๆ (ให้ผู้ปฏิบัติงาน)</option>
                                     </optgroup>
+                                    <optgroup label="- ค่าใช้สอย">
+                                        <option value="ค่าใช้สอย">ค่าใช้สอย (เช่น จ้างเหมาบริการ)</option>
+                                        <option value="ค่าอาหาร">ค่าอาหารและเครื่องดื่ม</option>
+                                        <option value="ค่าที่พัก">ค่าที่พัก</option>
+                                        <option value="ค่าพาหนะ">ค่าพาหนะ (ยกเว้นค่าน้ำมัน)</option>
+                                    </optgroup>
+                                    <optgroup label="- ค่าวัสดุ">
+                                        <option value="ค่าวัสดุ">ค่าวัสดุ (ของที่ใช้ไม่นานหรือหมดไป)</option>
+                                        <option value="ค่าเชื้อเพลิง">ค่าน้ำมันเชื้อเพลิง</option>
+                                    </optgroup>
+                                    <option value="- ค่าสาธารณูปโภค">ค่าสาธารณูปโภค (เช่น โทรศัพท์ ไปรษณีย์ วิทยุ)</option>
                                     <optgroup label="งบลงทุน">
                                         <option value="ค่าครุภัณฑ์">ค่าครุภัณฑ์ (ของที่คงทน ถาวร)</option>
                                     </optgroup>
@@ -304,10 +315,11 @@
                                 <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.type'] ?? false" class="mt-2"/>
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
-                                <select name="department" v-model="member.source" required
+                                <select v-model="member.source" required
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="สพจ.">สพจ.</option>
                                     <option value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
+                                    <option value="กองทุนวันอานันทมหิดล">กองทุนวันอานันทมหิดล</option>
                                     <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
                                     <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>
                                     <option value="เงินฝ่าย/หน่วยงานสพจ.">เงินฝ่าย/หน่วยงานสพจ.</option>
