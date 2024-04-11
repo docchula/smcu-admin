@@ -363,10 +363,21 @@ class ProjectController extends Controller {
 
     public function searchNewParticipant(Request $request) {
         $this->validate($request, [
-            'q' => 'required|string|min:10'
+            'q' => 'required|string|min:7',
         ]);
         $q = $request->input('q');
-        if (!$student = User::where('email', $q)->orWhere('student_id', $q)->first()) {
+        $studentQuery = User::query();
+        if (is_numeric($q) and strlen($q) == 10) {
+            $studentQuery = $studentQuery->where('student_id', $q);
+        } elseif (is_numeric($q) and strlen($q) >= 7 and strlen($q) <= 10) {
+            $studentQuery = $studentQuery->where('student_id', 'LIKE', $q.'%');
+        } else {
+            if (!str_contains($q, '@')) {
+                $q = $q.'@docchula.com';
+            }
+            $studentQuery = $studentQuery->where('email', $q.'@docchula.com');
+        }
+        if (!$student = $studentQuery->first()) {
             $vestaResponse = VestaClient::retrieveStudent($q, $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
             if ($vestaResponse->successful()) {
                 $data = $vestaResponse->json();

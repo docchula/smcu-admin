@@ -1,12 +1,12 @@
 <template>
     <jet-dialog-modal :show="showModal" @close="$emit('close')">
         <template #title>
-            ค้นหานิสิตด้วยเลขประจำตัวนิสิต
+            ค้นหานิสิตด้วยเลขประจำตัว
         </template>
 
         <template #content>
             <div>
-                <jet-label for="sid" value="เลขประจำตัวนิสิต"/>
+                <jet-label for="sid" value="เลขประจำตัวนิสิต หรือ อีเมล @docchula"/>
                 <jet-input id="sid" type="text" class="mt-1 block w-full" v-model.trim="addStudentId" required placeholder="10 หลัก" @keyup.enter="onInputEnter"/>
                 <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
                 <a v-else-if="addStudentId !== $page.props.user.student_id && !list.includes($page.props.user.student_id)"
@@ -101,10 +101,14 @@ export default {
             if (newValue === "") {
                 this.keywordError = "";
                 return;
-            } else if (!newValue.match(/^\d{10}$/)) {
+            } else if (newValue.length < 7) {
                 this.keywordError = 'เลขประจำตัวนิสิตต้องมี 10 หลัก';
                 return;
             }
+            /* else if (!newValue.match(/^\d{10}$/)) {
+                this.keywordError = 'เลขประจำตัวนิสิตต้องมี 10 หลัก';
+                return;
+            }*/
             this.search(newValue);
         },
     },
