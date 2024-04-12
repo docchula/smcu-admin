@@ -65,7 +65,8 @@
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
                                 <span v-if="item.department_id === 33" class="text-gray-400">-</span>
-                                <template v-else>{{ item.department.name }}</template>
+                                <template v-else-if="item.department">{{ item.department.name }}</template>
+                                <i class="text-gray-300" v-else>{{ item.department_id }}</i>
                             </td>
                             <td class="px-2 py-2 md:px-4 md:py-3 text-gray-500 text-xs">
                                 {{ item.period_start }}
