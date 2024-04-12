@@ -9,10 +9,10 @@
                 <jet-label for="sid" value="เลขประจำตัวนิสิต หรือ อีเมล @docchula"/>
                 <jet-input id="sid" type="text" class="mt-1 block w-full" v-model.trim="addStudentId" required placeholder="10 หลัก" @keyup.enter="onInputEnter"/>
                 <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
-                <a v-else-if="addStudentId !== $page.props.user.student_id && !list.includes($page.props.user.student_id)"
+                <a v-else-if="addStudentId !== $page.props.auth.user.student_id && !list.includes($page.props.auth.user.student_id)"
                    class="text-sm cursor-pointer text-green-500"
-                   @click="addStudentId = $page.props.user.student_id">
-                    {{ $page.props.user.student_id }}
+                   @click="addStudentId = $page.props.auth.user.student_id">
+                    {{ $page.props.auth.user.student_id }}
                 </a>
             </div>
             <div v-if="searchResult.length > 0" class="mt-4 border-l border-r border-b border-gray-200">

@@ -15,7 +15,7 @@
                 </div>
 
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <update-profile-information-form :user="$page.props.user" />
+                    <update-profile-information-form :user="$page.props.auth.user"/>
 
                     <jet-section-border />
                 </div>
@@ -45,16 +45,16 @@
 </template>
 
 <script>
-    import AppLayout from '@/Layouts/AppLayout.vue'
-    import DeleteUserForm from './DeleteUserForm.vue'
-    import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-    import LogoutOtherBrowserSessionsForm from './LogoutOtherBrowserSessionsForm.vue'
-    import MyProjects from './MyProjects.vue'
-    import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue'
-    import UpdatePasswordForm from './UpdatePasswordForm.vue'
-    import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
+import DeleteUserForm from './DeleteUserForm.vue'
+import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
+import LogoutOtherBrowserSessionsForm from './LogoutOtherBrowserSessionsForm.vue'
+import MyProjects from './MyProjects.vue'
+import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue'
+import UpdatePasswordForm from './UpdatePasswordForm.vue'
+import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue'
 
-    export default {
+export default {
         props: ['sessions', 'projects'],
 
         components: {

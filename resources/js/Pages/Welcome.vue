@@ -14,7 +14,7 @@
                         <!--div class="">
                         </div-->
                         <div v-if="canLogin" class="mt-5 sm:mt-12 sm:flex sm:justify-center lg:justify-start">
-                            <div v-if="$page.props.user" class="mt-3 sm:mt-0 sm:ml-3">
+                            <div v-if="$page.props.auth.user" class="mt-3 sm:mt-0 sm:ml-3">
                                 <inertia-link href="/dashboard"
                                               class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 md:py-4 md:text-lg md:px-10">
                                     หน้าแรก
@@ -47,7 +47,7 @@
     </div>
     <!--div class="items-top justify-center pb-12 bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
         <div v-if="canLogin" class="px-6 py-4 sm:block text-right">
-            <inertia-link v-if="$page.props.user" href="/dashboard" class="text-sm text-gray-700 underline">
+            <inertia-link v-if="$page.props.auth.user" href="/dashboard" class="text-sm text-gray-700 underline">
                 Dashboard
             </inertia-link>
 

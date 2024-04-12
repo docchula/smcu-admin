@@ -14,11 +14,11 @@ jobs:
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
-      run: php8.1 /sites/composer.phar install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      run: php8.3 /sites/composer.phar install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
     - name: Install JS Dependencies
       run: pnpm install
     - name: Generate key
-      run: php8.1 artisan key:generate
+      run: php8.3 artisan key:generate
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
@@ -31,6 +31,6 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: php8.1 artisan test
+      run: php8.3 artisan test
     - name: Deploy
-      run: git -C /sites/smcu-admin pull https://keenthekeen:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git && php8.1 /sites/composer.phar install -d /sites/smcu-admin --no-dev && pnpm --prefix /sites/smcu-admin install && pnpm --prefix /sites/smcu-admin build
+      run: git -C /sites/smcu-admin pull https://keenthekeen:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git && php8.3 /sites/composer.phar install -d /sites/smcu-admin --no-dev && pnpm --prefix /sites/smcu-admin install && pnpm --prefix /sites/smcu-admin build

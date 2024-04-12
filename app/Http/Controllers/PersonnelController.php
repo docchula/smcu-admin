@@ -10,7 +10,8 @@ use Docchula\VestaClient\Facades\VestaClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\Laravel\Facades\Image;
 
 class PersonnelController extends Controller
 {
@@ -96,7 +97,7 @@ class PersonnelController extends Controller
             'year' => 'required|integer|min:2480|max:2700',
             'sequence' => 'nullable|integer',
             'supervisor' => 'nullable|integer',
-            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png|max:2000',
+            'attachment' => 'nullable|file|mimetypes:image/jpeg,image/webp,image/avif,image/png|max:10000',
         ]);
         $this->authorize('admin-action');
         if ($personnel->id and $request->input('supervisor') == $personnel->id) {
@@ -117,13 +118,8 @@ class PersonnelController extends Controller
                 or !in_array($request->file('attachment')->getMimeType(), ['image/jpeg', 'image/webp', 'image/avif'])) {
                 // If image size > 100 kB -> resize and convert to webp
                 $path = 'personnels/'.$fileName.'webp';
-                Storage::disk('public')->put($path, Image::make($request->file('attachment'))
-                    ->resize(600, 700, function ($constraint) {
-                        // resize the image so that the largest side fits within the limit; the smaller
-                        // side will be scaled to maintain the original aspect ratio
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    })->encode('webp', 80));
+                Storage::disk('public')->put($path, Image::read($request->file('attachment'))
+                    ->scaleDown(600, 700)->encode(new WebpEncoder(quality: 80)));
             } else {
                 $path = $request->file('attachment')
                     ->storePubliclyAs('personnels', $fileName.$request->file('attachment')->guessExtension(), 'public');
