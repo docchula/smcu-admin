@@ -142,6 +142,7 @@ class ProjectController extends Controller {
         return Inertia::render('ProjectCreate', [
             'item' => $project,
             'static_departments' => Department::optionList(),
+            'static_advisors' => Project::advisorList(),
         ]);
     }
 
@@ -555,5 +556,10 @@ class ProjectController extends Controller {
         IOFactory::createWriter($spreadsheet, 'Xlsx')->save($tmpPath);
 
         return response()->download($tmpPath, $project->getNumber() . ' Project Participants.xlsx')->deleteFileAfterSend(true);
+    }
+
+    public function advisorList()
+    {
+        return response()->json(Project::advisorList());
     }
 }

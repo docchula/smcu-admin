@@ -61,8 +61,12 @@
                     </div>
                     <div class="col-span-6">
                         <jet-label for="advisor" value="อาจารย์ที่ปรึกษา"/>
-                        <jet-input id="advisor" type="text" class="mt-1 block w-full" v-model="form.advisor" ref="advisor" required placeholder="ชื่อเต็ม เช่น ศ.ดร.นพ.สิทธิศักดิ์ หรรษาเวก"/>
-                        <jet-input-error :message="form.errors.advisor" class="mt-2"/>
+                        <Combobox v-model="form.advisor" :options="static_advisors || []" allowCustom name="advisor"
+                                  placeholder="ชื่อเต็ม เช่น ศ.ดร.นพ.สิทธิศักดิ์ หรรษาเวก"/>
+                        <jet-input-error v-if="form.errors.advisor" :message="form.errors.advisor" class="mt-2"/>
+                        <jet-input-error v-else-if="form.advisor && !['อ.','อา','ผศ','ผู','รศ','รอ','ศ.','ศา'].includes(form.advisor.substring(0,2))"
+                                         message='ต้องขึ้นต้นด้วยตำแหน่งทางวิชาการ (อ./ผศ./รศ./ศ.)' class="mt-2"/>
+                        <p v-else class="mt-1 text-xs text-gray-500">กดเลือกจากรายการ</p>
                     </div>
                     <fieldset class="col-span-6">
                         <div class="flex gap-x-8">
@@ -421,9 +425,11 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Datepicker from 'vue3-datepicker'
 import draggable from 'vuedraggable'
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
+import Combobox from "../Components/Combobox.vue";
 
 export default {
     components: {
+        Combobox,
         StudentIdDialog,
         AppLayout, JetActionMessage,
         JetButton,
@@ -499,6 +505,7 @@ export default {
     props: {
         item: Object,
         static_departments: Array,
+        static_advisors: Array,
     }
 };
 </script>

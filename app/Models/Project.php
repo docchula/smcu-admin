@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * @property int                             $id
@@ -118,5 +120,27 @@ class Project extends Model {
         }
 
         return $query;
+    }
+
+    public static function advisorList(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('project-advisor', 3600, function () {
+            return Project::distinct()->orderBy('advisor')->pluck('advisor')
+                ->filter(function (string $name) {
+                    return strlen($name) > 10
+                        and Str::contains($name, ['อาจารย์', 'อ.', 'ผู้ช่วยศาสตราจารย์', 'ผศ.', 'รองศาสตราจารย์', 'รศ.', 'ศาสตราจารย์', 'ศ.'])
+                        and !Str::contains($name, ' และ');
+                })->map(function (string $name) {
+                    return Str::of($name)->replace('อาจารย์', 'อ.')
+                        ->replace('ผู้ช่วยศาสตราจารย์', 'ผศ.')
+                        ->replace('รองศาสตราจารย์', 'รศ.')
+                        ->replace('ศาสตราจารย์', 'ศ.')
+                        ->replace('นายแพทย์', 'นพ.')
+                        ->replace('แพทย์หญิง', 'พญ.')
+                        ->replace(['  ', '   '], ' ')
+                        ->replace('. ', '.')
+                        ->trim()->value();
+                })->unique()->values();
+        });
     }
 }
