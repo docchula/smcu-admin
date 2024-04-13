@@ -85,7 +85,7 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
         </div>
 
         <p class="mt-8 pb-6 max-w-7xl mx-auto sm:px-6 lg:px-8 text-xs text-gray-400 text-center">
-            สร้างสรรค์โดย ฝ่ายเทคโนโลยีสารสนเทศ สพจ. | <a class="text-green-400" href="https://github.com/docchula/smcu-admin" target="_blank">Source
+            สร้างสรรค์โดย ศิวัช เตชวรนันท์ และฝ่ายเทคโนโลยีสารสนเทศ สพจ. | <a class="text-green-400" href="https://github.com/docchula/smcu-admin" target="_blank">Source
             code</a><br/>
             หากพบปัญหาในการใช้งาน ติดต่ออีเมล itdivision@docchula.com
         </p>
