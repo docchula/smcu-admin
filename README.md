@@ -23,6 +23,7 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 ## Dependencies
 
 - PHP
+  - set _upload_max_filesize_ to at least 15 MB
 - Relational Database e.g. MySQL
 - Google API for OAuth 2.0 identity provider and Gmail read access
 - Vesta service (MDCU Directory) for student status verification
