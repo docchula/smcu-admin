@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Resource controller : https://laravel.com/docs/8.x/controllers#resource-controllers
     Route::get('projects/agenda', [ProjectController::class, 'indexAgenda'])->name('projects.indexAgenda');
     Route::get('projects/by_year', [ProjectController::class, 'indexOfYear'])->name('projects.indexOfYear');
+    Route::get('projects/budget', [ProjectController::class, 'indexBudget'])->name('projects.budget');
     Route::resources([
         'documents' => DocumentController::class,
         'projects' => ProjectController::class,
