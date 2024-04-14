@@ -61,6 +61,19 @@ class ProjectController extends Controller {
         ]);
     }
 
+    public function indexBudget(Request $request): Response {
+        $keyword = $request->input('search', Helper::buddhistYear());
+
+        return Inertia::render('ProjectYearBudget', [
+            'list' => Project::searchQuery($keyword)->addSelect(['expense'])
+                ->withCount('participants')
+                ->orderBy('department_id')->orderByDesc('id')
+                ->limit(500)->get()->groupBy('department_id'),
+            'keyword' => $keyword,
+            'static_departments' => Department::optionList(),
+        ]);
+    }
+
     public function indexAgenda(): Response
     {
         return Inertia::render('ProjectAgenda', [

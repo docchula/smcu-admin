@@ -46,12 +46,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         return redirect('https://tasteful-silk-0e3.notion.site/SMCU-Activity-Manual-46105744f57645a2afaa7a30f8ce1d06');
     })->name('manual');
 
-    Route::get('budget', [BudgetController::class, 'index'])->name('budget.index');
     Route::get('plan', [PlanController::class, 'index'])->name('plan.index');
 
     // Resource controller : https://laravel.com/docs/8.x/controllers#resource-controllers
     Route::get('projects/agenda', [ProjectController::class, 'indexAgenda'])->name('projects.indexAgenda');
     Route::get('projects/by_year', [ProjectController::class, 'indexOfYear'])->name('projects.indexOfYear');
+    Route::get('projects/budget', [ProjectController::class, 'indexBudget'])->name('projects.budget');
     Route::resources([
         'documents' => DocumentController::class,
         'projects' => ProjectController::class,

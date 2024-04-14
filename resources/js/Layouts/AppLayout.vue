@@ -35,9 +35,6 @@
                                 <jet-nav-link :href="route('personnels.index')" :active="route().current('personnels.index')">
                                     กรรมการ
                                 </jet-nav-link>
-                                <!-- jet-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
-                                    งบประมาณ
-                                </jet-nav-link -->
                             </div>
                         </div>
 
@@ -122,9 +119,6 @@
                         <jet-responsive-nav-link :href="route('personnels.index')" :active="route().current('personnels.index')">
                             กรรมการ
                         </jet-responsive-nav-link>
-                        <!-- jet-responsive-nav-link :href="route('budget.index')" :active="route().current('budget.index')">
-                            งบประมาณ
-                        </jet-responsive-nav-link-->
                     </div>
 
                     <!-- Responsive Settings Options -->

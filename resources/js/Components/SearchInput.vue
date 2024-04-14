@@ -18,7 +18,7 @@
 <script>
 export default {
     props: {
-        modelValue: String,
+        modelValue: String | Number,
         status: String,
         autofocus: {
             type: Boolean,
