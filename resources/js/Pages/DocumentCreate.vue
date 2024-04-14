@@ -511,14 +511,14 @@ const searchProject = debounce(function (keyword) {
 
 const selectProject = function (item) {
     selectedProject.value = item;
-    if (!form.title) {
+    if (form.tag && !form.title) {
         if (form.tag === 'approval') {
             form.title = `ขออนุมัติดำเนินโครงการ${selectedProject.value.name}`;
-            form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
         } else if (form.tag === 'summary') {
             form.title = `รายงานผลการดำเนินงานโครงการ${selectedProject.value.name}`;
-            form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
         }
+        form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
+        form.department_id = selectedProject.value.department_id;
     }
 }
 
