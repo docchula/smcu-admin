@@ -100,8 +100,8 @@ class Project extends Model {
         return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
     }
 
-    public static function searchQuery(?string $keyword = null): Builder {
-        $query = self::query()->select('id', 'year', 'number', 'name', 'department_id', 'created_at', 'period_start', 'period_end')->with(['department']);
+    public static function searchQuery(?string $keyword = null, ?array $columns = []): Builder {
+        $query = self::query()->select(['id', 'year', 'number', 'name', 'department_id', 'created_at', 'period_start', 'period_end', ...$columns])->with(['department']);
         if (empty($keyword)) {
             $currentBE = Helper::buddhistYear();
             $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);

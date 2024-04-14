@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $status
  * @property Carbon      $created_at
  * @property Carbon|null $updated_at
+ * @property \App\Models\Project|null $project
  */
 class Document extends Model {
     use HasFactory;
@@ -40,7 +41,7 @@ class Document extends Model {
     }
 
     public function project(): BelongsTo {
-        return $this->belongsTo(Project::class)->select('id', 'name', 'number', 'year', 'department_id');
+        return $this->belongsTo(Project::class)->select('id', 'name', 'number', 'year', 'department_id', 'objectives', 'expense');
     }
 
     public function user(): BelongsTo {

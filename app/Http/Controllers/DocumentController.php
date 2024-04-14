@@ -146,9 +146,12 @@ class DocumentController extends Controller {
             'tag' => 'nullable|string|in:approval,summary',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20,000 KB
             'approved_attachment' => 'nullable|file|mimes:pdf|max:20000',
+            'project_id' => 'required_with:tag|integer|min:1',
+            'objectives' => 'required_if:tag,summary|array',
+            'expense' => 'required_if:tag,summary|array',
         ]);
         $this->authorize('update-document', $document);
-        $document->fill($request->all());
+        $document->fill($request->except('objectives', 'expense'));
         if (empty($document->user_id)) {
             $document->user_id = Auth::id();
         }
@@ -180,6 +183,12 @@ class DocumentController extends Controller {
             $document->status = Document::STATUS_APPROVED;
         }
         $document->saveOrFail();
+        if ($request->input('tag') == 'summary' and $request->input('project_id')) {
+            $document->project()->associate($request->input('project_id'));
+            $document->project->objectives = $request->input('objectives');
+            $document->project->expense = $request->input('expense');
+            $document->project->saveOrFail();
+        }
 
         return redirect()
             ->route('documents.show', ['document' => $document->id])

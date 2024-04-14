@@ -83,7 +83,7 @@ class ProjectController extends Controller {
     }
 
     public function search(string $keyword): JsonResponse {
-        return response()->json(Project::searchQuery($keyword)->take(5)->get());
+        return response()->json(Project::searchQuery($keyword, ['objectives', 'expense'])->take(5)->get());
     }
 
     /**

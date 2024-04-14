@@ -15,7 +15,8 @@
             <p class="mb-2 px-4 sm:px-0 font-semibold text-3xl text-gray-800 leading-tight">
                 {{ item.name }}
             </p>
-            <div v-if="item.can['update-project'] && item.documents.length === 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-yellow-400">
+            <div v-if="item.can['update-project'] && item.documents.length === 0"
+                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-yellow-400">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         สร้างเอกสารขออนุมัติโครงการ
@@ -24,8 +25,10 @@
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     <a :href="route('projects.generateApprovalDocument', {project: item.id})"
                        class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบขออนุมัติโครงการ</a>
-                    <p class="text-sm text-gray-700">เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
-                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
+                    <p class="text-sm text-gray-700">เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน
+                        และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
+                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">
+                        โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
                         ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่ฝ่ายกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
                 </div>
             </div>
@@ -36,7 +39,8 @@
                     </h3>
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <p class="text-sm text-gray-700">เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี) ให้เรียบร้อยโดยเร็ว</p>
+                    <p class="text-sm text-gray-700">เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี)
+                        ให้เรียบร้อยโดยเร็ว</p>
                     <a :href="route('projects.generateSummaryDocument', {project: item.id})"
                        class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบรายงานผลโครงการ</a>
                 </div>
@@ -45,11 +49,13 @@
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
-                        <inertia-link v-if="item.can['update-project']" :href="route('projects.edit', {project: item.id})" class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
+                        <inertia-link v-if="item.can['update-project']" :href="route('projects.edit', {project: item.id})"
+                                      class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                                <path
+                                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                             </svg>
-                            แก้ไข
+                            แก้ไขแผนโครงการ
                         </inertia-link>
                     </h3>
                 </div>
@@ -77,7 +83,14 @@
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ลักษณะกิจกรรม</dt>
-                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ {once: 'กิจกรรมครั้งเดียว', longitudinal: 'กิจกรรมระยะยาว', purchase: 'โครงการจัดซื้อ'}[item.type] }}</dd>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{
+                                    {
+                                        once: 'กิจกรรมครั้งเดียว',
+                                        longitudinal: 'กิจกรรมระยะยาว',
+                                        purchase: 'โครงการจัดซื้อ'
+                                    }[item.type]
+                                }}
+                            </dd>
                         </div>
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">ประเภท</dt>
@@ -135,6 +148,10 @@
                                     <li v-for="objective in item.objectives">
                                         <u>เป้าหมาย</u>&nbsp;{{ objective.goal }}<br/>
                                         <u>วิธีการประเมิน</u>&nbsp;{{ objective.method }}
+                                        <div v-if="hasProjectSummary" class="text-indigo-500">
+                                            <u>ผลลัพธ์</u>&nbsp;{{ objective.result }}
+                                            <span v-if="objective.percentage">&emsp;คิดเป็นร้อยละ {{ objective.percentage }}</span>
+                                        </div>
                                     </li>
                                 </ol>
                                 <span v-else>-</span>
@@ -167,12 +184,16 @@
                                             แหล่งงบประมาณ
                                         </th>
                                         <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            จำนวนเงิน (บ.)
+                                            วางแผนงบ (บ.)
+                                        </th>
+                                        <th v-if="hasProjectSummary" scope="col"
+                                            class="px-2 pb-1 text-left text-xs font-medium text-indigo-400 tracking-wider">
+                                            จ่ายจริงไป (บ.)
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="e in item.expense">
+                                    <tr v-for="e in item.expense" :class="{'text-indigo-500': e.extra}">
                                         <td class="p-2">
                                             {{ e.name }}
                                         </td>
@@ -183,7 +204,10 @@
                                             {{ e.source }}
                                         </td>
                                         <td class="p-2">
-                                            {{ e.amount ? e.amount.toLocaleString('th-TH') : '-' }}
+                                            {{ e.amount ? Number(e.amount).toLocaleString('th-TH') : '-' }}
+                                        </td>
+                                        <td v-if="hasProjectSummary" class="p-2 text-indigo-500">
+                                            {{ e.paid ? Number(e.paid).toLocaleString('th-TH') : '-' }}
                                         </td>
                                     </tr>
                                     </tbody>
@@ -257,14 +281,17 @@
                         </a>
                     </template>
                 </div>
-                <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false" />
-                <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)" @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
+                <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false"/>
+                <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)"
+                                 @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
                 <div class="border-t border-gray-200">
                     <dl>
-                        <div v-for="(name, type) in {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div v-for="(name, type) in {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}"
+                             class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
                                 {{ name }}
-                                <PlusIcon v-if="item.can['update-project']" class="inline-block ml-1 h-5 text-green-400 cursor-pointer" @click="showStudentIdDialog = type" />
+                                <PlusIcon v-if="item.can['update-project']" class="inline-block ml-1 h-5 text-green-400 cursor-pointer"
+                                          @click="showStudentIdDialog = type"/>
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 <ol class="list-decimal" v-if="participantsGrouped[type]">
@@ -315,7 +342,10 @@ export default {
     computed: {
         participantsGrouped() {
             return (this.item.participants.length > 0) ? _.groupBy(this.item.participants, 'type') : null;
-        }
+        },
+        hasProjectSummary() {
+            return Boolean(this.item.objectives.find(o => o.result));
+        },
     },
     data() {
         return {
