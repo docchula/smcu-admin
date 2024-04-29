@@ -22,17 +22,17 @@
                     <div class="col-span-2">
                         <jet-label for="year" value="Year (B.E.)"/>
                         <jet-input id="year" v-model.number="form.year" class="mt-1 block w-full" type="number"/>
-                        <jet-input-error :message="form.errors.year" class="mt-2"/>
+                        <jet-input-error :message="errors.year" class="mt-2"/>
                     </div>
                     <div class="col-span-2">
                         <jet-label for="supervisor" value="Supervisor"/>
                         <jet-input id="supervisor" v-model.number="form.supervisor" class="mt-1 block w-full" type="number"/>
-                        <jet-input-error :message="form.errors.supervisor" class="mt-2"/>
+                        <jet-input-error :message="errors.supervisor" class="mt-2"/>
                     </div>
                     <div class="col-span-2">
                         <jet-label for="sequence" value="Sequence"/>
                         <jet-input id="sequence" v-model.number="form.sequence" class="mt-1 block w-full" type="number"/>
-                        <jet-input-error v-if="form.errors.sequence" :message="form.errors.sequence" class="mt-2"/>
+                        <jet-input-error v-if="errors.sequence" :message="errors.sequence" class="mt-2"/>
                         <p v-else class="mt-2 text-xs text-gray-500">
                             Set >=200 to hide
                         </p>
@@ -40,12 +40,12 @@
                     <div class="col-span-6">
                         <jet-label for="position" value="Position TH"/>
                         <jet-input id="position" v-model.trim="form.position" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors.position" class="mt-2"/>
+                        <jet-input-error :message="errors.position" class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <jet-label for="position_en" value="Position EN"/>
                         <jet-input id="position_en" v-model.trim="form.position_en" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors.position_en" class="mt-2"/>
+                        <jet-input-error :message="errors.position_en" class="mt-2"/>
                     </div>
                     <div class="col-span-6">
                         <label class="block text-sm font-medium text-gray-700" for="department">Department</label>
@@ -59,7 +59,7 @@
                                 {{ department.name }}
                             </option>
                         </select>
-                        <jet-input-error :message="form.errors.department_id" class="mt-2"/>
+                        <jet-input-error :message="errors.department_id" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
@@ -79,12 +79,12 @@
                     <div class="col-span-3">
                         <jet-label for="name" value="Name TH (including title)"/>
                         <jet-input id="name" v-model.trim="form.name" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors.name" class="mt-2"/>
+                        <jet-input-error :message="errors.name" class="mt-2"/>
                     </div>
                     <div class="col-span-3">
                         <jet-label for="name_en" value="Name EN (no title)"/>
                         <jet-input id="name_en" v-model.trim="form.name_en" class="mt-1 block w-full" type="text"/>
-                        <jet-input-error :message="form.errors.name_en" class="mt-2"/>
+                        <jet-input-error :message="errors.name_en" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
@@ -106,7 +106,7 @@
                             </template>
                         </AttachmentBox>
                     </div>
-                    <jet-input-error :message="form.errors.attachment" class="col-span-6"/>
+                    <jet-input-error :message="errors.attachment" class="col-span-6"/>
                 </template>
                 <template #actions>
                     <jet-action-message :on="form.recentlySuccessful" class="mr-3">
@@ -134,19 +134,20 @@ import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-import _ from "lodash";
-import {useForm} from "@inertiajs/inertia-vue3";
-import {ref, watch} from "vue";
-import AttachmentBox from "@/Components/AttachmentBox.vue";
+import AttachmentBox from '@/Components/AttachmentBox.vue';
+import {defineProps, reactive, ref, watch} from 'vue';
+import {debounce} from 'lodash/function';
+import {router} from '@inertiajs/vue3';
 
 const props = defineProps({
     item: Object,
     static_departments: Array,
+    errors: Object,
 });
 
 const searchResult = ref(null);
 const keywordError = ref("");
-const form = useForm({
+const form = reactive({
     _method: props.item.id ? 'PUT' : 'POST',
     email: props.item.email ?? "",
     name: props.item.name,
@@ -162,16 +163,17 @@ const form = useForm({
 
 const submit = () => {
     if (form.attachment && !(form.attachment.name.endsWith('.jpg') || form.attachment.name.endsWith('.jpeg') || form.attachment.name.endsWith('.webm') || form.attachment.name.endsWith('.avif') || form.attachment.type?.startsWith('image/'))) {
-        form.errors.attachment = "Unsupported file type";
+        props.errors.attachment = "Unsupported file type";
         return;
     }
-    form.post(props.item.id
+    router.post(props.item.id
         ? route('personnels.update', {personnel: props.item.id})
-        : route('personnels.store')
+        : route('personnels.store'),
+        form
     )
 };
 
-const searchStudent = _.debounce(function (q) {
+const searchStudent = debounce(function (q) {
     keywordError.value = 'Searching...';
     axios.get(route('personnels.searchStudent', {q})).then((response) => {
         keywordError.value = '';

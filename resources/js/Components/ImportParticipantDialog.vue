@@ -80,8 +80,8 @@
 import JetDialogModal from "../Jetstream/DialogModal.vue";
 import JetButton from "../Jetstream/Button.vue";
 import JetSecondaryButton from "../Jetstream/SecondaryButton.vue";
-import {Inertia} from '@inertiajs/inertia';
 import {ref} from "vue";
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     'showModal': Boolean,
@@ -102,7 +102,7 @@ const uploadFile = (file) => {
     })
 };
 const importCommit = () => {
-    Inertia.post(route('projects.importParticipantCommit', {project: props.project.id}), {import: importData.value.import}, {onSuccess: () => emit('close')});
+    router.post(route('projects.importParticipantCommit', {project: props.project.id}), {import: importData.value.import}, {onSuccess: () => emit('close')});
 };
 </script>
 

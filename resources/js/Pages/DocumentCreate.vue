@@ -59,7 +59,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <jet-input-error :message="form.errors.tag" class="mt-2"/>
+                        <jet-input-error :message="errors.tag" class="mt-2"/>
                     </fieldset>
                     <div v-if="selectedProject" class="col-span-6">
                         <a :href="route('projects.show', {project: selectedProject.id})" target="_blank">โครงการ<strong>{{
@@ -109,7 +109,7 @@
                             </div>
                         </div>
                     </div>
-                    <jet-input-error :message="form.errors.project_id" class="col-span-6"/>
+                    <jet-input-error :message="errors.project_id" class="col-span-6"/>
                 </template>
             </jet-form-section>
             <jet-section-border/>
@@ -124,14 +124,14 @@
                     <div class="col-span-6">
                         <jet-label for="title" value="หัวเรื่อง"/>
                         <jet-input id="title" type="text" class="mt-1 block w-full" v-model.trim="form.title" ref="title" required/>
-                        <jet-input-error v-if="form.errors.title" :message="form.errors.title" class="mt-2"/>
+                        <jet-input-error v-if="errors.title" :message="errors.title" class="mt-2"/>
                         <jet-input-error v-else-if="form.title.startsWith('เอกสาร')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "เอกสาร"' class="mt-2"/>
                         <p v-else class="mt-2 text-xs text-gray-500">ข้อความสั้น ๆ ที่ทำให้ผู้รับเข้าใจความประสงค์หรือเนื้อหาโดยสังเขป</p>
                     </div>
                     <div class="col-span-6">
                         <jet-label for="recipient" value="ผู้รับ"/>
                         <jet-input id="recipient" type="text" class="mt-1 block w-full" v-model.trim="form.recipient" ref="recipient" required/>
-                        <jet-input-error v-if="form.errors.recipient" :message="form.errors.recipient" class="mt-2"/>
+                        <jet-input-error v-if="errors.recipient" :message="errors.recipient" class="mt-2"/>
                         <p v-else class="mt-2 text-xs text-gray-500">
                             ควรใช้ชื่อตำแหน่ง (ถ้ามี) เช่น
                             <a class="cursor-pointer text-green-500" @click="form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต'">รองคณบดีฝ่ายกิจการนิสิต</a>
@@ -148,7 +148,7 @@
                                 {{ department.name }}
                             </option>
                         </select>
-                        <jet-input-error v-if="form.errors.department_id" :message="form.errors.department_id" class="mt-2"/>
+                        <jet-input-error v-if="errors.department_id" :message="errors.department_id" class="mt-2"/>
                     </div>
                 </template>
             </jet-form-section>
@@ -164,7 +164,7 @@
                             <jet-label for="amount" value="จำนวนหนังสือ"/>
                             <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1"
                                        min="1" max="500" :disabled="item.id"/>
-                            <jet-input-error v-if="form.errors.amount" :message="form.errors.amount" class="mt-2"/>
+                            <jet-input-error v-if="errors.amount" :message="errors.amount" class="mt-2"/>
                             <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
                                 อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
                             </p>
@@ -232,7 +232,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <jet-input-error v-if="form.errors.objectives" :message="form.errors.objectives" class="col-span-6"/>
+                            <jet-input-error v-if="errors.objectives" :message="errors.objectives" class="col-span-6"/>
                             <p v-else class="col-span-6 text-xs text-gray-500">
                                 หากไม่สามารถประเมินได้ ให้ระบุในช่องผลที่ได้ว่าไม่สามารถประเมินได้เพราะเหตุใด และเว้นว่างช่องคิดเป็น (%)
                             </p>
@@ -272,7 +272,7 @@
                                         <td class="px-1 py-4 whitespace-nowrap">
                                             <jet-input type="text" class="block w-full" v-model="member.name" placeholder="รายจ่ายนอกแผน" required/>
                                             <jet-input-error message="จำเป็นต้องกรอก"
-                                                             v-if="form.errors['selectedProject.expense.'+index+'.name'] ?? false" class="mt-2"/>
+                                                             v-if="errors['selectedProject.expense.'+index+'.name'] ?? false" class="mt-2"/>
                                         </td>
                                         <td class="px-1 py-4 whitespace-nowrap">
                                             <select v-model="member.type" required
@@ -300,7 +300,7 @@
                                                 <option value="อื่น ๆ">อื่น ๆ</option>
                                                 <option value="">(ไม่ระบุ)</option>
                                             </select>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.type'] ?? false"
+                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.type'] ?? false"
                                                              class="mt-2"/>
                                         </td>
                                         <td class="px-1 py-4 whitespace-nowrap">
@@ -314,7 +314,7 @@
                                                 <option value="เงินฝ่าย/หน่วยงานสพจ.">เงินฝ่าย/หน่วยงานสพจ.</option>
                                                 <option value="อื่น ๆ">อื่น ๆ</option>
                                             </select>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.source'] ?? false"
+                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.source'] ?? false"
                                                              class="mt-2"/>
                                         </td>
                                         <td class="px-1 py-4 text-center">
@@ -323,7 +323,7 @@
                                         <td class="px-1 py-4 whitespace-nowrap">
                                             <jet-input type="number" class="block w-full sm:w-32 lg:w-36" min="0" step="0.01" v-model.number="member.paid"
                                                        required/>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.paid'] ?? false"
+                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.paid'] ?? false"
                                                              class="mt-2"/>
                                         </td>
                                         <td class="px-1 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -351,7 +351,7 @@
                                         <td colspan="2" class="px-1 py-4 whitespace-nowrap">
                                             <jet-input type="number" class="block w-full sm:w-32 lg:w-36" min="0" step="0.01" v-model.number="member.paid"
                                                        required/>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="form.errors['expense.'+index+'.paid'] ?? false"
+                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.paid'] ?? false"
                                                              class="mt-2"/>
                                         </td>
                                         <td></td>
@@ -366,7 +366,7 @@
                                             @click="selectedProject.expense.push({name: '', source: '', amount: '', extra: true})">
                                     + รายจ่ายที่ไม่ได้วางแผน
                                 </jet-button>
-                                <jet-input-error v-if="form.errors.expense" :message="form.errors.expense" class="mt-2"/>
+                                <jet-input-error v-if="errors.expense" :message="errors.expense" class="mt-2"/>
                                 <p v-else class="mt-2 text-xs text-gray-500">
                                     หากไม่ได้ใช้จ่ายในรายการใด ให้ใส่ 0
                                 </p>
@@ -383,7 +383,7 @@
                     <AttachmentBox class="col-span-6" v-model="form.attachment"
                                    accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
                                    description="PDF or DOCX up to 15 MB"/>
-                    <jet-input-error :message="form.errors.attachment" class="col-span-6"/>
+                    <jet-input-error :message="errors.attachment" class="col-span-6"/>
                 </template>
                 <template #actions>
                     <jet-action-message :on="form.recentlySuccessful" class="mr-3">
@@ -409,7 +409,7 @@
                     <AttachmentBox class="col-span-6" v-model="form.approved_attachment"
                                    accept="application/pdf"
                                    description="PDF up to 15 MB"/>
-                    <jet-input-error :message="form.errors.approved_attachment" class="col-span-6"/>
+                    <jet-input-error :message="errors.approved_attachment" class="col-span-6"/>
                 </template>
             </jet-form-section>
         </div>
@@ -427,8 +427,8 @@ import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Checkbox from "@/Jetstream/Checkbox.vue";
 import AttachmentBox from "@/Components/AttachmentBox.vue";
-import {ref, watch} from 'vue';
-import {useForm, Link} from "@inertiajs/inertia-vue3";
+import {ref, reactive, watch} from 'vue';
+import {router, Link} from '@inertiajs/vue3'
 import {debounce} from "lodash/function";
 import {isNumber} from "lodash/lang";
 
@@ -437,6 +437,7 @@ const props = defineProps({
     item: Object,
     static_departments: Array,
     is_admin: Boolean,
+    errors: Object,
 });
 
 // Data
@@ -444,7 +445,7 @@ const projectKeyword = ref(props.item.project ? (props.item.project.year + '-' +
 const projectSearchResult = ref([]);
 const keywordError = ref('');
 const selectedProject = ref(props.item.project);
-const form = useForm({
+const form = reactive({
     _method: props.item.id ? 'PUT' : 'POST',
     title: props.item.title ?? "",
     recipient: props.item.recipient ?? "",
@@ -462,11 +463,11 @@ const form = useForm({
 // Methods
 const submit = function () {
     if (!form.attachment && !props.item.id) {
-        form.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
+        props.errors.attachment = "กรุณาอัปโหลดร่างเอกสาร";
     } else if (form.attachment && !(form.attachment.name.endsWith('.pdf') || form.attachment.name.endsWith('.docx'))) {
-        form.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
+        props.errors.attachment = "ไม่รองรับประเภทไฟล์นี้";
     } else if (!selectedProject.value && !form.is_non_project) {
-        form.errors.project_id = "กรุณาเลือกโครงการ";
+        props.errors.project_id = "กรุณาเลือกโครงการ";
     } else {
         form.project_id = selectedProject.value ? selectedProject.value.id : null;
         if (selectedProject.value) {
@@ -477,22 +478,23 @@ const submit = function () {
             form.amount = 1;
             if (form.tag === 'summary') {
                 if (form.objectives.filter(o => o.result && o.result.length > 0).length !== form.objectives.length) {
-                    form.errors.objectives = "กรุณากรอกผลการประเมินทุกตัวชี้วัด";
+                    props.errors.objectives = "กรุณากรอกผลการประเมินทุกตัวชี้วัด";
                     return;
                 } else {
-                    form.errors.objectives = "";
+                    props.errors.objectives = "";
                 }
                 if (form.expense.filter(e => e.paid || (e.paid === 0)).length !== form.expense.length) {
-                    form.errors.expense = "กรุณากรอกยอดเงินที่จ่ายจริงให้ครบทุกรายการ หากไม่ได้ใช้จ่าย ให้ใส่ 0";
+                    props.errors.expense = "กรุณากรอกยอดเงินที่จ่ายจริงให้ครบทุกรายการ หากไม่ได้ใช้จ่าย ให้ใส่ 0";
                     return;
                 } else {
-                    form.errors.expense = "";
+                    props.errors.expense = "";
                 }
             }
         }
-        form.post(props.item.id
+        router.post(props.item.id
             ? route('documents.update', {document: props.item.id})
-            : route('documents.store')
+            : route('documents.store'),
+            form
         )
     }
 }

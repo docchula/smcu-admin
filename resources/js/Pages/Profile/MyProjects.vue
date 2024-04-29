@@ -6,9 +6,9 @@
 
         <template #description>
             โครงการที่ฉันมีส่วนร่วม
-            <InertiaLink :href="route('profile.printMyProjects')" class="text-green-600 ml-2 inline-block">
+            <Link :href="route('profile.printMyProjects')" class="text-green-600 ml-2 inline-block">
                 <PrinterIcon class="inline-block h-5 w-5" /> พิมพ์
-            </InertiaLink>
+            </Link>
         </template>
 
         <template #content>
@@ -34,10 +34,10 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="participant in projects" :key="participant.id">
                         <td class="px-2 py-2 md:py-3">
-                            <inertia-link :href="route('projects.show', {project: participant.project.id})">
+                            <Link :href="route('projects.show', {project: participant.project.id})">
                                 <span class="text-xs text-gray-500 px-0.5">{{ participant.project.year }}-{{ participant.project.number }}</span>
                                 {{ participant.project.name }}
-                            </inertia-link>
+                            </Link>
                         </td>
                         <td class="px-2 py-2 md:py-3 text-sm">
                             {{ {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}[participant.type] ?? participant.type }}
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import {InertiaLink} from '@inertiajs/inertia-vue3'
+import {Link} from '@inertiajs/vue3'
 import JetActionSection from '../../Jetstream/ActionSection.vue'
 import {PrinterIcon} from '@heroicons/vue/24/solid'
 
