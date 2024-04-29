@@ -155,12 +155,15 @@
                                     </li>
                                 </ol>
                                 <span v-else>-</span>
+                                <p v-if="hasProjectSummary" class="mt-2 text-indigo-500">
+                                    สรุปผลการดำเนินโครงการ คิดเป็นร้อยละ {{ totalProductPercentage }}
+                                </p>
                             </dd>
                         </div>
                     </dl>
                 </div>
             </div>
-            <div v-if="item.expense.length" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         งบประมาณ
@@ -168,49 +171,61 @@
                 </div>
                 <div class="border-t border-gray-200">
                     <div class="px-4 py-4 sm:px-6">
-                                <table v-if="item.expense.length > 0" class="divide-y divide-gray-200">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            รายการ
-                                        </th>
-                                        <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            ประเภทรายจ่าย
-                                        </th>
-                                        <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            แหล่งงบประมาณ
-                                        </th>
-                                        <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            วางแผนงบ (บ.)
-                                        </th>
-                                        <th v-if="hasProjectSummary" scope="col"
-                                            class="px-2 pb-1 text-left text-xs font-medium text-indigo-400 tracking-wider">
-                                            จ่ายจริงไป (บ.)
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="e in item.expense" :class="{'text-indigo-500': e.extra}">
-                                        <td class="p-2">
-                                            {{ e.name }}
-                                        </td>
-                                        <td class="p-2">
-                                            {{ e.type }}
-                                        </td>
-                                        <td class="p-2">
-                                            {{ e.source }}
-                                        </td>
-                                        <td class="p-2">
-                                            {{ e.amount ? Number(e.amount).toLocaleString('th-TH') : '-' }}
-                                        </td>
-                                        <td v-if="hasProjectSummary" class="p-2 text-indigo-500">
-                                            {{ e.paid ? Number(e.paid).toLocaleString('th-TH') : '-' }}
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <span v-else>-</span>
-                        </div>
+                        <template v-if="item.expense.length > 0">
+                            <table class="divide-y divide-gray-200">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        รายการ
+                                    </th>
+                                    <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        ประเภทรายจ่าย
+                                    </th>
+                                    <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        แหล่งงบประมาณ
+                                    </th>
+                                    <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        วางแผนงบ (บ.)
+                                    </th>
+                                    <th v-if="hasProjectSummary" scope="col"
+                                        class="px-2 pb-1 text-left text-xs font-medium text-indigo-400 tracking-wider">
+                                        จ่ายจริงไป (บ.)
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tr v-for="e in item.expense" :class="{'text-indigo-500': e.extra}">
+                                    <td class="p-2">
+                                        {{ e.name }}
+                                    </td>
+                                    <td class="p-2">
+                                        {{ e.type }}
+                                    </td>
+                                    <td class="p-2">
+                                        {{ e.source }}
+                                    </td>
+                                    <td class="p-2 text-right">
+                                        {{ e.amount ? Number(e.amount).toLocaleString('th-TH') : '-' }}
+                                    </td>
+                                    <td v-if="hasProjectSummary" class="p-2 text-right text-indigo-500">
+                                        {{ e.paid ? Number(e.paid).toLocaleString('th-TH') : '-' }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <p class="mt-2">
+                                สรุปวางแผนงบประมาณทั้งสิ้น
+                                <span class="px-1">
+                                    {{ Number(totalExpense).toLocaleString('th-TH') }} บาท
+                                </span>
+                                <span v-if="item.expense.find(e => e.paid)" class="px-1 text-indigo-500">
+                                    ใช้จ่ายจริง {{ Number(totalPaid).toLocaleString('th-TH') }} บาท&ensp;
+                                   (คิดเป็นร้อยละ {{ (totalPaid / totalExpense * 100).toFixed(2) }})
+                                </span>
+                            </p>
+                        </template>
+                        <span v-else class="text-gray-500">ไม่ใช้งบประมาณ</span>
+                    </div>
                 </div>
             </div>
             <div v-if="item.documents.length > 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
@@ -340,6 +355,22 @@ export default {
         },
         hasProjectSummary() {
             return Boolean(this.item.objectives.find(o => o.result));
+        },
+        totalExpense() {
+            return this.item.expense.reduce((i, entry) => i - -(entry.amount || 0), 0);
+        },
+        totalPaid() {
+            return this.item.expense.reduce((i, entry) => i - -(entry.paid || 0), 0);
+        },
+        totalProductPercentage() {
+            const values = this.item.objectives.reduce((array, entry) => {
+                if (entry.percentage) {
+                    array.push(Number(entry.percentage));
+                }
+                return array;
+            }, []);
+
+            return values.length ? Number(values.reduce((a, b) => a - -b) / values.length).toFixed(2) : "-";
         },
     },
     data() {
