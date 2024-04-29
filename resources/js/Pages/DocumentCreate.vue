@@ -117,8 +117,6 @@
                 <template #title>ข้อมูลพื้นฐาน</template>
                 <template #description>
                     ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
-                    <p class="mt-2 text-blue-600">ยกเลิกตัวเลือกหน่วยงาน <i>โครงการค่ายอยากเป็นหมอ โครงการ MDCU Counseling Unit โครงการ CU Open
-                        House</i> เนื่องจากไม่มีสภาพหน่วยงาน ให้เลือก "คณะกรรมการบริหาร" แทน</p>
                 </template>
                 <template #form>
                     <div class="col-span-6">
@@ -174,8 +172,8 @@
                 <jet-section-border/>
             </template>
             <template v-if="form.tag === 'summary' && selectedProject">
-                <div class="border-l-4 pl-3 border-indigo-500">
-                    <h6 class="mb-2 text-sm text-indigo-500">ผลการดำเนินโครงการ</h6>
+                <div class="ml-1 pl-1 sm:ml-0 sm:pl-3 border-l-4 border-indigo-500">
+                    <h6 class="mb-2 px-4 sm:px-0 text-sm text-indigo-500">ผลการดำเนินโครงการ</h6>
                     <jet-form-section>
                         <template #title>ประเมินความสำเร็จตามเป้าหมาย</template>
                         <template #description>
@@ -202,7 +200,7 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr class="text-gray-400 text-sm">
                                     <td class="px-1 py-2">
-                                        <u>ตัวอย่าง</u> มีเข้าร่วมกิจกรรมไม่น้อยกว่า 50 คน
+                                        <u>ตัวอย่าง</u> มีนิสิตเข้าร่วมกิจกรรมไม่น้อยกว่า 50 คน
                                     </td>
                                     <td class="px-1 py-2">
                                         แบบลงชื่อลงทะเบียนเข้าร่วม
