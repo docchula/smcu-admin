@@ -42,7 +42,8 @@ class ProjectController extends Controller {
                     $query->whereNotNull('tag');
                 },
             ])->paginate(15)->withQueryString(),
-            'keyword' => $keyword
+            'keyword' => $keyword,
+            'is_admin' => $request->user()->can('admin-action'),
         ]);
     }
 
@@ -62,7 +63,8 @@ class ProjectController extends Controller {
     }
 
     public function indexBudget(Request $request): Response {
-        $keyword = $request->input('search', Helper::buddhistYear());
+        $this->authorize('admin-action');
+        $keyword = $request->input('search', Helper::buddhistYear(now()->subMonths(3)->year));
 
         return Inertia::render('ProjectYearBudget', [
             'list' => Project::searchQuery($keyword)->addSelect(['expense'])

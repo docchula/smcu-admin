@@ -60,7 +60,7 @@
                                         </button>
                                     </MenuItem>
                                 </Link>
-                                <Link :href="route('projects.budget')">
+                                <Link v-if="is_admin" :href="route('projects.budget')">
                                     <MenuItem v-slot="{ active }">
                                         <button
                                             :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
@@ -162,7 +162,8 @@ const props = defineProps({
         type: String,
         default: "",
     },
-    list: Object
+    list: Object,
+    is_admin: Boolean,
 });
 const searchKeyword = ref(props.keyword ?? "");
 const searchMessage = ref('');
