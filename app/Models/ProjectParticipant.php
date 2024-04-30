@@ -19,6 +19,7 @@ class ProjectParticipant extends Model {
 
     protected $fillable = ['user_id', 'type', 'title'];
     protected $visible = ['id', 'type', 'title', 'user', 'project'];
+    public const TYPES_OPTIONS = ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้จัดกิจกรรม', 'attendee' => 'ผู้เข้าร่วม'];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {
         return $this->belongsTo(User::class);

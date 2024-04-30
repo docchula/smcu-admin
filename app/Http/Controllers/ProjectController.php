@@ -356,20 +356,64 @@ class ProjectController extends Controller {
             'organizers_name' => $participant->user->name,
             'organizers_id' => $participant->user->student_id
         ]));
-        $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
-            return ['expense_name' => $ex['name'] ?? '', 'expense_source' => $ex['source'] ?? '', 'expense_amount' => number_format($ex['amount'] ?? 0, 2)];
-        }, $project->expense));
+        $template->cloneRowAndSetValues('exp_name', $project->expense ? array_map(function (array $ex) {
+            return [
+                'exp_name' => $ex['name'] ?? '',
+                'exp_type' => $ex['type'] ?? '',
+                'exp_source' => $ex['source'] ?? '',
+                'exp_amount' => number_format($ex['amount'] ?? 0, 2),
+                'exp_paid' => number_format($ex['paid'] ?? 0, 2),
+            ];
+        }, $project->expense) : [
+            [
+                'exp_name' => 'ไม่ได้ใช้งบประมาณ',
+                'exp_type' => '',
+                'exp_source' => '',
+                'exp_amount' => '',
+                'exp_paid' => '',
+            ],
+        ]);
+        // Set total expense
+        $template->setValues([
+            'exp_t_amnt' => number_format(array_reduce($project->expense, function ($carry, $item) {
+                return $carry + ($item['amount'] ?? 0);
+            }, 0), 2),
+            'exp_t_paid' => number_format(array_reduce($project->expense, function ($carry, $item) {
+                return $carry + ($item['paid'] ?? 0);
+            }, 0), 2),
+        ]);
         $aims = explode("\n", $project->aims);
-        $objectives = array_map(fn($objective) => $objective['goal'], $project->objectives);
-        $objectiveCount = max(count($aims), count($objectives));
+        $objectiveCount = max(count($aims), count($project->objectives));
         $objectiveSum = [];
         for ($i = 0; $i < $objectiveCount; $i++) {
             $objectiveSum []= [
-                'objectives_goal' => $objectives[$i] ?? '...',
+                'objectives_goal' => $project->objectives[$i]['goal'] ?? '...',
+                'objectives_result' => isset($project->objectives[$i]['result']) ? ($project->objectives[$i]['result'].' ('.$project->objectives[$i]['percentage'].'%)') : '...',
                 'aims_text' => $aims[$i] ?? '...',
             ];
         }
         $template->cloneRowAndSetValues('objectives_goal', $objectiveSum);
+
+        // Calculate average percentage
+        $totalPercentage = $countPercentage = 0;
+        foreach ($project->objectives as $objective) {
+            if (isset($objective['percentage'])) {
+                $totalPercentage += $objective['percentage'];
+                $countPercentage++;
+            }
+        }
+        $template->setValues([
+            'total_percent' => $countPercentage ? number_format($totalPercentage / $countPercentage, 2) : '...',
+        ]);
+
+        // Set participant list
+        $template->cloneRowAndSetValues('ptcp_no', $project->participants->map(fn(ProjectParticipant $participant, int $i) => [
+            'ptcp_no' => $i + 1,
+            'ptcp_name' => $participant->user->name,
+            'ptcp_id' => $participant->user->student_id,
+            'ptcp_type' => ProjectParticipant::TYPES_OPTIONS[$participant->type] ?? $participant->type,
+            'ptcp_title' => $participant->title ?? '-',
+        ]));
 
         $tmpPath = tempnam(storage_path(), 'tmp-projectsummary-');
         $template->saveAs($tmpPath);
@@ -557,7 +601,7 @@ class ProjectController extends Controller {
             return [
                 $i + 1,
                 $participant->user->name,
-                ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้จัดกิจกรรม', 'attendee' => 'ผู้เข้าร่วม'][$participant->type] ?? $participant->type,
+                ProjectParticipant::TYPES_OPTIONS[$participant->type] ?? $participant->type,
                 $participant->title,
             ];
         });

@@ -371,6 +371,22 @@
                             </div>
                         </template>
                     </jet-form-section>
+                    <template v-if="!item.id">
+                        <jet-section-border/>
+                        <jet-form-section>
+                            <template #title>ดาวน์โหลดแบบรายงานผลโครงการ</template>
+                            <template #description>กรุณาดาวน์โหลดไฟล์ แล้วใช้โปรแกรม Microsoft Word แก้ไข/เติมรายละเอียดให้ครบถ้วน
+                                (หรือใช้แบบฟอร์มที่สพจ. แจกจ่าย) แล้วจึงอัปโหลดไฟล์ที่แก้ไขแล้วในช่องถัดไป
+                            </template>
+                            <template #form>
+                                <div class="col-span-6">
+                                    <jet-button type="button" @click="generateSummaryDocument">
+                                        บันทึกผลการดำเนินโครงการ และ ดาวน์โหลดแบบรายงานผลโครงการ
+                                    </jet-button>
+                                </div>
+                            </template>
+                        </jet-form-section>
+                    </template>
                 </div>
                 <jet-section-border/>
             </template>
@@ -392,7 +408,7 @@
                     </progress>
 
                     <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Save
+                        {{ item.id ? 'บันทึก' : 'บันทึก & ออกเลขเอกสาร' }}
                     </jet-button>
                 </template>
             </jet-form-section>
@@ -425,8 +441,8 @@ import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Checkbox from "@/Jetstream/Checkbox.vue";
 import AttachmentBox from "@/Components/AttachmentBox.vue";
-import {ref, reactive, watch} from 'vue';
-import {router, Link} from '@inertiajs/vue3'
+import {reactive, ref, watch} from 'vue';
+import {Link, router} from '@inertiajs/vue3'
 import {debounce} from "lodash/function";
 import {isNumber} from "lodash/lang";
 
@@ -493,9 +509,27 @@ const submit = function () {
             ? route('documents.update', {document: props.item.id})
             : route('documents.store'),
             form
-        )
+        );
     }
-}
+};
+const generateSummaryDocument = function () {
+    form.project_id = selectedProject.value ? selectedProject.value.id : null;
+    form.objectives = selectedProject.value.objectives;
+    form.expense = selectedProject.value.expense;
+    form.amount = 1;
+    if (form.objectives.filter(o => o.result && o.result.length > 0).length !== form.objectives.length) {
+        alert("กรุณากรอกผลการประเมินทุกตัวชี้วัด");
+        return;
+    }
+    if (form.expense.filter(e => e.paid || (e.paid === 0)).length !== form.expense.length) {
+        alert("กรุณากรอกยอดเงินที่จ่ายจริงให้ครบทุกรายการ หากไม่ได้ใช้จ่าย ให้ใส่ 0");
+        return;
+    }
+    router.post(route('documents.store'), {
+        ...form,
+        generate_document: true,
+    });
+};
 
 const searchProject = debounce(function (keyword) {
     keywordError.value = 'กำลังค้นหา...';

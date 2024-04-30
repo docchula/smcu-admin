@@ -39,10 +39,19 @@
                     </h3>
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <p class="text-sm text-gray-700">เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี)
-                        ให้เรียบร้อยโดยเร็ว</p>
+                    <p class="my-0.5 text-gray-700">
+                        เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี) ให้เรียบร้อยโดยเร็ว
+                    </p>
+                    <p class="my-0.5 text-blue-500">
+                        ข้อมูลผลการดำเนินโครงการ มีผลต่อการพิจารณางบประมาณโครงการ/ฝ่ายครั้งถัดไป
+                    </p>
+                    <inertia-link :href="route('documents.create', {project_id: item.id, tag: 'summary'})"
+                                  class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                        บันทึกผลการดำเนินโครงการ และสร้างแบบรายงานผลโครงการ
+                    </inertia-link>
+                    &ensp;หรือ&ensp;
                     <a :href="route('projects.generateSummaryDocument', {project: item.id})"
-                       class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบรายงานผลโครงการ</a>
+                       class="text-blue-400">ดาวน์โหลดแบบรายงานผลโครงการ</a>
                 </div>
             </div>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">

@@ -48,13 +48,23 @@ class DocumentController extends Controller {
      * Show the form for creating a new resource.
      */
     public function create(Request $request): Response {
-        return $this->edit($request, new Document([]));
+        $document = new Document([
+            'tag' => $request->input('tag'),
+        ]);
+        if ($request->input('tag') == 'summary' and $request->input('project_id')) {
+            $document->project()->associate($request->input('project_id'));
+            $document->title = 'รายงานผลการดำเนินงานโครงการ'.$document->project->name;
+            $document->recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
+            $document->department_id = $document->project->department_id;
+        }
+
+        return $this->edit($request, $document);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse {
+    public function store(Request $request): \Symfony\Component\HttpFoundation\Response {
         return $this->update($request, new Document());
     }
 
@@ -137,7 +147,7 @@ class DocumentController extends Controller {
      * Update the specified resource in storage.
      * @throws \Throwable
      */
-    public function update(Request $request, Document $document): RedirectResponse {
+    public function update(Request $request, Document $document): \Symfony\Component\HttpFoundation\Response {
         $this->validate($request, [
             'title' => 'required|filled|string|min:5|max:255',
             'recipient' => 'required|filled|string|max:255',
@@ -167,6 +177,19 @@ class DocumentController extends Controller {
                 $document->number_to = $document->number + $amount - 1;
             }
         }
+
+        // Save project summary info
+        if ($request->input('tag') == 'summary' and $request->input('project_id')) {
+            $document->project()->associate($request->input('project_id'));
+            $document->project->objectives = $request->input('objectives');
+            $document->project->expense = $request->input('expense');
+            $document->project->saveOrFail();
+
+            if ($request->filled('generate_document')) {
+                return Inertia::location(route('projects.generateSummaryDocument', ['project' => $document->project->id]));
+            }
+        }
+
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('documents');
             if ($document->attachment_path) {
@@ -183,12 +206,6 @@ class DocumentController extends Controller {
             $document->status = Document::STATUS_APPROVED;
         }
         $document->saveOrFail();
-        if ($request->input('tag') == 'summary' and $request->input('project_id')) {
-            $document->project()->associate($request->input('project_id'));
-            $document->project->objectives = $request->input('objectives');
-            $document->project->expense = $request->input('expense');
-            $document->project->saveOrFail();
-        }
 
         return redirect()
             ->route('documents.show', ['document' => $document->id])
