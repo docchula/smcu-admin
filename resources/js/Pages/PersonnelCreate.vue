@@ -135,7 +135,7 @@ import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import AttachmentBox from '@/Components/AttachmentBox.vue';
-import {defineProps, reactive, ref, watch} from 'vue';
+import {reactive, ref, watch} from 'vue';
 import {debounce} from 'lodash/function';
 import {router} from '@inertiajs/vue3';
 
