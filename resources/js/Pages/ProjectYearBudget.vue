@@ -1,19 +1,19 @@
 <template>
     <app-layout>
         <template #header>
-            <inertia-link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
+            <Link :href="route('projects.index')" class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
                 </svg>
                 <p>โครงการ</p>
-            </inertia-link>
+            </Link>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 สรุปงบประมาณโครงการ
             </h2>
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <Label>ปีวาระ</Label>
+            <Label>ปีวาระ/ชื่อโครงการ</Label>
             <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
             <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -51,14 +51,14 @@
                         <template v-for="item in projects" :key="item.id">
                             <tr class="bg-green-100">
                                 <td class="px-2 py-2 md:px-4">
-                                    <inertia-link :href="route('projects.show', {project: item.id})">
+                                    <Link :href="route('projects.show', {project: item.id})">
                                         {{ item.year }}-{{ item.number }}
-                                    </inertia-link>
+                                    </Link>
                                 </td>
                                 <td class="px-2 py-2 md:px-4">
-                                    <inertia-link :href="route('projects.show', {project: item.id})">
+                                    <Link :href="route('projects.show', {project: item.id})">
                                         {{ item.name }}
-                                    </inertia-link>
+                                    </Link>
                                 </td>
                                 <td colspan="2" class="px-2 py-2 md:px-4 text-gray-600 text-xs">
                                     {{ item.period_start }}
@@ -80,7 +80,7 @@
                                     <td class="px-2 py-2 text-right">-</td>
                                 </template>
                             </tr>
-                            <tr v-for="(entry, entryKey) in item.expense" class="text-sm text-gray-700">
+                            <tr v-for="(entry, entryKey) in item.expense" class="text-sm text-gray-800">
                                 <td class="text-xs text-white">
                                     {{ item.year }}-{{ item.number }}-E{{ String(entryKey).padStart(2, '0') }}
                                 </td>
@@ -116,6 +116,7 @@ import Pagination from "@/Components/Pagination.vue";
 import {DocumentChartBarIcon, DocumentTextIcon} from "@heroicons/vue/20/solid";
 import Label from "@/Jetstream/Label.vue";
 import {debounce} from "lodash/function";
+import {Link} from "@inertiajs/vue3";
 
 export default {
     components: {
@@ -125,6 +126,7 @@ export default {
         SearchInput,
         DocumentChartBarIcon,
         DocumentTextIcon,
+        Link,
     },
     data() {
         return {
@@ -143,12 +145,12 @@ export default {
     },
     watch: {
         // whenever question changes, this function will run
-        searchKeyword: function (newValue, oldValue) {
+        searchKeyword: function (newValue) {
             this.searchMessage = "Typing...";
             this.debouncedSearch(newValue)
         }
     },
-    created: function (keyword) {
+    created: function () {
         this.debouncedSearch = debounce(this.search, 500)
     },
     props: {
