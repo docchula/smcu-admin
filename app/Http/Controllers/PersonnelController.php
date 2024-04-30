@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper;
 use App\Models\Department;
 use App\Models\Personnel;
+use App\Models\User;
 use Cache;
 use Docchula\VestaClient\Facades\VestaClient;
 use Illuminate\Http\Request;
@@ -50,6 +51,7 @@ class PersonnelController extends Controller
     {
         $this->authorize('admin-action');
         $personnel->photo_url = $personnel->photo_path ? Storage::url($personnel->photo_path) : null;
+        $personnel->is_admin = $personnel->email && User::where('email', $personnel->email)->first()?->can('admin-action');
 
         return Inertia::render('PersonnelCreate', [
             'item' => $personnel,
@@ -130,6 +132,12 @@ class PersonnelController extends Controller
             $personnel->photo_path = $path;
         }
         $personnel->saveOrFail();
+
+        // Set admin status
+        if ($personnel->email and $user = User::where('email', $personnel->email)->first()) {
+            $user->roles = $request->input('is_admin') ? 'admin' : '';
+            $user->save();
+        }
 
         // Invalidate cache
         Cache::delete('personnel-year-'.$personnel->year);

@@ -1,13 +1,13 @@
 <template>
     <app-layout>
         <template #header>
-            <inertia-link :href="route('personnels.index', {year: item.year})"
-                          class="mb-4 block flex items-center text-gray-700">
+            <Link :href="route('personnels.index', {year: item.year})"
+                          class="mb-4 flex items-center text-gray-700">
                 <svg class="inline h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path class="text-gray-500" d="M7 16l-4-4m0 0l4-4m-4 4h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                 </svg>
                 <p>Personnel, Year {{ item.year }}</p>
-            </inertia-link>
+            </Link>
             <h2 v-if="item.id" class="font-semibold text-xl text-gray-800 leading-tight">
                 Edit Personnel Record #{{ item.id }}
             </h2>
@@ -27,11 +27,15 @@
                     <div class="col-span-2">
                         <jet-label for="supervisor" value="Supervisor"/>
                         <jet-input id="supervisor" v-model.number="form.supervisor" class="mt-1 block w-full" type="number"/>
-                        <jet-input-error :message="errors.supervisor" class="mt-2"/>
+                        <jet-input-error v-if="errors.supervisor" :message="errors.supervisor" class="mt-2"/>
+                        <p v-else class="mt-2 text-xs text-gray-500">
+                            #ID, for document signing sequence
+                        </p>
                     </div>
                     <div class="col-span-2">
-                        <jet-label for="sequence" value="Sequence"/>
-                        <jet-input id="sequence" v-model.number="form.sequence" class="mt-1 block w-full" type="number"/>
+                        <jet-label for="sequence" value="Sequence of display"/>
+                        <jet-input id="sequence" v-model.number="form.sequence" class="mt-1 block w-full"
+                                   type="number" step="1"/>
                         <jet-input-error v-if="errors.sequence" :message="errors.sequence" class="mt-2"/>
                         <p v-else class="mt-2 text-xs text-gray-500">
                             Set >=200 to hide
@@ -86,6 +90,18 @@
                         <jet-input id="name_en" v-model.trim="form.name_en" class="mt-1 block w-full" type="text"/>
                         <jet-input-error :message="errors.name_en" class="mt-2"/>
                     </div>
+                    <div v-if="form.email" class="flex items-start col-span-6">
+                        <div class="flex items-center h-5">
+                            <Checkbox id="is_admin" :checked="form.is_admin"
+                                      @update:checked="newValue => form.is_admin = newValue"/>
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="is_admin" class="font-medium text-gray-700">
+                                Grant administrator privileges in SMCU Admin
+                            </label>
+                            <p class="text-gray-400">(for trusted executive committee members; must be website user)</p>
+                        </div>
+                    </div>
                 </template>
             </jet-form-section>
 
@@ -96,7 +112,7 @@
                 <template #form>
                     <div class="col-span-6 sm:flex gap-4">
                         <div v-if="item.photo_url" class="basis-36 lg:basis-48">
-                            <img :src="item.photo_url"/>
+                            <img :src="item.photo_url" alt="Personnel Photo"/>
                             <p class="text-xs text-gray-400">Uploaded photo</p>
                         </div>
                         <AttachmentBox v-model="form.attachment" accept="image/jpeg,image/webp,image/avif,image/png">
@@ -137,7 +153,8 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import AttachmentBox from '@/Components/AttachmentBox.vue';
 import {reactive, ref, watch} from 'vue';
 import {debounce} from 'lodash/function';
-import {router} from '@inertiajs/vue3';
+import {Link, router} from '@inertiajs/vue3';
+import Checkbox from "@/Jetstream/Checkbox.vue";
 
 const props = defineProps({
     item: Object,
@@ -158,6 +175,7 @@ const form = reactive({
     year: props.item.year ?? ((new Date()).getFullYear() + 543),
     supervisor: props.item.supervisor,
     sequence: props.item.sequence ?? 10,
+    is_admin: props.item.is_admin ?? false,
     attachment: null,
 });
 
