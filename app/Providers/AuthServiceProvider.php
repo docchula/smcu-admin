@@ -35,7 +35,12 @@ class AuthServiceProvider extends ServiceProvider
             return is_null($document->id) OR ($document->user_id === $user->id) OR $user->can('admin-action');
         });
         Gate::define('update-project', function (User $user, Project $project) {
-            return is_null($project->id) OR ($project->user_id === $user->id) OR $user->can('admin-action');
+            return is_null($project->id)
+                OR $user->can('admin-action')
+                OR (
+                    $project->user_id === $user->id
+                    AND $project->created_at->diffInMonths(now()) < 15 // Created in the last 15 months
+                );
         });
     }
 }
