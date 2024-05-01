@@ -15,6 +15,10 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <Label>ปีวาระ/ชื่อโครงการ</Label>
             <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
+            <p class="mt-2 text-xs text-gray-500">
+                ใช้ , แทนความหมาย "หรือ" ในการค้นหา
+            </p>
+
             <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -117,9 +121,11 @@ import {DocumentChartBarIcon, DocumentTextIcon} from "@heroicons/vue/20/solid";
 import Label from "@/Jetstream/Label.vue";
 import {debounce} from "lodash/function";
 import {Link} from "@inertiajs/vue3";
+import JetInputError from "@/Jetstream/InputError.vue";
 
 export default {
     components: {
+        JetInputError,
         Label,
         AppLayout,
         Pagination,

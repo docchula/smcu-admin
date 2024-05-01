@@ -64,7 +64,7 @@ class ProjectController extends Controller {
 
     public function indexBudget(Request $request): Response {
         $this->authorize('admin-action');
-        $keyword = $request->input('search', Helper::buddhistYear(now()->subMonths(3)->year));
+        $keyword = $request->input('search', Helper::termYear());
 
         return Inertia::render('ProjectYearBudget', [
             'list' => Project::searchQuery($keyword)->addSelect(['expense'])
