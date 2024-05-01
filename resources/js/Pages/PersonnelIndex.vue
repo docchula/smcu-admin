@@ -2,11 +2,15 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Personnel, Year {{ year }}
+                กรรมการสโมสร ปีวาระ {{ year }}
             </h2>
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div v-if="is_outdated" class="text-sm text-gray-900 rounded border border-blue-400 p-3 bg-blue-50 mb-6">
+                <p class="text-xs text-blue-400">Outdated information</p>
+                ยังไม่มีข้อมูลกรรมการปีวาระปัจจุบัน กรุณาแจ้งฝ่ายเทคโนโลยีสารสเทศ สพจ. เพื่อปรับปรุงข้อมูล
+            </div>
             <search-input v-model="searchKeyword" :status="searchMessage" class="mb-4" placeholder="Year (B.E.)"/>
             <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -80,6 +84,7 @@ import Pagination from "@/Components/Pagination.vue";
 import {Bars4Icon} from "@heroicons/vue/24/solid";
 import {DocumentChartBarIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
+import {debounce} from "lodash/function";
 
 export default {
     components: {
@@ -105,18 +110,19 @@ export default {
     },
     watch: {
         // whenever question changes, this function will run
-        searchKeyword: function (newValue, oldValue) {
+        searchKeyword: function (newValue) {
             this.searchMessage = "Typing...";
             this.debouncedSearch(newValue)
         }
     },
-    created: function (keyword) {
-        this.debouncedSearch = _.debounce(this.search, 500)
+    created: function () {
+        this.debouncedSearch = debounce(this.search, 500)
     },
     props: {
         year: Number | null,
         list: Object,
         is_admin: Boolean,
+        is_outdated: Boolean,
     }
 };
 </script>

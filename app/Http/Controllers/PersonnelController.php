@@ -18,12 +18,14 @@ class PersonnelController extends Controller
 {
     public function index(Request $request)
     {
-        $year = $request->input('year', Personnel::getYearList()[0] ?? Helper::buddhistYear());
+        $latestYear = Personnel::getYearList()[0] ?? Helper::buddhistYear();
+        $year = $request->input('year', $latestYear);
 
         return Inertia::render('PersonnelIndex', [
             'list' => Personnel::query()->with('department')->where('year', $year)->orderBy('sequence')->get(),
             'year' => $year,
             'is_admin' => $request->user()->can('admin-action'),
+            'is_outdated' => $latestYear < Helper::termYear(),
         ]);
     }
 
