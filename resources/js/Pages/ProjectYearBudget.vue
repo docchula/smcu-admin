@@ -13,10 +13,11 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <Label>ปีวาระ/ชื่อโครงการ</Label>
-            <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
-            <p class="mt-2 text-xs text-gray-500">
-                ใช้ , แทนความหมาย "หรือ" ในการค้นหา
+            <Label>ปีวาระ/ชื่อ/เลขที่โครงการ</Label>
+            <search-input v-model="searchKeyword" :status="searchMessage"/>
+            <p class="mt-2 mb-4 text-xs text-gray-400">
+                ใช้เครื่องหมาย , แทนความหมาย "หรือ" ในการค้นหา
+                <span class="text-gray-300">เช่น "2566-32,2565-41"</span>
             </p>
 
             <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">

@@ -105,22 +105,26 @@ class Project extends Model {
         if (empty($keyword)) {
             $currentBE = Helper::buddhistYear();
             $query->whereBetween('year', [$currentBE - 1, $currentBE + 1]);
-        } elseif (preg_match("/^25\d{2}-\d{1,3}/", $keyword)) { // format: 2567-1 or 2567-123
-            $parts = explode('-', $keyword, 2);
-            $query->where('year', $parts[0]);
-            $query->where('number', $parts[1]);
-        } elseif (is_numeric($keyword)) {
-            $query->where('year', $keyword);
-            $query->orWhere('number', $keyword);
         } else {
             // comma (,) means 'or'
             $keywordList = explode(',', $keyword);
-            $query->where('name', 'LIKE', '%'.$keywordList[0].'%');
-            unset($keywordList[0]);
             foreach ($keywordList as $keywordListItem) {
                 $keywordListItem = trim($keywordListItem);
                 if (!empty($keywordListItem)) {
-                    $query->orWhere('name', 'LIKE', '%'.$keywordListItem.'%');
+                    // $query->orWhere('name', 'LIKE', '%'.$keywordListItem.'%');
+                    if (preg_match("/^25\d{2}-\d{1,3}/", $keywordListItem)) { // format: 2567-1 or 2567-123
+                        $query->orWhere(function (Builder $query) use ($keywordListItem) {
+                            $parts = explode('-', $keywordListItem, 2);
+                            $query->where('year', $parts[0]);
+                            $query->where('number', $parts[1]);
+                        });
+                    } elseif (is_numeric($keyword)) {
+                        $query->orWhere(($keywordListItem > 2500) ? 'year' : 'number', $keywordListItem);
+                    } else {
+                        $query->orWhere(function (Builder $query) use ($keywordListItem) {
+                            $query->where('name', 'LIKE', '%'.$keywordListItem.'%');
+                        });
+                    }
                 }
             }
         }
