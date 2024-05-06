@@ -1,57 +1,65 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
 services:
-    laravel.test:
-        build:
-            context: ./vendor/laravel/sail/runtimes/8.1
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.1/app
-        ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - mysql
-    mysql:
-        image: 'mysql:8.0'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-        volumes:
-            - 'sailmysql:/var/lib/mysql'
-        networks:
-            - sail
-        healthcheck:
-          test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-          retries: 3
-          timeout: 5s
-    #mailhog:
-    #    image: 'mailhog/mailhog:latest'
-    #    ports:
-    #        - '${FORWARD_MAILHOG_PORT:-1025}:1025'
-    #        - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
-    #    networks:
-    #        - sail
-networks:
-    sail:
-        driver: bridge
+  laravel:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    # image: serversideup/php:8.3-unit
+    volumes:
+      - ./database:/var/www/html/database:Z
+      - ./storage:/var/www/html/storage:Z
+    # restart: on-failure:2
+    environment:
+      # https://serversideup.net/open-source/docker-php/docs/getting-started/default-configurations
+      - PHP_UPLOAD_MAX_FILE_SIZE="30M"
+      - PHP_OPCACHE_ENABLE=1
+      # Enable Laravel config/route/view/event caching (caution: do not call env() in other places than config files)
+      - AUTORUN_ENABLED=true
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - LOG_CHANNEL=stderr
+      - SESSION_DRIVER=redis
+    # For testing
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    labels:
+      # Traefik configuration discovery
+      # https://doc.traefik.io/traefik/providers/docker/#routing-configuration-with-labels
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.admin-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.admin-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.admin-http.middlewares=admin-redirect"
+      - "traefik.http.routers.admin-http.rule=Host(`admin.docchula.com`)"
+      - "traefik.http.routers.admin-http.entrypoints=web"
+      - "traefik.http.routers.admin-https.rule=Host(`admin.docchula.com`)"
+      - "traefik.http.routers.admin-https.entrypoints=websecure"
+      - "traefik.http.services.admin-https.loadbalancer.server.port=8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 500M
+
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - cache:/data
+    environment:
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+
 volumes:
-    sailmysql:
-        driver: local
-    sailredis:
-        driver: local
-    sailmeilisearch:
-        driver: local
+  cache:
+    driver: local
