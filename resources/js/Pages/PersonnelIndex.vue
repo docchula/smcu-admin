@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div v-if="is_outdated" class="text-sm text-gray-900 rounded border border-blue-400 p-3 bg-blue-50 mb-6">
                 <p class="text-xs text-blue-400">Outdated information</p>
-                ยังไม่มีข้อมูลกรรมการปีวาระปัจจุบัน กรุณาแจ้งฝ่ายเทคโนโลยีสารสเทศ สพจ. เพื่อปรับปรุงข้อมูล
+                ยังไม่มีข้อมูลกรรมการปีวาระปัจจุบัน กรุณาแจ้งฝ่ายเทคโนโลยีสารสนเทศ สพจ. เพื่อปรับปรุงข้อมูล
             </div>
             <search-input v-model="searchKeyword" :status="searchMessage" class="mb-4" placeholder="Year (B.E.)"/>
             <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
