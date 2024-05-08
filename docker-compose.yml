@@ -5,6 +5,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     image: smcu-admin-app
+    pull_policy: build
     volumes:
       - /storage/smcu-admin-storage:/var/www/html/storage/app:rw,Z
       - /storage/smcu-admin-storage/public:/var/www/html/public/storage:rw,Z
