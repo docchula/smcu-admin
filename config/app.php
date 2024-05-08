@@ -232,4 +232,8 @@ return [
 
     ],
 
+    'trusted_proxies' => value(function ($config) {
+        return empty($config) ? [] : explode(',', $config);
+    }, env('TRUSTED_PROXIES', '')),
+
 ];

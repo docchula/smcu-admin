@@ -1,19 +1,20 @@
+# Production environment
 services:
   laravel:
     build:
       context: ./
       dockerfile: Dockerfile
-    # image: serversideup/php:8.3-unit
     volumes:
-      - ./database:/var/www/html/database:Z
-      - ./storage:/var/www/html/storage:Z
-    # restart: on-failure:2
+      - /storage/smcu-admin-storage:/var/www/html/storage/app:Z
+      # - ./database:/var/www/html/database:Z # For testing
+      # - ./.env:/var/www/html/.env:Z # For testing
+    restart: on-failure:2
     environment:
       # https://serversideup.net/open-source/docker-php/docs/getting-started/default-configurations
       - PHP_UPLOAD_MAX_FILE_SIZE="30M"
       - PHP_OPCACHE_ENABLE=1
       # Enable Laravel config/route/view/event caching (caution: do not call env() in other places than config files)
-      - AUTORUN_ENABLED=true
+      #- AUTORUN_ENABLED=true
       - APP_ENV=production
       - APP_DEBUG=false
       - REDIS_HOST=redis
@@ -22,10 +23,8 @@ services:
       - CACHE_DRIVER=redis
       - LOG_CHANNEL=stderr
       - SESSION_DRIVER=redis
-    # For testing
-    ports:
-      - "8080:8080"
-      - "8443:8443"
+    #ports: # For testing
+    #  - "8080:8080"
     labels:
       # Traefik configuration discovery
       # https://doc.traefik.io/traefik/providers/docker/#routing-configuration-with-labels
@@ -37,6 +36,7 @@ services:
       - "traefik.http.routers.admin-http.entrypoints=web"
       - "traefik.http.routers.admin-https.rule=Host(`admin.docchula.com`)"
       - "traefik.http.routers.admin-https.entrypoints=websecure"
+      - "traefik.http.routers.admin-https.tls.certresolver=leresolver"
       - "traefik.http.services.admin-https.loadbalancer.server.port=8080"
     deploy:
       resources:
@@ -49,7 +49,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     volumes:
-      - cache:/data
+      - redis-cache:/data
     environment:
       - REDIS_PASSWORD=null
       - REDIS_PORT=6379
@@ -61,5 +61,5 @@ services:
           memory: 500M
 
 volumes:
-  cache:
+  redis-cache:
     driver: local

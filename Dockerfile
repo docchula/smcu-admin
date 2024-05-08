@@ -22,12 +22,12 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 COPY --from=base ${APP_BASE_DIR} /app
 WORKDIR /app
-RUN ls .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm build
 
 FROM base
 COPY --from=node /app/public/build ${APP_BASE_DIR}/public/build
+RUN chown -R www-data /var/www/html/storage
 
 USER www-data
 CMD ["unitd", "--no-daemon"]
