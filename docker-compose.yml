@@ -4,8 +4,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    image: smcu-admin-app
     volumes:
-      - /storage/smcu-admin-storage:/var/www/html/storage/app:Z
+      - /storage/smcu-admin-storage:/var/www/html/storage/app:rw,Z
+      - /storage/smcu-admin-storage/public:/var/www/html/public/storage:rw,Z
       # - ./database:/var/www/html/database:Z # For testing
       # - ./.env:/var/www/html/.env:Z # For testing
     restart: on-failure:2
@@ -23,6 +25,9 @@ services:
       - CACHE_DRIVER=redis
       - LOG_CHANNEL=stderr
       - SESSION_DRIVER=redis
+    # Load environment variables from Portainer stack configuration
+    env_file:
+      - stack.env
     #ports: # For testing
     #  - "8080:8080"
     labels:
@@ -43,6 +48,11 @@ services:
         limits:
           cpus: '2'
           memory: 500M
+
+
+  schedule-runner:
+    image: smcu-admin-app
+    command: [ "php", "/var/www/html/artisan", "schedule:work" ]
 
 
   redis:
