@@ -66,7 +66,7 @@
                         <jet-input-error v-if="form.errors.advisor" :message="form.errors.advisor" class="mt-2"/>
                         <jet-input-error v-else-if="form.advisor && !['อ.','อา','ผศ','ผู','รศ','รอ','ศ.','ศา'].includes(form.advisor.substring(0,2))"
                                          message='ต้องขึ้นต้นด้วยตำแหน่งทางวิชาการ (อ./ผศ./รศ./ศ.)' class="mt-2"/>
-                        <p v-else class="mt-1 text-xs text-gray-500">กดเลือกจากรายการ</p>
+                        <p v-else-if="!form.advisor" class="mt-1 text-xs text-gray-500">กดเลือกจากรายการ</p>
                     </div>
                     <fieldset class="col-span-6">
                         <div class="flex gap-x-8">
