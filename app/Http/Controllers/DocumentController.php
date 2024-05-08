@@ -6,7 +6,6 @@ use App\Helper;
 use App\Models\Department;
 use App\Models\Document;
 use App\Models\Personnel;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -191,8 +190,12 @@ class DocumentController extends Controller {
         }
 
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('documents');
-            if ($document->attachment_path) {
+            $path = $request->file('attachment')
+                ->storeAs(
+                    'documents/'.$document->year,
+                    $document->id.'_'.$document->number.'-'.$document->year.'_Draft.'.$request->file('attachment')->guessExtension()
+                );
+            if ($document->attachment_path and $document->attachment_path != $path) {
                 Storage::delete($document->attachment_path);
             }
             $document->attachment_path = $path;
@@ -202,7 +205,10 @@ class DocumentController extends Controller {
                 Storage::delete($document->attachment_path);
             }
             $document->approved_path = $request->file('approved_attachment')
-                ->storeAs('documents', $document->id.'_'.$document->number.'-'.$document->year.'_Signed.pdf');
+                ->storeAs(
+                    'documents/'.$document->year,
+                    $document->id.'_'.$document->number.'-'.$document->year.'_Signed.'.$request->file('approved_attachment')->guessExtension()
+                );
             $document->status = Document::STATUS_APPROVED;
         }
         $document->saveOrFail();

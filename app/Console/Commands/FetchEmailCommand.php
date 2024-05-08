@@ -116,7 +116,7 @@ class FetchEmailCommand extends Command
                                 continue;
                             }
                             // Save file
-                            $filename = 'documents/'.$document->id.'_'.$document->number.'-'.$document->year.'_Signed.pdf';
+                            $filename = 'documents/'.$document->year.'/'.$document->id.'_'.$document->number.'-'.$document->year.'_Signed.pdf';
                             foreach ($message->getPayload()->getParts() as $part) {
                                 if ($part->getMimeType() === 'application/pdf') {
                                     // Retrieve attachment id then fetch file content
