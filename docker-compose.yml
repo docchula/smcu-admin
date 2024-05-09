@@ -48,12 +48,24 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 500M
+          memory: 1G
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/up" ]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
 
 
   schedule-runner:
     image: smcu-admin-app
     command: [ "php", "/var/www/html/artisan", "schedule:work" ]
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 400M
 
 
   redis:

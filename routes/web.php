@@ -1,7 +1,6 @@
 <?php
 
 use App\Helper;
-use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GoogleController;
