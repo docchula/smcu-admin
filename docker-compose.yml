@@ -61,6 +61,8 @@ services:
   schedule-runner:
     image: smcu-admin-app
     command: [ "php", "/var/www/html/artisan", "schedule:work" ]
+    depends_on:
+      - laravel
     deploy:
       resources:
         limits:
