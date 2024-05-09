@@ -8,7 +8,7 @@ on:
 
 jobs:
   laravel-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
@@ -18,13 +18,13 @@ jobs:
           ref: ${{ github.head_ref }}
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
-      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
