@@ -34,7 +34,7 @@ class PersonnelController extends Controller
         $yearList = Personnel::getYearList();
         return response()->json([
             'years' => $yearList,
-            'personnels' => Personnel::getYear($request->input('year', $yearList[0]))
+            'personnels' => Personnel::getYear($request->input('year', $yearList[0] ?? Helper::termYear()))
                 ->reject(function (Personnel $personnel) {
                     return $personnel->sequence >= 200;
                 })->map(function (Personnel $personnel) {
