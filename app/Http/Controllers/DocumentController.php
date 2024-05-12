@@ -155,7 +155,7 @@ class DocumentController extends Controller {
             'tag' => 'nullable|string|in:approval,summary',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20,000 KB
             'approved_attachment' => 'nullable|file|mimes:pdf|max:20000',
-            'project_id' => 'required_with:tag|integer|min:1',
+            'project_id' => 'nullable|required_with:tag|integer|min:1|exists:projects,id',
             'objectives' => 'required_if:tag,summary|array',
             'expense' => 'required_if:tag,summary|array',
         ]);
