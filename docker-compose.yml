@@ -7,8 +7,8 @@ services:
     image: smcu-admin-app
     pull_policy: build
     volumes:
-      - /storage/smcu-admin-storage:/var/www/html/storage/app:rw,Z
-      - /storage/smcu-admin-storage/public:/var/www/html/public/storage:rw,Z
+      - /storage/smcu-admin-storage:/var/www/html/storage/app:rw,z
+      - /storage/smcu-admin-storage/public:/var/www/html/public/storage:rw,z
       # - ./database:/var/www/html/database:Z # For testing
       # - ./.env:/var/www/html/.env:Z # For testing
     restart: on-failure:2
@@ -63,11 +63,24 @@ services:
     command: [ "php", "/var/www/html/artisan", "schedule:work" ]
     depends_on:
       - laravel
+    volumes:
+      - /storage/smcu-admin-storage:/var/www/html/storage/app:rw,z
+      - /storage/smcu-admin-storage/public:/var/www/html/public/storage:rw,z
+    restart: on-failure:2
+    environment:
+      - APP_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - LOG_CHANNEL=stderr
+    env_file:
+      - stack.env
     deploy:
       resources:
         limits:
-          cpus: '1'
-          memory: 400M
+          cpus: '2'
+          memory: 1G
 
 
   redis:
