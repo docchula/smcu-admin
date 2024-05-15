@@ -28,7 +28,7 @@ class EmailDeliveryFailureMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.email-delivery-failure',
+            view: 'emails.email-delivery-failure',
         );
     }
 

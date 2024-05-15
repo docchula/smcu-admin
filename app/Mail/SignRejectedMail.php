@@ -28,7 +28,7 @@ class SignRejectedMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            html: 'emails.sign-rejected',
+            view: 'emails.sign-rejected',
         );
     }
 

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\GoogleController;
 use App\Mail\EmailDeliveryFailureMail;
+use App\Mail\SignApprovedMail;
 use App\Mail\SignRejectedMail;
 use App\Models\Document;
 use Carbon\Carbon;
@@ -130,18 +131,25 @@ class FetchEmailCommand extends Command
                                     break;
                                 }
                             }
+
+                            if ($document->user?->email) {
+                                $this->line('-- Sending approval notification to '.$document->user->email);
+                                Mail::to($document->user->email)->send(new SignApprovedMail($document));
+                            }
                         } elseif (str_starts_with($subject, 'REJECTED:') and $document->status != Document::STATUS_REJECTED) {
                             $document->status = Document::STATUS_REJECTED;
                             $document->save();
 
                             if ($document->user?->email) {
-                                Mail::to($document->user?->email)->send(new SignRejectedMail($document));
+                                $this->line('-- Sending rejection notification to '.$document->user->email);
+                                Mail::to($document->user->email)->send(new SignRejectedMail($document));
                             }
                         } elseif (str_starts_with($subject, 'Email delivery failure:') and $document->status != Document::STATUS_UNDELIVERED) {
                             $document->status = Document::STATUS_UNDELIVERED;
                             $document->save();
 
                             if ($document->user?->email) {
+                                $this->line('-- Sending failure notification to '.$document->user?->email);
                                 Mail::to($document->user?->email)->send(new EmailDeliveryFailureMail($document));
                             }
                         }
