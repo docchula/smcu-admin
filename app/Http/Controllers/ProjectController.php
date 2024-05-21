@@ -171,7 +171,7 @@ class ProjectController extends Controller {
             'advisor' => 'required|filled|string|min:5|max:255',
             'type' => 'required|filled|string|max:20',
             'recurrence' => 'required|filled|string|max:20',
-            'duration' => 'required|filled|numeric|max:999|min:1',
+            'duration' => 'nullable|numeric|max:999|min:1',
             'estimated_attendees' => 'nullable|string|max:40',
             'period_start' => 'required|date',
             'period_end' => 'required|date',
