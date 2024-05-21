@@ -11,7 +11,9 @@
                     กรอกรายชื่อนิสิตผู้เกี่ยวข้องกับกิจกรรมลงในตาราง โดยมีคอลัมน์ต่อไปนี้
                     <ul class="list-disc list-outside">
                         <li><strong>student_id</strong> : เลขประจำตัวนิสิต (10 หลัก) หรือ อีเมล docchula ของนิสิต</li>
-                        <li><strong>type</strong> : ใส่ organizer, staff, หรือ attendee เท่านั้น (ผู้รับผิดชอบ/ผู้จัดกิจกรรม/ผู้เข้าร่วม)</li>
+                        <li><strong>type</strong> : เลือก {{ Object.keys(PROJECT_PARTICIPANT_ROLES).join('/') }} เท่านั้น
+                            ({{ Object.values(PROJECT_PARTICIPANT_ROLES).join('/') }})
+                        </li>
                         <li><strong>title</strong> : ตำแหน่งงาน (ไม่จำเป็นต้องใส่) เช่น ประธานโครงการ หัวหน้าฝ่ายสถานที่</li>
                     </ul>
                 </li>
@@ -53,7 +55,7 @@
                             {{ e.user_name }}
                         </td>
                         <td class="p-2">
-                            {{ {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}[e.type] ?? e.type }}
+                            {{ PROJECT_PARTICIPANT_ROLES[e.type] ?? e.type }}
                         </td>
                         <td class="p-2">
                             <span v-if="e.title">{{ e.title }}</span>
@@ -81,7 +83,8 @@ import JetDialogModal from "../Jetstream/DialogModal.vue";
 import JetButton from "../Jetstream/Button.vue";
 import JetSecondaryButton from "../Jetstream/SecondaryButton.vue";
 import {ref} from "vue";
-import { router } from '@inertiajs/vue3'
+import {router} from '@inertiajs/vue3'
+import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 const props = defineProps({
     'showModal': Boolean,

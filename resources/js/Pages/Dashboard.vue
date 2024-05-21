@@ -1,6 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
+import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 const props = defineProps({myProjects: Array});
 const lastYear = new Date();
@@ -69,11 +70,7 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
                                     <template v-else>
                                         <span v-if="participant.title">{{ participant.title }} :</span>
                                         {{
-                                            {
-                                                organizer: 'ผู้รับผิดชอบ',
-                                                staff: 'ผู้จัดกิจกรรม',
-                                                attendee: 'ผู้เข้าร่วม'
-                                            }[participant.type] ?? participant.type
+                                            PROJECT_PARTICIPANT_ROLES[participant.type] ?? participant.type
                                         }}
                                     </template>
                                 </p>

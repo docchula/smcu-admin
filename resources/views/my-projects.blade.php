@@ -29,7 +29,7 @@
     @foreach($user->participantAndProjects() as $participant)
         <tr>
             <td>({{ $participant->project->getNumber() }}) {{ $participant->project->name }}</td>
-            <td>{{ ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้จัดกิจกรรม', 'attendee' => 'ผู้เข้าร่วม'][$participant->type] ?? $participant->type }}</td>
+            <td>{{ ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้ปฏิบัติงาน', 'attendee' => 'ผู้เข้าร่วม'][$participant->type] ?? $participant->type }}</td>
             <td>{{ $participant->title }}</td>
         </tr>
     @endforeach

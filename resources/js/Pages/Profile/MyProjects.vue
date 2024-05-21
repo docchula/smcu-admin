@@ -40,7 +40,7 @@
                             </Link>
                         </td>
                         <td class="px-2 py-2 md:py-3 text-sm">
-                            {{ {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}[participant.type] ?? participant.type }}
+                            {{ PROJECT_PARTICIPANT_ROLES[participant.type] ?? participant.type }}
                         </td>
                         <td class="px-2 py-2 md:py-3 text-gray-500 text-xs">
                             {{ participant.title ?? '-' }}
@@ -57,6 +57,7 @@
 import {Link} from '@inertiajs/vue3'
 import JetActionSection from '../../Jetstream/ActionSection.vue'
 import {PrinterIcon} from '@heroicons/vue/24/solid'
+import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 const props = defineProps({
     projects: {

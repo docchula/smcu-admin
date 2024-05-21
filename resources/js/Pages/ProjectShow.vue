@@ -305,7 +305,7 @@
                                  @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
                 <div class="border-t border-gray-200">
                     <dl>
-                        <div v-for="(name, type) in {organizer: 'ผู้รับผิดชอบ', staff: 'ผู้จัดกิจกรรม', attendee: 'ผู้เข้าร่วม'}"
+                        <div v-for="(name, type) in PROJECT_PARTICIPANT_ROLES"
                              class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
                                 {{ name }}
@@ -345,6 +345,7 @@ import {ArrowUpTrayIcon, DocumentChartBarIcon, DocumentTextIcon, PlusIcon, Print
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import _ from "lodash";
 import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
+import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 export default {
     components: {
@@ -390,6 +391,7 @@ export default {
                 type: '',
                 student_ids: [],
             }),
+            PROJECT_PARTICIPANT_ROLES: PROJECT_PARTICIPANT_ROLES,
         }
     },
     methods: {
