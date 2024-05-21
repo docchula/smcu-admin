@@ -155,7 +155,7 @@ class ProjectController extends Controller {
         });
 
         return Inertia::render('ProjectCreate', [
-            'item' => $project,
+            'item' => $project->castDateAsDateString(),
             'static_departments' => Department::optionList(),
             'static_advisors' => Project::advisorList(),
         ]);

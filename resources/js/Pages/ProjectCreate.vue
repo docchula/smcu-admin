@@ -30,8 +30,7 @@
                 <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
                     กรณี<a @click="forAcademicPresentation" class="cursor-pointer text-green-500">โครงการนำเสนอผลงานในการประชุมวิชาการ</a>
                     เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"
-                    <p class="mt-2 text-blue-600">โครงการสังกัดคณะกรรมการบริหาร เช่น <i>โครงการค่ายอยากเป็นหมอ โครงการ MDCU Counseling Unit โครงการ CU
-                        Open House</i> ให้เลือก "คณะกรรมการบริหาร"</p>
+                    <p class="mt-2 text-blue-600">ระวังกรอกเดือนและปีสลับกัน</p>
                 </template>
                 <template #form>
                     <div class="col-span-6">
@@ -88,7 +87,7 @@
                                 <input id="type_purchase" v-model="form.type" name="type" value="purchase" type="radio"
                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
                                 <label for="type_purchase" class="ml-3 block text-sm font-medium text-gray-700">
-                                    โครงการจัดซื้อ (ไม่ใช่กิจกรรม)
+                                    ไม่ใช่กิจกรรม (เช่น โครงการจัดซื้อ)
                                 </label>
                             </div>
                         </div>
@@ -119,28 +118,32 @@
                         <jet-input-error :message="form.errors.year" class="mt-2"/>
                     </div>
                     <div class="col-span-3 lg:col-span-2">
-                        <jet-label for="period_start" :value="(form.type === 'once') ? 'วันที่เริ่มกิจกรรม' : 'วันที่เริ่มดำเนินงาน'"/>
-                        <datepicker id="period_start" v-model="form.period_start" type="date" :weekStartsOn="0" startingView="month" inputFormat="yyyy-MM-dd"
-                                    class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full"
-                        ></datepicker>
-                        <p class="mt-1 text-xs text-gray-500 col-span-6" v-if="!form.errors.period_start && (form.type === 'once')">
-                            ไม่รวมเตรียมงานและสรุปผล
+                        <jet-label for="period_start"
+                                   :value="(form.type === 'once') ? 'วันที่เริ่มกิจกรรม (ไม่รวมเตรียม/สรุป)' : 'วันที่เริ่มดำเนินงาน'"/>
+                        <jet-input id="period_start" v-model="form.period_start" type="date" pattern="\d{4}-\d{2}-\d{2}" min="2020-01-01"
+                                   class="mt-1 block w-full"
+                        ></jet-input>
+                        <jet-input-error v-if="form.errors.period_start" :message="form.errors.period_start" class="mt-2"/>
+                        <p v-else-if="form.period_start" class="mt-1 text-xs text-green-500">
+                            {{ new Date(form.period_start).toDateString() }}
                         </p>
-                        <jet-input-error :message="form.errors.period_start" class="mt-2"/>
                     </div>
                     <div class="col-span-3 lg:col-span-2">
                         <jet-label for="period_end" :value="(form.type === 'once') ? 'วันที่สิ้นสุดกิจกรรม' : 'วันที่สิ้นสุดการดำเนินงาน'"/>
-                        <datepicker id="period_end" v-model="form.period_end" type="date" :weekStartsOn="0" startingView="month" inputFormat="yyyy-MM-dd"
-                                    class="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full"
-                        ></datepicker>
-                        <jet-input-error :message="form.errors.period_end" class="mt-2"/>
+                        <jet-input id="period_end" v-model="form.period_end" type="date" pattern="\d{4}-\d{2}-\d{2}" min="2020-01-01"
+                                   class="mt-1 block w-full"
+                        ></jet-input>
+                        <jet-input-error v-if="form.errors.period_end" :message="form.errors.period_end" class="mt-2"/>
+                        <p v-else-if="form.period_end" class="mt-1 text-xs text-green-500">
+                            {{ new Date(form.period_end).toDateString() }}
+                        </p>
                     </div>
                     <div class="col-span-3">
                         <jet-label for="duration" value="ระยะเวลา (ชั่วโมง)"/>
                         <jet-input id="duration" v-model="form.duration" type="number" min="1" max="999" step="0.5" class="mt-1 block w-full"
                                    required/>
                         <jet-input-error v-if="form.errors.duration" :message="form.errors.duration" class="mt-2"/>
-                        <p v-else class="mt-1 text-xs text-gray-500 col-span-6">
+                        <p v-else class="mt-1 text-xs text-gray-500">
                             นับเฉพาะชั่วโมงกิจกรรมจริง
                         </p>
                     </div>
@@ -439,7 +442,6 @@ import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-import Datepicker from 'vue3-datepicker'
 import draggable from 'vuedraggable'
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import Combobox from "../Components/Combobox.vue";
@@ -455,7 +457,6 @@ export default {
         JetInputError,
         JetLabel,
         JetSectionBorder,
-        Datepicker,
         draggable,
     },
 
@@ -472,8 +473,8 @@ export default {
                 type: this.item.type ?? "",
                 recurrence: this.item.recurrence ?? "",
                 year: this.item.year ?? (defaultYear.getFullYear() + 543),
-                period_start: this.item.period_start ? new Date(this.item.period_start) : now,
-                period_end: this.item.period_end ? new Date(this.item.period_end) : now,
+                period_start: this.item.period_start ? this.item.period_start : "",
+                period_end: this.item.period_end ? this.item.period_end : "",
                 background: this.item.background ?? "",
                 aims: this.item.aims ?? "",
                 outcomes: this.item.outcomes ?? "",

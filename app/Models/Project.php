@@ -102,6 +102,13 @@ class Project extends Model {
         return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
     }
 
+    public function castDateAsDateString(): static {
+        $this->casts['period_start'] = 'date:Y-m-d';
+        $this->casts['period_end'] = 'date:Y-m-d';
+
+        return $this;
+    }
+
     public static function searchQuery(?string $keyword = null, ?array $columns = []): Builder {
         $query = self::query()->select(['id', 'year', 'number', 'name', 'department_id', 'created_at', 'period_start', 'period_end', ...$columns])->with(['department']);
         if (empty($keyword)) {
