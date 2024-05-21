@@ -1,7 +1,8 @@
 <template>
     <app-layout>
         <template #header>
-            <inertia-link :href="item.id ? route('projects.show', {project: item.id}) : route('projects.index')" class="mb-4 block flex items-center text-gray-700">
+            <inertia-link :href="item.id ? route('projects.show', {project: item.id}) : route('projects.index')"
+                          class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
                 </svg>
@@ -30,6 +31,8 @@
                 <template #description>ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
                     กรณี<a @click="forAcademicPresentation" class="cursor-pointer text-green-500">โครงการนำเสนอผลงานในการประชุมวิชาการ</a>
                     เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"
+                    <p class="mt-2">กิจกรรมที่สามารถบันทึกใน Student Profile/Activity Transcript จะต้องมีระยะเวลาไม่น้อยกว่า 3 ชั่วโมง และสนับสนุน
+                        Outcome ของหลักสูตรแพทยศาสตรบัณฑิต</p>
                     <p class="mt-2 text-blue-600">ระวังกรอกเดือนและปีสลับกัน</p>
                 </template>
                 <template #form>
@@ -378,7 +381,9 @@
             <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>นิสิตผู้รับผิดชอบโครงการ</template>
-                <template #description>รายชื่อนิสิตที่รับผิดชอบการดำเนินโครงการ โดยนิสิตคนแรกเป็นนิสิตผู้รับผิดชอบหลัก</template>
+                <template #description>
+                    รายชื่อนิสิตที่รับผิดชอบการดำเนินโครงการ โดยนิสิตคนแรกเป็นนิสิตผู้รับผิดชอบหลัก <br/>ในขั้นนี้ให้กรอกเฉพาะชื่อผู้รับผิดชอบ
+                </template>
                 <template #form>
                     <table v-if="organizers.length > 0" class="col-span-6 divide-y divide-gray-200">
                         <thead>
@@ -416,6 +421,27 @@
                             เพิ่มนิสิตผู้รับผิดชอบโครงการ
                         </jet-button>
                         <jet-input-error :message="form.errors.organizers" class="mt-2"/>
+                        <div class="mt-4 text-gray-500">
+                            <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Student Profile/Activity Transcript</h6>
+                            <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
+                                <li>บทบาทของนิสิตผู้เกี่ยวข้อง ประกอบด้วย ผู้รับผิดชอบ ผู้ปฏิบัติงาน และผู้เข้าร่วม
+                                    ตามสัดส่วนความรับผิดชอบในการดำเนินงาน
+                                </li>
+                                <li>ผู้รับผิดชอบ พึงมีจำนวนไม่เกินร้อยละ 20 ของจำนวนผู้ปฏิบัติงาน ยกเว้นโครงการที่ไม่มีนิสิตเป็นผู้ปฏิบัติงาน
+                                </li>
+                                <li>ผู้ปฏิบัติงาน พึงมีจำนวนไม่เกิน 2 ใน 3 ของผู้มีส่วนร่วมในกิจกรรมทั้งหมด ทั้งผู้รับผิดชอบ ผู้ปฏิบัติงาน
+                                    และผู้เข้าร่วม
+                                    ทั้งนิสิตและบุคคลภายนอก
+                                </li>
+                                <li>ผู้เข้าร่วม ต้องลงชื่อเข้าร่วมกิจกรรมทุกวัน ทุกครึ่งวัน หรือตามความเหมาะสมต่อลักษณะกิจกรรม
+                                    โดยมีหลักฐานว่าเข้าร่วมกิจกรรมไม่น้อยกว่า 2 ใน 3 ของระยะเวลากิจกรรมทั้งหมด
+                                    ให้ผู้รับผิดชอบโครงการเก็บรักษาหลักฐานดังกล่าวไว้
+                                </li>
+                                <li>กิจกรรมที่มีความจำเป็นต้องแบ่งบทบาทของนิสิตในสัดส่วนที่ไม่เป็นไปตามเงื่อนไขข้างต้น
+                                    ให้ปรึกษาผู้ช่วย/รองคณบดีฝ่ายกิจการนิสิตพิจารณาอนุญาตเป็นรายกรณี
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </template>
                 <template #actions>
@@ -442,7 +468,7 @@ import JetInput from '@/Jetstream/Input.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import Combobox from "../Components/Combobox.vue";
 
@@ -457,7 +483,6 @@ export default {
         JetInputError,
         JetLabel,
         JetSectionBorder,
-        draggable,
     },
 
     data() {
