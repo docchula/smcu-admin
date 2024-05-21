@@ -135,6 +135,23 @@
                         ></datepicker>
                         <jet-input-error :message="form.errors.period_end" class="mt-2"/>
                     </div>
+                    <div class="col-span-3">
+                        <jet-label for="duration" value="ระยะเวลา (ชั่วโมง)"/>
+                        <jet-input id="duration" v-model="form.duration" type="number" min="1" max="999" step="0.5" class="mt-1 block w-full"
+                                   required/>
+                        <jet-input-error v-if="form.errors.duration" :message="form.errors.duration" class="mt-2"/>
+                        <p v-else class="mt-1 text-xs text-gray-500 col-span-6">
+                            นับเฉพาะชั่วโมงกิจกรรมจริง
+                        </p>
+                    </div>
+                    <div class="col-span-3">
+                        <jet-label for="estimated_attendees" value="ประมาณการจำนวนผู้เข้าร่วม (คน)"/>
+                        <jet-input id="estimated_attendees" v-model="form.estimated_attendees" type="text" class="mt-1 block w-full" required/>
+                        <jet-input-error v-if="form.errors.estimated_attendees" :message="form.errors.estimated_attendees" class="mt-2"/>
+                        <p v-else class="mt-1 text-xs text-gray-500 col-span-6">
+                            อาจเป็นนิสิตหรือบุคคลอื่นก็ได้
+                        </p>
+                    </div>
                 </template>
             </jet-form-section>
             <jet-section-border/>
@@ -460,6 +477,8 @@ export default {
                 background: this.item.background ?? "",
                 aims: this.item.aims ?? "",
                 outcomes: this.item.outcomes ?? "",
+                duration: this.item.duration ?? "",
+                estimated_attendees: this.item.estimated_attendees ?? "",
             }),
             objectives: this.item.objectives ?? [],
             expense: this.item.expense ?? [],

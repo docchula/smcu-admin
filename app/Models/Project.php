@@ -22,6 +22,8 @@ use Illuminate\Support\Str;
  * @property string|null                     $advisor
  * @property string|null                     $type
  * @property string|null                     $recurrence
+ * @property float|null $duration
+ * @property string|null $estimated_attendees
  * @property int                             $year
  * @property int                             $number
  * @property Carbon|null                     $period_start

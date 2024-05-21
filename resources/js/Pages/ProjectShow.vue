@@ -113,13 +113,13 @@
                             <dt class="text-sm font-medium text-gray-500">วันที่สิ้นสุด</dt>
                             <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.period_end }}</dd>
                         </div>
-                        <div v-if="item.approval_document_id" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                            <dt class="text-sm font-medium text-gray-500">หนังสือขออนุมัติ</dt>
-                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                                <inertia-link :href="route('documents.show', {document: item.approval_document_id})">
-                                    ดูเอกสาร
-                                </inertia-link>
-                            </dd>
+                        <div v-if="item.duration" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">ระยะเวลา</dt>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.duration }} ชั่วโมง</dd>
+                        </div>
+                        <div v-if="item.estimated_attendees" class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">ประมาณการจำนวนผู้เข้าร่วม (คน)</dt>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">{{ item.estimated_attendees }}</dd>
                         </div>
                     </dl>
                 </div>
