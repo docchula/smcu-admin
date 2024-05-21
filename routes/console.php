@@ -9,4 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command(FetchEmailCommand::class)
-    ->everyFourHours()->withoutOverlapping(28800);
+    ->everyFourHours()->withoutOverlapping(28800)->appendOutputTo(storage_path('logs/fetch-email.log'));;

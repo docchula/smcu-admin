@@ -1,6 +1,6 @@
 <h2 style="color: black">
     หนังสือสพจ. ที่ {{ $document->number }}/{{ $document->year }} เรื่อง {{ $document->title }}
-    <span style="color:red"> ถูกลงลายมือชื่อเรียบร้อยแล้ว</span>
+    <span style="color:green"> ถูกลงลายมือชื่อเรียบร้อยแล้ว</span>
 </h2>
 
 เอกสารของท่านได้รับการลงลายมือชื่ออิเล็กทรอนิกส์เรียบร้อยแล้ว<br/>
