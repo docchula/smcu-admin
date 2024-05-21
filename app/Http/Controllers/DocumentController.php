@@ -20,22 +20,7 @@ class DocumentController extends Controller {
      */
     public function index(Request $request): Response {
         $keyword = $request->input('search');
-        $query = Document::query()->with(['department']);
-        if (empty($keyword)) {
-            $query->where('year', Helper::buddhistYear());
-        } elseif (preg_match("/^[\/\d]+/", $keyword)) {
-            $parts = explode('/', $keyword, 2);
-            if (!empty($parts[0])) {
-                $query->where('number', $parts[0]);
-            }
-            if (!empty($parts[1])) {
-                $query->where('year', $parts[1]);
-            } elseif (strlen($parts[0]) === 4) {
-                $query->orWhere('year', $parts[0]);
-            }
-        } else {
-            $query->where('title', 'LIKE', '%' . $keyword . '%');
-        }
+        $query = Document::searchQuery($keyword);
 
         return Inertia::render('DocumentIndex', [
             'list' => $query->orderByDesc('year')->orderByDesc('number')->paginate(20)->withQueryString(),

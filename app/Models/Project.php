@@ -121,9 +121,7 @@ class Project extends Model {
                     } elseif (is_numeric($keyword)) {
                         $query->orWhere(($keywordListItem > 2500) ? 'year' : 'number', $keywordListItem);
                     } else {
-                        $query->orWhere(function (Builder $query) use ($keywordListItem) {
-                            $query->where('name', 'LIKE', '%'.$keywordListItem.'%');
-                        });
+                        $query->orWhere('name', 'LIKE', '%'.$keywordListItem.'%');
                     }
                 }
             }

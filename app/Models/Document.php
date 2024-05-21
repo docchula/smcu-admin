@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Helper;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,5 +52,37 @@ class Document extends Model {
 
     public static function latestOfYear(?int $year): ?self {
         return self::where('year', $year ?? (date('Y') + 543))->orderByDesc('number')->first();
+    }
+
+    public static function searchQuery(?string $keyword = null): Builder {
+        $query = self::query()->with(['department']);
+        $buddhistYear = Helper::buddhistYear();
+        if (empty($keyword)) {
+            $query->where('year', $buddhistYear);
+        } else {
+            // comma (,) means 'or'
+            $keywordList = explode(',', $keyword);
+            foreach ($keywordList as $keywordListItem) {
+                $keywordListItem = trim($keywordListItem);
+                if (!empty($keywordListItem)) {
+                    if (preg_match("/^\d{1,4}\/25\d{2}/", $keywordListItem)) { // format: 1/2567 or 1234/2567
+                        $query->orWhere(function (Builder $query) use ($keywordListItem) {
+                            $parts = explode('/', $keywordListItem, 2);
+                            $query->where('number', $parts[0]);
+                            $query->where('year', $parts[1]);
+                        });
+                    } elseif (is_numeric($keyword)) {
+                        if ($keywordListItem > 2550 and $keywordListItem <= $buddhistYear) {
+                            $query->orWhere('year', $keywordListItem);
+                        }
+                        $query->orWhere('number', $keywordListItem);
+                    } else {
+                        $query->orWhere('title', 'LIKE', '%'.$keywordListItem.'%');
+                    }
+                }
+            }
+        }
+
+        return $query;
     }
 }
