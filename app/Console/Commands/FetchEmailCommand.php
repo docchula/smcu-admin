@@ -105,15 +105,15 @@ class FetchEmailCommand extends Command
                 $this->line('- Processing message '.$subject);
                 $subject = str_replace(['Copy of ', 'สำเนา '], '', $subject);
                 $list = [];
-                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s|-){1,2}(\d+)(?:_|-)(25\d\d)(?:\s|-).+/i', $subject, $list, PREG_UNMATCHED_AS_NULL)) {
+                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s|-){1,2}(\d+)(?:_|-|\/)(25\d\d)(?:\s|-).+/i', $subject, $list, PREG_UNMATCHED_AS_NULL)) {
                     $document = Document::where('number', $list[1])->where('year', $list[2])->first();
                     if ($document) {
-                        $this->line('- Found update of document '.$document->id.' ('.$document->number.'/'.$document->year.') '.$document->title);
+                        $this->line('-- Found update of document '.$document->id.' ('.$document->number.'/'.$document->year.') '.$document->title);
                         if (str_starts_with($subject, 'FINALIZED:')) {
                             // Skip if document is already approved
                             if ($document->status == Document::STATUS_APPROVED and $document->approved_path and Carbon::parse($headers['Date'])
                                     ->isBefore($document->updated_at)) {
-                                $this->line('- Document is already approved, skipping...');
+                                $this->line('-- Document is already approved, skipping...');
                                 continue;
                             }
                             // Save file
