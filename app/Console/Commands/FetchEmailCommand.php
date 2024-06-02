@@ -105,7 +105,11 @@ class FetchEmailCommand extends Command
                 $this->line('- Processing message '.$subject);
                 $subject = str_replace(['Copy of ', 'สำเนา '], '', $subject);
                 $list = [];
-                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s|-){1,2}(\d+)(?:_|-|\/)(25\d\d)(?:\s|-).+/i', $subject, $list, PREG_UNMATCHED_AS_NULL)) {
+                // Regex pattern for document title; e.g.
+                // SMCU 623-624_2567 ขอความอนุเคราะห์ใช้สถานที่.pdf OR
+                // สพจ. 623-2567 ขอความอนุเคราะห์ใช้สถานที่.pdf
+                if (preg_match('/(?:สพจ|SMCU)(?:\.|\s|-){1,2}(\d+)(?:_|-|\/)(?:\d+(?:_|-|\/))?(25\d\d)(?:\s|-).+/i', $subject, $list,
+                    PREG_UNMATCHED_AS_NULL)) {
                     $document = Document::where('number', $list[1])->where('year', $list[2])->first();
                     if ($document) {
                         $this->line('-- Found update of document '.$document->id.' ('.$document->number.'/'.$document->year.') '.$document->title);
