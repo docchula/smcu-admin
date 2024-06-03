@@ -11,6 +11,8 @@ use App\Http\Controllers\UserProfileController;
 use App\Models\Personnel;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +40,8 @@ Route::get('/board/{year?}', function (?string $year = null) {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('auth/google/itdivision', [GoogleController::class, 'redirectToGoogleWithGmailAccess']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+Route::get('health', SimpleHealthCheckController::class);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
@@ -72,4 +76,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
     Route::get('/user/profile/printMyProjects', [UserProfileController::class, 'printMyProjects'])->name('profile.printMyProjects');
+
+    Route::get('health/board', HealthCheckResultsController::class);
 });
