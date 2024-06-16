@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Checks\StorageCheck;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
@@ -42,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
             PingCheck::new()->url(config('vesta-client.url', 'https://docchula.com'))
                 ->name('Vesta')->timeout(10)->retryTimes(2),
             ScheduleCheck::new()->heartbeatMaxAgeInMinutes(60),
+            StorageCheck::new(),
             // Disk space check only works on Linux
             UsedDiskSpaceCheck::new()->failWhenUsedSpaceIsAbovePercentage(95),
         ]);

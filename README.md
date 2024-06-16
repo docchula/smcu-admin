@@ -16,16 +16,22 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 ## Required maintenance
 
 - Update personnel index (union committee member) yearly.
-- Grant administrative privileges to the union's executive committee members (set roles to ADMIN in users database table).
-- Update union department list in case of establishment of new club.
+- Grant administrative privileges to the union's executive committee members (set roles to ADMIN in _users_ database table).
+- Update union department list in case of establishment of new club (see _departments_ table).
 - Delete or edit document/project information as requested (if any).
+
+## Health Check
+
+You can check the health of the system by visiting [/health/board?fresh](https://admin.docchula.com/health/board?fresh) (board UI)
+or [/health](https://admin.docchula.com/health) (for API; public) endpoint. It'll check the database connection, Google API connection, cache
+availability, used disk space, etc.
 
 ## Dependencies
 
 - PHP
   - set _upload_max_filesize_ to at least 15 MB
 - Relational Database e.g. MySQL
-- Google API for OAuth 2.0 identity provider and Gmail read access
+- Google API for OAuth 2.0 identity provider and Gmail read access (DocHub status updates)
 - Vesta service (MDCU Directory) for student status verification
 - SMTP for DocHub document status updates to document owners
 
