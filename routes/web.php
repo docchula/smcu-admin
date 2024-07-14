@@ -62,6 +62,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     ]);
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::get('documents/{document}/downloadApproved', [DocumentController::class, 'downloadApproved'])->name('documents.downloadApproved');
+
+    Route::get('projects/{project}/closure', [ProjectController::class, 'closureForm'])->name('projects.closureForm');
+    Route::post('projects/{project}/closure', [ProjectController::class, 'closureSubmit'])->name('projects.closureSubmit');
+    Route::get('projects/{project}/closure/verify', [ProjectController::class, 'closureVerifyForm'])->name('projects.closureVerifyForm');
+    Route::post('projects/{project}/closure/verify', [ProjectController::class, 'closureVerifySubmit'])->name('projects.closureVerifySubmit');
+    Route::post('projects/{project}/closure/cancel', [ProjectController::class, 'closureCancel'])->name('projects.closureCancel');
+
     Route::get('projects/{project}/generateApprovalDocument', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
     Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');
     Route::get('projects/search/{keyword}', [ProjectController::class, 'search'])->name('projects.search');

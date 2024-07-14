@@ -39,6 +39,8 @@ use Illuminate\Support\Str;
  * @property Department                      $department
  * @property User                            $user
  * @property Collection|ProjectParticipant[] $participants
+ * @property \Illuminate\Support\Carbon|null $closure_submitted_at
+ * @property int|string|null $closure_submitted_by
  */
 class Project extends Model {
     use HasFactory;
@@ -53,6 +55,9 @@ class Project extends Model {
         'expense' => 'array',
     ];
     protected $hidden = ['user_id'];
+
+    public const SUMMARY_TIME_LIMIT = 30; // days
+    public const VERIFICATION_TIME_LIMIT = 60; // days
 
     public function department(): BelongsTo {
         return $this->belongsTo(Department::class)->select('id', 'name');
@@ -159,5 +164,27 @@ class Project extends Model {
                         ->trim()->value();
                 })->unique()->values();
         });
+    }
+
+    /**
+     * Is the project's period end within the summary time limit?
+     */
+    public function canSubmitClosure(): bool {
+        return ($this->period_end->diffInDays() <= self::SUMMARY_TIME_LIMIT) or ($this->year == 2567 and now()->isBefore('2024-09-30'));
+    }
+
+    public function hasSubmittedClosure(): bool {
+        return !empty($this->closure_submitted_at);
+    }
+
+    public function submitClosure(): void {
+        $this->closure_submitted_at = now();
+        $this->closure_submitted_by = auth()->id();
+    }
+
+    public function canVerify(): bool {
+        return $this->hasSubmittedClosure()
+            and empty($this->closure_approved_at)
+            and ($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT or ($this->year == 2567 and now()->isBefore('2024-10-31')));
     }
 }

@@ -8,13 +8,13 @@ use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
 use Carbon\Carbon;
-use Crypt;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Inertia\Inertia;
 use Inertia\Response;
 use IntlDateFormatter;
@@ -110,6 +110,7 @@ class ProjectController extends Controller {
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Throwable
      */
     public function store(Request $request) {
         $this->validate($request, ['name' => 'required|unique:projects,name']);
@@ -135,8 +136,15 @@ class ProjectController extends Controller {
 
             return $participant;
         });
-        $project->shouldBeClosed = ($canUpdateProject and $project->created_at->isBetween(now()->subYear(),
-            now()->subWeeks(3)) and $project->documents->isNotEmpty() and $project->documents->where('tag', 'summary')->isEmpty() and !in_array($project->department_id, [32, 38, 39]));
+        $project->shouldBeClosed = (
+            $canUpdateProject
+            and $project->created_at->isBetween(now()->subYear(), now()->subWeeks(3))
+            and $project->documents->isNotEmpty()
+            and ($project->documents->where('tag', 'summary')->isEmpty() or (!$project->hasSubmittedClosure() and $project->canSubmitClosure()))
+        );
+        $project->shouldVerify = $project->canVerify() and $project->participants->where('user_id', Auth::id())->isNotEmpty();
+
+        // and !in_array($project->department_id, [32, 38, 39]);
 
         return Inertia::render('ProjectShow', [
             'item' => $project
@@ -148,8 +156,6 @@ class ProjectController extends Controller {
      */
     public function edit(Request $request, Project $project): Response {
         $this->authorize('update-project', $project);
-        /** @var User $user */
-        $user = $request->user();
         $project->organizers = $project->participants()->with('user')->where('type', 'organizer')->get()->map(function (ProjectParticipant $p) {
             return ['name' => $p->user->name, 'student_id' => $p->user->student_id];
         });
@@ -208,37 +214,42 @@ class ProjectController extends Controller {
         }
         $existingParticipants = $project->participants;
         $project->saveOrFail();
-        foreach (['organizers' => 'organizer', 'staff' => 'staff', 'attendees' => 'attendee'] as $roleField => $role) {
-            if ($request->filled($roleField)) {
-                // Note: these lines of code suffers from n+1 performance issue
-                $inputParticipants = new Collection($request->input($roleField, []));
-                $newParticipants = new Collection();
-                $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])->get();
-                foreach ($inputParticipants as $student) {
-                    // Add / edit existing
-                    if (!empty($student['student_id'])) {
-                        $user = $users->where('student_id', $student['student_id'])->first(); /* ?? User::firstOrCreate(['email' => $student['email']], [
+        if (!$project->id or !$project->hasSubmittedClosure()) {
+            // Don't update participants if closure is submitted
+            foreach (['organizers' => 'organizer', 'staff' => 'staff', 'attendees' => 'attendee'] as $roleField => $role) {
+                if ($request->filled($roleField)) {
+                    // Note: these lines of code suffers from n+1 performance issue
+                    $inputParticipants = new Collection($request->input($roleField, []));
+                    $newParticipants = new Collection();
+                    $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])
+                        ->get();
+                    foreach ($inputParticipants as $student) {
+                        // Add / edit existing
+                        if (!empty($student['student_id'])) {
+                            $user = $users->where('student_id', $student['student_id'])->first(); /* ?? User::firstOrCreate(['email' => $student['email']], [
                             'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
                             'student_id' => $student['student_id'],
                         ]); */
-                        if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
-                            // Existing
-                            if ($participant->type != $role) {
-                                $participant->type = $role;
-                                $participant->save();
+                            if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
+                                // Existing
+                                if ($participant->type != $role) {
+                                    $participant->type = $role;
+                                    $participant->save();
+                                }
+                            } else {
+                                $newParticipants->push(['user_id' => $user->id, 'type' => $role]);
                             }
-                        } else {
-                            $newParticipants->push(['user_id' => $user->id, 'type' => $role]);
                         }
                     }
+                    if ($newParticipants->isNotEmpty()) {
+                        $project->participants()->createMany($newParticipants);
+                    }
+                    // Delete unused existing
+                    $existingParticipants->whereNotIn('user_id', $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id'))
+                        ->where('type', $role)->each->delete();
+                } elseif ($existingParticipants->isNotEmpty()) {
+                    $project->participants()->where('type', $role)->delete();
                 }
-                if ($newParticipants->isNotEmpty()) {
-                    $project->participants()->createMany($newParticipants);
-                }
-                // Delete unused existing
-                $existingParticipants->whereNotIn('user_id', $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id'))->where('type', $role)->each->delete();
-            } elseif ($existingParticipants->isNotEmpty()) {
-                $project->participants()->where('type', $role)->delete();
             }
         }
 
@@ -250,6 +261,127 @@ class ProjectController extends Controller {
      */
     public function destroy($id) {
         //
+    }
+
+    public function closureForm(Project $project): Response {
+        $this->authorize('update-project', $project);
+        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted');
+
+        $project->load(['department', 'participants', 'participants.user']);
+        $project->participants->transform(function (ProjectParticipant $participant) {
+            $participant->user->makeHidden('id', 'profile_photo_url');
+
+            return $participant;
+        });
+
+        return Inertia::render('ProjectClosure', [
+            'item' => $project,
+            'can_submit' => $project->canSubmitClosure(),
+        ]);
+    }
+
+    /**
+     * @throws \Throwable
+     */
+    public function closureSubmit(Request $request, Project $project) {
+        $this->validate($request, [
+            'objectives' => 'required|array',
+            'expense' => 'nullable|array',
+            'action' => 'nullable|string',
+        ]);
+        $this->authorize('update-project', $project);
+        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted.');
+        $action = $request->input('action');
+
+        $project->objectives = $request->input('objectives');
+        $project->expense = $request->input('expense');
+        if ($action == 'yes') {
+            if (!$project->canSubmitClosure()) {
+                $project->saveOrFail();
+                abort(403, 'Not in closure submission timeframe.');
+            }
+            $project->submitClosure();
+        }
+        $project->saveOrFail();
+
+        if ($action == 'generate_document') {
+            return Inertia::location(route('projects.generateSummaryDocument', ['project' => $project->id]));
+        }
+
+        return redirect()
+            ->route('projects.show', ['project' => $project->id])
+            ->with('flash.banner', 'บันทึกข้อมูลรายงานผลโครงการเลขที่ '.$project->getNumber().' แล้ว')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function closureVerifyForm(Request $request, Project $project): Response {
+        abort_unless($project->hasSubmittedClosure(), 403, 'Closure not submitted');
+
+        $project->load(['department', 'participants', 'participants.user']);
+        $project->participants->transform(function (ProjectParticipant $participant) {
+            $participant->user->makeHidden('id', 'profile_photo_url');
+            // Convert to boolean in order to hide approval/disapproval
+            $participant->verify_status = !empty($participant->verify_status);
+            $participant->makeHidden('reject_reason', 'reject_participants');
+
+            return $participant;
+        });
+        $project->can = [
+            'update-project' => $request->user()->can('update-project', $project),
+        ];
+
+        return Inertia::render('ProjectClosureVerify', [
+            'item' => $project,
+            'my_participant' => $project->participants->where('user_id', Auth::id())->first(),
+        ]);
+    }
+
+    public function closureVerifySubmit(Request $request, Project $project) {
+        $this->validate($request, [
+            'approve' => 'required|in:yes,no',
+            'reason' => 'nullable|required_if:approve,no|string',
+            'reason_participants' => 'nullable|required_if:approve,no|array',
+        ]);
+        abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
+        $participant = $project->participants()->where('user_id', $request->user()->id)->first();
+        abort_unless($participant and in_array($participant->type, ['organizer', 'staff']), 403, 'Only organizer/staff can verify closure.');
+
+        if ($request->input('approve') == 'yes') {
+            $participant->verify_status = 1;
+        } else {
+            $participant->verify_status = -1;
+            $participant->reject_reason = $request->input('reason');
+            $participant->reject_participants = $request->input('reason_participants');
+        }
+        $participant->saveOrFail();
+
+        return redirect()
+            ->route('projects.closureVerifyForm', ['project' => $project->id])
+            ->with('flash.banner', 'บันทึกข้อมูลการรับรองรายชื่อนิสิตผู้เกี่ยวข้อง โครงการเลขที่ '.$project->getNumber().' แล้ว')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function closureCancel(Request $request, Project $project) {
+        $this->validate($request, [
+            'confirm' => 'required|filled',
+        ]);
+        $this->authorize('update-project', $project);
+        abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
+
+        $project->closure_submitted_at = null;
+        $project->closure_submitted_by = null;
+        $project->save();
+        // Cancel all participant's verification status
+        $project->participants()->update([
+            'verify_status' => 0,
+            'reject_reason' => null,
+            'reject_participants' => [],
+        ]);
+
+        return redirect()
+            ->route('projects.show', ['project' => $project->id])
+            ->with('flash.banner', 'ยกเลิกการส่งข้อมูล โครงการเลขที่ '.$project->getNumber().' แล้ว')
+            ->with('flash.bannerStyle', 'success');
     }
 
     /**
@@ -294,7 +426,7 @@ class ProjectController extends Controller {
             'organizers_number' => $i + 1,
             'organizers_name' => $participant->user->name,
             'organizers_id' => $participant->user->student_id
-        ]));
+        ])->all());
         $template->cloneRowAndSetValues('expense_name', array_map(function (array $ex) {
             return ['expense_name' => $ex['name'] ?? '', 'expense_type' => $ex['type'] ?? '', 'expense_source' => $ex['source'] ?? '', 'expense_amount' => number_format($ex['amount'] ?? 0, 2)];
         }, $project->expense));
@@ -323,7 +455,7 @@ class ProjectController extends Controller {
         $tmpPath = tempnam(storage_path(), 'tmp-projectapproval-');
         $template->saveAs($tmpPath);
 
-        return response()->download($tmpPath, $project->getNumber() . ' Project Approval.docx')->deleteFileAfterSend(true);
+        return response()->download($tmpPath, $project->getNumber().' Project Approval.docx')->deleteFileAfterSend();
     }
 
     /**
@@ -357,7 +489,7 @@ class ProjectController extends Controller {
             'organizers_number' => $i + 1,
             'organizers_name' => $participant->user->name,
             'organizers_id' => $participant->user->student_id
-        ]));
+        ])->all());
         $template->cloneRowAndSetValues('exp_name', $project->expense ? array_map(function (array $ex) {
             return [
                 'exp_name' => $ex['name'] ?? '',
@@ -415,7 +547,7 @@ class ProjectController extends Controller {
             'ptcp_id' => $participant->user->student_id,
             'ptcp_type' => ProjectParticipant::TYPES_OPTIONS[$participant->type] ?? $participant->type,
             'ptcp_title' => $participant->title ?? '-',
-        ]));
+        ])->toArray());
 
         $tmpPath = tempnam(storage_path(), 'tmp-projectsummary-');
         $template->saveAs($tmpPath);
@@ -465,6 +597,9 @@ class ProjectController extends Controller {
             'type' => 'required|string|in:organizer,staff,attendee'
         ]);
         $this->authorize('update-project', $project);
+        if ($project->hasSubmittedClosure()) {
+            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        }
         $toAdd = [];
         foreach ($request->input('student_ids') as $studentId) {
             if (!$user = User::where('student_id', $studentId)->first()) {
@@ -488,6 +623,9 @@ class ProjectController extends Controller {
     public function removeParticipant(ProjectParticipant $participant) {
         $participant->load(['project', 'user']);
         $this->authorize('update-project', $participant->project);
+        if ($participant->project->hasSubmittedClosure()) {
+            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        }
         $participant->delete();
 
         return back()->with('flash.banner', 'ลบ ' . $participant->user->name . ' แล้ว')->with('flash.bannerStyle', 'success');
@@ -498,9 +636,12 @@ class ProjectController extends Controller {
             'import' => 'required|file|mimes:csv,xlsx,xls'
         ]);
         $this->authorize('update-project', $project);
+        if ($project->hasSubmittedClosure()) {
+            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        }
         $uploadedFile = $request->file('import');
         $import = SimpleExcelReader::create($uploadedFile->path(), $uploadedFile->clientExtension())->getRows();
-        $toAdd = collect([]);
+        $toAdd = collect();
         $messages = [];
         foreach ($import as $row) {
             if (empty($row['student_id']) or strlen($row['student_id']) < 10) {
@@ -581,6 +722,9 @@ class ProjectController extends Controller {
 
     public function importParticipantCommit(Request $request, Project $project) {
         $this->authorize('update-project', $project);
+        if ($project->hasSubmittedClosure()) {
+            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        }
         try {
             $toAdd = Crypt::decrypt($request->input('import'));
         } catch (DecryptException) {
@@ -619,7 +763,7 @@ class ProjectController extends Controller {
         $tmpPath = tempnam(storage_path(), 'tmp-participant-');
         IOFactory::createWriter($spreadsheet, 'Xlsx')->save($tmpPath);
 
-        return response()->download($tmpPath, $project->getNumber() . ' Project Participants.xlsx')->deleteFileAfterSend(true);
+        return response()->download($tmpPath, $project->getNumber().' Project Participants.xlsx')->deleteFileAfterSend();
     }
 
     public function advisorList()

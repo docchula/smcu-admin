@@ -77,7 +77,8 @@
                         <div class="mb-4" v-if="!form.is_non_project">
                             <div>
                                 <jet-label for="project" value="ค้นหาโครงการ"/>
-                                <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="projectKeyword" ref="project" placeholder="ค้นหาด้วยชื่อหรือเลขที่โครงการ"/>
+                                <jet-input id="project" type="text" class="mt-1 block w-full" v-model.trim="projectKeyword" ref="project"
+                                           placeholder="ค้นหาด้วยชื่อหรือเลขที่โครงการ"/>
                                 <jet-input-error v-if="keywordError" :message="keywordError" class="mt-2"/>
                                 <p v-else-if="projectKeyword !== ''" class="mt-2 text-xs text-gray-500">
                                     ยังไม่ได้เลือก (<a class="cursor-pointer text-green-500" @click="projectKeyword = ''">ล้าง</a>)
@@ -112,320 +113,233 @@
                     <jet-input-error :message="errors.project_id" class="col-span-6"/>
                 </template>
             </jet-form-section>
-            <jet-section-border/>
-            <jet-form-section @submitted="submit">
-                <template #title>ข้อมูลพื้นฐาน</template>
-                <template #description>
-                    ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
-                </template>
-                <template #form>
-                    <div class="col-span-6">
-                        <jet-label for="title" value="หัวเรื่อง"/>
-                        <jet-input id="title" type="text" class="mt-1 block w-full" v-model.trim="form.title" ref="title" required/>
-                        <jet-input-error v-if="errors.title" :message="errors.title" class="mt-2"/>
-                        <jet-input-error v-else-if="form.title.startsWith('เอกสาร')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "เอกสาร"' class="mt-2"/>
-                        <p v-else class="mt-2 text-xs text-gray-500">ข้อความสั้น ๆ ที่ทำให้ผู้รับเข้าใจความประสงค์หรือเนื้อหาโดยสังเขป</p>
-                    </div>
-                    <div class="col-span-6">
-                        <jet-label for="recipient" value="ผู้รับ"/>
-                        <jet-input id="recipient" type="text" class="mt-1 block w-full" v-model.trim="form.recipient" ref="recipient" required/>
-                        <jet-input-error v-if="errors.recipient" :message="errors.recipient" class="mt-2"/>
-                        <p v-else class="mt-2 text-xs text-gray-500">
-                            ควรใช้ชื่อตำแหน่ง (ถ้ามี) เช่น
-                            <a class="cursor-pointer text-green-500" @click="form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต'">รองคณบดีฝ่ายกิจการนิสิต</a>
-                        </p>
-                    </div>
-                    <div class="col-span-6">
-                        <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
-                        <select id="department" v-model="form.department_id" required
-                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            <!-- hide if sequence >= 200 (deprecated values) -->
-                            <option v-for="department in static_departments"
-                                    v-show="department.sequence < 200 || department.id === form.department_id"
-                                    v-bind:key="department.id" :value="department.id">
-                                {{ department.name }}
-                            </option>
-                        </select>
-                        <jet-input-error v-if="errors.department_id" :message="errors.department_id" class="mt-2"/>
-                    </div>
-                </template>
-            </jet-form-section>
-            <jet-section-border/>
-            <template v-if="!form.tag && !item.id">
+            <template v-if="(form.tag !== 'approval' && form.tag !== 'summary') || selectedProject">
+                <jet-section-border/>
                 <jet-form-section @submitted="submit">
-                    <template #title>ออกหนังสือหลายฉบับ</template>
-                    <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ)
-                        ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน
+                    <template #title>ข้อมูลพื้นฐาน</template>
+                    <template #description>
+                        ชื่อผู้ใช้ที่สร้างเอกสารจะถูกบันทึกและแสดงผลในฐานช้อมูล
                     </template>
                     <template #form>
                         <div class="col-span-6">
-                            <jet-label for="amount" value="จำนวนหนังสือ"/>
-                            <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required step="1"
-                                       min="1" max="500" :disabled="item.id"/>
-                            <jet-input-error v-if="errors.amount" :message="errors.amount" class="mt-2"/>
-                            <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
-                                อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
+                            <jet-label for="title" value="หัวเรื่อง"/>
+                            <jet-input id="title" type="text" class="mt-1 block w-full" v-model.trim="form.title" ref="title" required/>
+                            <jet-input-error v-if="errors.title" :message="errors.title" class="mt-2"/>
+                            <jet-input-error v-else-if="form.title.startsWith('เอกสาร')" message='ไม่ต้องขึ้นต้นด้วยคำว่า "เอกสาร"' class="mt-2"/>
+                            <p v-else class="mt-2 text-xs text-gray-500">ข้อความสั้น ๆ ที่ทำให้ผู้รับเข้าใจความประสงค์หรือเนื้อหาโดยสังเขป</p>
+                        </div>
+                        <div class="col-span-6">
+                            <jet-label for="recipient" value="ผู้รับ"/>
+                            <jet-input id="recipient" type="text" class="mt-1 block w-full" v-model.trim="form.recipient" ref="recipient" required/>
+                            <jet-input-error v-if="errors.recipient" :message="errors.recipient" class="mt-2"/>
+                            <p v-else class="mt-2 text-xs text-gray-500">
+                                ควรใช้ชื่อตำแหน่ง (ถ้ามี) เช่น
+                                <a class="cursor-pointer text-green-500"
+                                   @click="form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต'">รองคณบดีฝ่ายกิจการนิสิต</a>
                             </p>
+                        </div>
+                        <div class="col-span-6">
+                            <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
+                            <select id="department" v-model="form.department_id" required
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <!-- hide if sequence >= 200 (deprecated values) -->
+                                <option v-for="department in static_departments"
+                                        v-show="department.sequence < 200 || department.id === form.department_id"
+                                        v-bind:key="department.id" :value="department.id">
+                                    {{ department.name }}
+                                </option>
+                            </select>
+                            <jet-input-error v-if="errors.department_id" :message="errors.department_id" class="mt-2"/>
                         </div>
                     </template>
                 </jet-form-section>
                 <jet-section-border/>
-            </template>
-            <template v-if="form.tag === 'summary' && selectedProject">
-                <div class="ml-1 pl-1 sm:ml-0 sm:pl-3 border-l-4 border-indigo-500">
-                    <h6 class="mb-2 px-4 sm:px-0 text-sm text-indigo-500">ผลการดำเนินโครงการ</h6>
-                    <jet-form-section>
-                        <template #title>ประเมินความสำเร็จตามเป้าหมาย</template>
-                        <template #description>
-                            ตามที่ได้กำหนดเป้าหมายของโครงการไว้ หลังดำเนินโครงการเสร็จสิ้นแล้ว ได้ผลอย่างไร
+                <template v-if="!form.tag && !item.id">
+                    <jet-form-section @submitted="submit">
+                        <template #title>ออกหนังสือหลายฉบับ</template>
+                        <template #description>กรณีต้องการออกหนังสือเรื่องเดียวกันไปยังผู้รับจำนวนมาก (เช่น หนังสือเชิญ)
+                            ระบบจะออกเลขที่หนังสือให้หลายเลขติดต่อกัน
                         </template>
                         <template #form>
-                            <table v-if="selectedProject.objectives.length > 0" class="col-span-6 divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        ตัวชี้วัด
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        วิธีการประเมินผล
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        ผลที่ได้
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        คิดเป็น
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="text-gray-400 text-sm">
-                                    <td class="px-1 py-2">
-                                        <u>ตัวอย่าง</u> มีนิสิตเข้าร่วมกิจกรรมไม่น้อยกว่า 50 คน
-                                    </td>
-                                    <td class="px-1 py-2">
-                                        แบบลงชื่อลงทะเบียนเข้าร่วม
-                                    </td>
-                                    <td class="px-1 py-2 whitespace-nowrap">
-                                        <jet-input type="text" class="text-sm block w-full" value="45 คน" disabled/>
-                                    </td>
-                                    <td class="px-1 py-2 whitespace-nowrap">
-                                        <jet-input type="text" class="text-sm w-14" value="90" disabled/>
-                                        <span class="ml-1 text-xs">%</span>
-                                    </td>
-                                </tr>
-                                <tr v-for="(member, index) in selectedProject.objectives">
-                                    <td class="px-1 py-4">
-                                        <span class="text-indigo-500">{{ index + 1 }}.</span> {{ member.goal }}
-                                    </td>
-                                    <td class="px-1 py-4 text-sm">
-                                        {{ member.method }}
-                                    </td>
-                                    <td class="px-1 py-4 whitespace-nowrap">
-                                        <jet-input type="text" class="block w-full" v-model="member.result" required/>
-                                    </td>
-                                    <td class="px-1 py-4 whitespace-nowrap">
-                                        <jet-input type="number" class="w-16 lg:w-20" v-model="member.percentage" step="0.01" min="0" max="100"/>
-                                        <span class="ml-1 text-xs">%</span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <jet-input-error v-if="errors.objectives" :message="errors.objectives" class="col-span-6"/>
-                            <p v-else class="col-span-6 text-xs text-gray-500">
-                                หากไม่สามารถประเมินได้ ให้ระบุในช่องผลที่ได้ว่าไม่สามารถประเมินได้เพราะเหตุใด และเว้นว่างช่องคิดเป็น (%)
-                            </p>
-                        </template>
-                    </jet-form-section>
-                    <jet-section-border/>
-                    <jet-form-section>
-                        <template #title>รายจ่าย</template>
-                        <template #description>
-                            จากที่ได้วางแผนของบประมาณไว้ ใช้จริงไปเท่าใด
-                        </template>
-                        <template #form>
-                            <table v-if="selectedProject.expense.length > 0" class="col-span-6 divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        รายการ
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        ประเภท
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        แหล่ง
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        วางแผนงบ (บ.)
-                                    </th>
-                                    <th scope="col" class="px-1 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
-                                        จ่ายจริงไป (บ.)
-                                    </th>
-                                    <th scope="col" class="relative px-1 pb-2"></th>
-                                </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="(member, index) in selectedProject.expense">
-                                    <template v-if="member.extra">
-                                        <td class="px-1 py-4 whitespace-nowrap">
-                                            <jet-input type="text" class="block w-full" v-model="member.name" placeholder="รายจ่ายนอกแผน" required/>
-                                            <jet-input-error message="จำเป็นต้องกรอก"
-                                                             v-if="errors['selectedProject.expense.'+index+'.name'] ?? false" class="mt-2"/>
-                                        </td>
-                                        <td class="px-1 py-4 whitespace-nowrap">
-                                            <select v-model="member.type" required
-                                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <optgroup label="งบดำเนินงาน"/>
-                                                <optgroup label="- ค่าตอบแทน">
-                                                    <option value="ค่าวิทยากร">ค่าตอบแทนวิทยากร</option>
-                                                    <option value="ค่าเจ้าหน้าที่นอกเวลา">ค่าเจ้าหน้าที่นอกเวลา</option>
-                                                    <option value="ค่าตอบแทน">ค่าตอบแทนอื่น ๆ (ให้ผู้ปฏิบัติงาน)</option>
-                                                </optgroup>
-                                                <optgroup label="- ค่าใช้สอย">
-                                                    <option value="ค่าใช้สอย">ค่าใช้สอย (เช่น จ้างเหมาบริการ)</option>
-                                                    <option value="ค่าอาหาร">ค่าอาหารและเครื่องดื่ม</option>
-                                                    <option value="ค่าที่พัก">ค่าที่พัก</option>
-                                                    <option value="ค่าพาหนะ">ค่าพาหนะ (ยกเว้นค่าน้ำมัน)</option>
-                                                </optgroup>
-                                                <optgroup label="- ค่าวัสดุ">
-                                                    <option value="ค่าวัสดุ">ค่าวัสดุ (ของที่ใช้ไม่นานหรือหมดไป)</option>
-                                                    <option value="ค่าเชื้อเพลิง">ค่าน้ำมันเชื้อเพลิง</option>
-                                                </optgroup>
-                                                <option value="- ค่าสาธารณูปโภค">ค่าสาธารณูปโภค (เช่น โทรศัพท์ ไปรษณีย์ วิทยุ)</option>
-                                                <optgroup label="งบลงทุน">
-                                                    <option value="ค่าครุภัณฑ์">ค่าครุภัณฑ์ (ของที่คงทน ถาวร)</option>
-                                                </optgroup>
-                                                <option value="อื่น ๆ">อื่น ๆ</option>
-                                                <option value="">(ไม่ระบุ)</option>
-                                            </select>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.type'] ?? false"
-                                                             class="mt-2"/>
-                                        </td>
-                                        <td class="px-1 py-4 whitespace-nowrap">
-                                            <select v-model="member.source" required
-                                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <option value="สพจ.">สพจ.</option>
-                                                <option value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
-                                                <option value="กองทุนวันอานันทมหิดล">กองทุนวันอานันทมหิดล</option>
-                                                <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
-                                                <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>
-                                                <option value="เงินฝ่าย/หน่วยงานสพจ.">เงินฝ่าย/หน่วยงานสพจ.</option>
-                                                <option value="อื่น ๆ">อื่น ๆ</option>
-                                            </select>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.source'] ?? false"
-                                                             class="mt-2"/>
-                                        </td>
-                                        <td class="px-1 py-4 text-center">
-                                            (นอกแผน)
-                                        </td>
-                                        <td class="px-1 py-4 whitespace-nowrap">
-                                            <jet-input type="number" class="block w-full sm:w-32 lg:w-36" min="0" step="0.01" v-model.number="member.paid"
-                                                       required/>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.paid'] ?? false"
-                                                             class="mt-2"/>
-                                        </td>
-                                        <td class="px-1 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" viewBox="0 0 20 20"
-                                                 fill="currentColor" @click="selectedProject.expense.splice(index, 1)">
-                                                <path fill-rule="evenodd"
-                                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                      clip-rule="evenodd"/><!-- X -->
-                                            </svg>
-                                        </td>
-                                    </template>
-                                    <template v-else>
-                                        <td class="px-1 py-4">
-                                            {{ member.name }}
-                                        </td>
-                                        <td class="px-1 py-4 text-sm">
-                                            {{ member.type }}
-                                        </td>
-                                        <td class="px-1 py-4 text-sm">
-                                            {{ member.source }}
-                                        </td>
-                                        <td class="px-1 py-4 text-right">
-                                            {{ Number(member.amount).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) }}
-                                        </td>
-                                        <td colspan="2" class="px-1 py-4 whitespace-nowrap">
-                                            <jet-input type="number" class="block w-full sm:w-32 lg:w-36" min="0" step="0.01" v-model.number="member.paid"
-                                                       required/>
-                                            <jet-input-error message="จำเป็นต้องกรอก" v-if="errors['expense.'+index+'.paid'] ?? false"
-                                                             class="mt-2"/>
-                                        </td>
-                                        <td></td>
-                                    </template>
-                                </tr>
-                                </tbody>
-                            </table>
                             <div class="col-span-6">
-                                <p v-if="selectedProject.expense.length === 0" class="mb-2">ไม่ได้ของบประมาณ</p>
-                                <jet-button class="bg-purple-500 hover:bg-purple-600 focus:border-purple-900" :disabled="form.processing"
-                                            type="button"
-                                            @click="selectedProject.expense.push({name: '', source: '', amount: '', extra: true})">
-                                    + รายจ่ายที่ไม่ได้วางแผน
-                                </jet-button>
-                                <jet-input-error v-if="errors.expense" :message="errors.expense" class="mt-2"/>
-                                <p v-else class="mt-2 text-xs text-gray-500">
-                                    หากไม่ได้ใช้จ่ายในรายการใด ให้ใส่ 0
+                                <jet-label for="amount" value="จำนวนหนังสือ"/>
+                                <jet-input id="amount" type="number" class="mt-1 block w-full" v-model.number="form.amount" ref="amount" required
+                                           step="1"
+                                           min="1" max="500" :disabled="item.id"/>
+                                <jet-input-error v-if="errors.amount" :message="errors.amount" class="mt-2"/>
+                                <p v-else-if="form.amount > 1" class="mt-2 text-xs text-gray-500">
+                                    อาจกรอกผู้รับเป็นชื่อกลุ่มของผู้รับ เช่น "อาจารย์ทั้งหมดในคณะ"
                                 </p>
                             </div>
                         </template>
                     </jet-form-section>
-                    <template v-if="!item.id">
-                        <jet-section-border/>
+                    <jet-section-border/>
+                </template>
+                <template v-if="form.tag === 'summary' && selectedProject">
+                    <div class="ml-1 pl-1 sm:ml-0 sm:pl-3 border-l-4 border-indigo-500">
+                        <h6 class="mb-2 px-4 sm:px-0 text-sm text-indigo-500">ผลการดำเนินโครงการ</h6>
                         <jet-form-section>
-                            <template #title>ดาวน์โหลดแบบรายงานผลโครงการ</template>
-                            <template #description>กรุณาดาวน์โหลดไฟล์ แล้วใช้โปรแกรม Microsoft Word แก้ไข/เติมรายละเอียดให้ครบถ้วน
-                                (หรือใช้แบบฟอร์มที่สพจ. แจกจ่าย) แล้วจึงอัปโหลดไฟล์ที่แก้ไขแล้วในช่องถัดไป
+                            <template #title>ประเมินความสำเร็จตามเป้าหมาย</template>
+                            <template #description>
+                                ตามที่ได้กำหนดเป้าหมายของโครงการไว้ หลังดำเนินโครงการเสร็จสิ้นแล้ว ได้ผลอย่างไร
                             </template>
                             <template #form>
                                 <div class="col-span-6">
-                                    <jet-button type="button" @click="generateSummaryDocument">
-                                        บันทึกผลการดำเนินโครงการ และ ดาวน์โหลดแบบรายงานผลโครงการ
-                                    </jet-button>
+                                    <div v-if="hasFilledClosureForm"
+                                         class="p-3 rounded bg-green-100 border border-green-600 text-green-600 mb-2 text-xl font-bold">
+                                        มีข้อมูลรายงานผลโครงการเรียบร้อยแล้ว
+                                        <Link :href="route('projects.closureForm', {project: selectedProject.id})">
+                                            <jet-button type="button" class="ml-2 inline-block">
+                                                แก้ไข
+                                            </jet-button>
+                                        </Link>
+                                    </div>
+                                    <div v-else class="p-3 rounded bg-blue-100 border border-blue-600 text-blue-600">
+                                        <h4 class="mb-2 text-xl font-bold">
+                                            กรุณาบันทึกข้อมูลรายงานผลโครงการ ก่อนดำเนินการต่อ
+                                        </h4>
+                                        <Link :href="route('projects.closureForm', {project: selectedProject.id})">
+                                            <jet-button type="button">
+                                                บันทึกข้อมูลรายงานผลโครงการ
+                                            </jet-button>
+                                        </Link>
+                                    </div>
+                                </div>
+                                <table v-if="selectedProject.objectives.length > 0" class="col-span-6 divide-y divide-gray-200">
+                                    <thead>
+                                    <tr class="text-xs text-left text-gray-500 tracking-wider">
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            ตัวชี้วัด
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            วิธีการประเมินผล
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            ผลที่ได้
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            คิดเป็น
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr v-for="(member, index) in selectedProject.objectives">
+                                        <td class="px-1 py-3">
+                                            <span class="text-indigo-500">{{ index + 1 }}.</span> {{ member.goal }}
+                                        </td>
+                                        <td class="px-1 py-3 text-sm">
+                                            {{ member.method }}
+                                        </td>
+                                        <td class="px-1 py-3 whitespace-nowrap">
+                                            {{ member.result }}
+                                        </td>
+                                        <td class="px-1 py-3 whitespace-nowrap">
+                                            {{ member.percentage }}<span class="ml-0.5 text-xs">%</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </template>
+                        </jet-form-section>
+                        <jet-section-border/>
+                        <jet-form-section>
+                            <template #title>รายจ่าย</template>
+                            <template #description>
+                                จากที่ได้วางแผนของบประมาณไว้ ใช้จริงไปเท่าใด
+                            </template>
+                            <template #form>
+                                <table v-if="selectedProject.expense.length > 0" class="col-span-6 divide-y divide-gray-200">
+                                    <thead>
+                                    <tr class="text-left text-xs text-gray-500 tracking-wider">
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            รายการ
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            ประเภท
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            แหล่ง
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            วางแผนงบ (บ.)
+                                        </th>
+                                        <th scope="col" class="px-1 pb-2 font-medium">
+                                            จ่ายจริงไป (บ.)
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr v-for="(member, index) in selectedProject.expense">
+                                        <td class="px-1 py-3">
+                                            {{ member.name }}
+                                        </td>
+                                        <td class="px-1 py-3 text-sm">
+                                            {{ member.type }}
+                                        </td>
+                                        <td class="px-1 py-3 text-sm">
+                                            {{ member.source }}
+                                        </td>
+                                        <td class="px-1 py-3 text-right">
+                                            {{ Number(member.amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+                                        </td>
+                                        <td class="px-1 py-3 text-right">
+                                        <span v-if="member.paid || member.paid === 0">
+                                            {{ Number(member.paid).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+                                        </span>
+                                            <span v-else class="text-red-500">
+                                            ไม่มีข้อมูล
+                                        </span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-span-6">
+                                    <p v-if="selectedProject.expense.length === 0" class="mb-2">ไม่ได้ของบประมาณ</p>
                                 </div>
                             </template>
                         </jet-form-section>
-                    </template>
-                </div>
-                <jet-section-border/>
-            </template>
-            <jet-form-section @submitted="submit">
-                <template #title>ไฟล์เอกสาร</template>
-                <template #description>กรุณาแนบไฟล์เอกสารทั้งฉบับ รวมเป็นไฟล์เดียว ในรูปแบบ pdf หรือ docx ขนาดไม่เกิน 15 MB</template>
-                <template #form>
-                    <AttachmentBox class="col-span-6" v-model="form.attachment"
-                                   accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
-                                   description="PDF or DOCX up to 15 MB"/>
-                    <jet-input-error :message="errors.attachment" class="col-span-6"/>
+                    </div>
+                    <jet-section-border/>
                 </template>
-                <template #actions>
-                    <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                        Saved.
-                    </jet-action-message>
-                    <progress v-if="form.progress" :value="form.progress.percentage" max="100" class="mr-3">
-                        {{ form.progress.percentage }}%
-                    </progress>
+                <template v-if="form.tag !== 'summary' || hasFilledClosureForm">
+                    <jet-form-section @submitted="submit">
+                        <template #title>ไฟล์เอกสาร</template>
+                        <template #description>กรุณาแนบไฟล์เอกสารทั้งฉบับ รวมเป็นไฟล์เดียว ในรูปแบบ pdf หรือ docx ขนาดไม่เกิน 15 MB</template>
+                        <template #form>
+                            <AttachmentBox class="col-span-6" v-model="form.attachment"
+                                           accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
+                                           description="PDF or DOCX up to 15 MB"/>
+                            <jet-input-error :message="errors.attachment" class="col-span-6"/>
+                        </template>
+                        <template #actions>
+                            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
+                                Saved.
+                            </jet-action-message>
+                            <progress v-if="form.progress" :value="form.progress.percentage" max="100" class="mr-3">
+                                {{ form.progress.percentage }}%
+                            </progress>
 
-                    <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        {{ item.id ? 'บันทึก' : 'บันทึก & ออกเลขเอกสาร' }}
-                    </jet-button>
+                            <jet-button type="submit" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                {{ item.id ? 'บันทึก' : 'บันทึก & ออกเลขเอกสาร' }}
+                            </jet-button>
+                        </template>
+                    </jet-form-section>
+                    <jet-section-border/>
                 </template>
-            </jet-form-section>
-            <jet-section-border/>
-            <jet-form-section v-if="item.id && is_admin">
-                <template #title>เอกสารที่ได้รับอนุมัติแล้ว</template>
-                <template #description>
-                    <p class="text-amber-500">(สำหรับผู้ดูแลระบบ)</p>
-                    อัปโหลดไฟล์เอกสารที่ลงนามอนุมัติแล้ว
-                </template>
-                <template #form>
-                    <AttachmentBox class="col-span-6" v-model="form.approved_attachment"
-                                   accept="application/pdf"
-                                   description="PDF up to 15 MB"/>
-                    <jet-input-error :message="errors.approved_attachment" class="col-span-6"/>
-                </template>
-            </jet-form-section>
+                <jet-form-section v-if="item.id && is_admin">
+                    <template #title>เอกสารที่ได้รับอนุมัติแล้ว</template>
+                    <template #description>
+                        <p class="text-amber-500">(สำหรับผู้ดูแลระบบ)</p>
+                        อัปโหลดไฟล์เอกสารที่ลงนามอนุมัติแล้ว
+                    </template>
+                    <template #form>
+                        <AttachmentBox class="col-span-6" v-model="form.approved_attachment"
+                                       accept="application/pdf"
+                                       description="PDF up to 15 MB"/>
+                        <jet-input-error :message="errors.approved_attachment" class="col-span-6"/>
+                    </template>
+                </jet-form-section>
+            </template>
         </div>
     </app-layout>
 </template>
@@ -441,10 +355,10 @@ import JetLabel from '@/Jetstream/Label.vue'
 import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Checkbox from "@/Jetstream/Checkbox.vue";
 import AttachmentBox from "@/Components/AttachmentBox.vue";
-import {reactive, ref, watch} from 'vue';
+import {computed, reactive, ref, watch} from 'vue';
 import {Link, router} from '@inertiajs/vue3'
-import {debounce} from "lodash/function";
-import {isNumber} from "lodash/lang";
+import {debounce} from 'lodash/function';
+import {isNumber} from 'lodash/lang';
 
 // Props
 const props = defineProps({
@@ -470,9 +384,12 @@ const form = reactive({
     approved_attachment: null,
     is_non_project: props.item.id ? !props.item.project_id : false,
     tag: props.item.tag ?? "",
-    objectives: [],
-    expense: [],
 });
+const hasFilledClosureForm = computed(() =>
+    selectedProject.value && !(
+        selectedProject.value.objectives.filter(o => o.result && o.result.length > 0).length !== selectedProject.value.objectives.length
+        || selectedProject.value.expense.filter(e => e.paid || (e.paid === 0)).length !== selectedProject.value.expense.length
+    ));
 
 // Methods
 const submit = function () {
@@ -506,29 +423,11 @@ const submit = function () {
             }
         }
         router.post(props.item.id
-            ? route('documents.update', {document: props.item.id})
-            : route('documents.store'),
+                ? route('documents.update', {document: props.item.id})
+                : route('documents.store'),
             form
         );
     }
-};
-const generateSummaryDocument = function () {
-    form.project_id = selectedProject.value ? selectedProject.value.id : null;
-    form.objectives = selectedProject.value.objectives;
-    form.expense = selectedProject.value.expense;
-    form.amount = 1;
-    if (form.objectives.filter(o => o.result && o.result.length > 0).length !== form.objectives.length) {
-        alert("กรุณากรอกผลการประเมินทุกตัวชี้วัด");
-        return;
-    }
-    if (form.expense.filter(e => e.paid || (e.paid === 0)).length !== form.expense.length) {
-        alert("กรุณากรอกยอดเงินที่จ่ายจริงให้ครบทุกรายการ หากไม่ได้ใช้จ่าย ให้ใส่ 0");
-        return;
-    }
-    router.post(route('documents.store'), {
-        ...form,
-        generate_document: true,
-    });
 };
 
 const searchProject = debounce(function (keyword) {

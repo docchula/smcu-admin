@@ -422,7 +422,7 @@
                         </jet-button>
                         <jet-input-error :message="form.errors.organizers" class="mt-2"/>
                         <div class="mt-4 text-gray-500">
-                            <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Student Profile/Activity Transcript</h6>
+                            <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Activity Transcript (Student Profile)</h6>
                             <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
                                 <li>บทบาทของนิสิตผู้เกี่ยวข้อง ประกอบด้วย ผู้รับผิดชอบ ผู้ปฏิบัติงาน และผู้เข้าร่วม
                                     ตามสัดส่วนความรับผิดชอบในการดำเนินงาน

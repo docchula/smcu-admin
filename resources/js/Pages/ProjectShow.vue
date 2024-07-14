@@ -42,23 +42,57 @@
                     <p class="my-0.5 text-gray-700">
                         เมื่อเสร็จสิ้นโครงการแล้ว ให้รายงานผลการดำเนินโครงการ และส่งเบิกค่าใช้จ่าย (ถ้ามี) ให้เรียบร้อยโดยเร็ว
                     </p>
-                    <p class="my-0.5 text-blue-500">
-                        ข้อมูลผลการดำเนินโครงการ มีผลต่อการพิจารณางบประมาณโครงการ/ฝ่ายครั้งถัดไป
+                    <template v-if="hasProjectClosure">
+                        <p class="mt-2 font-bold text-blue-700">
+                            <CheckIcon class="h-5 w-5 inline-block"/>
+                            ส่งข้อมูลเพื่อบันทึกลงใน Activity Transcript แล้ว กรุณาส่งเอกสารตามขั้นตอนต่อไป
+                        </p>
+                        <a :href="route('projects.generateSummaryDocument', {project: item.id})"
+                           class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                            ดาวน์โหลดแบบรายงานผลโครงการ
+                        </a>
+                        &ensp;แก้ไขเพิ่มเติมรายละเอียดในไฟล์ แล้ว
+                        <a :href="route('documents.create', {project_id: item.id, tag: 'summary'})"
+                           class="text-green-600">ออกเลขเอกสาร</a>
+                    </template>
+                    <template v-else>
+                        <p class="my-0.5 text-blue-500">
+                            โครงการที่จะบันทึกเป็นส่วนหนึ่งของ Activity Transcript ต้องบันทึกและกดยืนยันการส่ง
+                            <b>ภายใน 30 วัน</b>หลังจากสิ้นสุดโครงการ<br/>
+                            ข้อมูลผลการดำเนินโครงการ มีผลต่อการพิจารณางบประมาณโครงการ/ฝ่ายครั้งถัดไป
+                        </p>
+                        <inertia-link :href="route('projects.closureForm', {project: item.id})"
+                                      class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                            บันทึกผลการดำเนินโครงการ และสร้างแบบรายงานผลโครงการ
+                        </inertia-link>
+                        &ensp;หรือ&ensp;
+                        <a :href="route('projects.generateSummaryDocument', {project: item.id})"
+                           class="text-blue-400">ดาวน์โหลดแบบรายงานผลโครงการ</a>
+                    </template>
+                </div>
+            </div>
+            <div v-if="item.shouldVerify" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-purple-400">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        กรุณารับรองรายชื่อนิสิตผู้เกี่ยวข้อง
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200 p-4 sm:px-6">
+                    <p class="my-0.5 text-gray-700">
+                        โครงการที่จะบันทึกเป็นส่วนหนึ่งของ Activity Transcript ต้องผ่านการรับรองรายชื่อนิสิตผู้เกี่ยวข้อง
+                        โดยนิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคน<b>ภายใน 60 วัน นับจากสิ้นสุดกิจกรรม</b>
                     </p>
-                    <inertia-link :href="route('documents.create', {project_id: item.id, tag: 'summary'})"
+                    <inertia-link :href="route('projects.closureVerifyForm', {project: item.id})"
                                   class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                        บันทึกผลการดำเนินโครงการ และสร้างแบบรายงานผลโครงการ
+                        ตรวจสอบและรับรองรายชื่อนิสิตผู้เกี่ยวข้อง
                     </inertia-link>
-                    &ensp;หรือ&ensp;
-                    <a :href="route('projects.generateSummaryDocument', {project: item.id})"
-                       class="text-blue-400">ดาวน์โหลดแบบรายงานผลโครงการ</a>
                 </div>
             </div>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
-                        <inertia-link v-if="item.can['update-project']" :href="route('projects.edit', {project: item.id})"
+                        <inertia-link v-if="item.can['update-project'] && !hasProjectClosure" :href="route('projects.edit', {project: item.id})"
                                       class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                                 <path
@@ -181,7 +215,7 @@
                 <div class="border-t border-gray-200">
                     <div class="px-4 py-4 sm:px-6">
                         <template v-if="item.expense.length > 0">
-                            <table class="divide-y divide-gray-200">
+                            <table class="w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
                                     <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
@@ -289,7 +323,7 @@
                         นิสิตผู้เกี่ยวข้อง
                     </h3>
                     <template v-if="item.can['update-project']">
-                        <a @click="showImportParticipantDialog = true"
+                        <a @click="showImportParticipantDialog = true" v-if="!hasProjectClosure"
                            class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                             <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline"/>
                             <span>นำเข้าด้วยไฟล์ Excel</span>
@@ -298,6 +332,9 @@
                             <PrinterIcon class="inline-block h-5 w-5"/>
                             พิมพ์
                         </a>
+                        <span v-if="!hasProjectClosure" class="ml-2 text-sm">
+                            กรุณาเพิ่มรายชื่อนิสิตให้ครบถ้วนก่อนส่งรายงานผล
+                        </span>
                     </template>
                 </div>
                 <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false"/>
@@ -309,7 +346,8 @@
                              class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
                                 {{ name }}
-                                <PlusIcon v-if="item.can['update-project']" class="inline-block ml-1 h-5 text-green-400 cursor-pointer"
+                                <PlusIcon v-if="item.can['update-project'] && !hasProjectClosure"
+                                          class="inline-block ml-1 h-5 text-green-400 cursor-pointer"
                                           @click="showStudentIdDialog = type"/>
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
@@ -341,7 +379,7 @@
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
-import {ArrowUpTrayIcon, DocumentChartBarIcon, DocumentTextIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {ArrowUpTrayIcon, CheckIcon, DocumentChartBarIcon, DocumentTextIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import _ from "lodash";
 import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
@@ -349,7 +387,7 @@ import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 export default {
     components: {
-        DocumentChartBarIcon, DocumentTextIcon,
+        CheckIcon, DocumentChartBarIcon, DocumentTextIcon,
         ImportParticipantDialog,
         StudentIdDialog,
         AppLayout,
@@ -365,6 +403,9 @@ export default {
         },
         hasProjectSummary() {
             return Boolean(this.item.objectives.find(o => o.result));
+        },
+        hasProjectClosure() {
+            return Boolean(this.item.closure_submitted_at);
         },
         totalExpense() {
             return this.item.expense.reduce((i, entry) => i - -(entry.amount || 0), 0);
