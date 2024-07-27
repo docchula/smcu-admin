@@ -6,6 +6,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\ProjectClosureController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Personnel;
@@ -63,11 +64,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::get('documents/{document}/downloadApproved', [DocumentController::class, 'downloadApproved'])->name('documents.downloadApproved');
 
-    Route::get('projects/{project}/closure', [ProjectController::class, 'closureForm'])->name('projects.closureForm');
-    Route::post('projects/{project}/closure', [ProjectController::class, 'closureSubmit'])->name('projects.closureSubmit');
-    Route::get('projects/{project}/closure/verify', [ProjectController::class, 'closureVerifyForm'])->name('projects.closureVerifyForm');
-    Route::post('projects/{project}/closure/verify', [ProjectController::class, 'closureVerifySubmit'])->name('projects.closureVerifySubmit');
-    Route::post('projects/{project}/closure/cancel', [ProjectController::class, 'closureCancel'])->name('projects.closureCancel');
+    Route::get('projects/{project}/closure', [ProjectClosureController::class, 'closureForm'])->name('projects.closureForm');
+    Route::post('projects/{project}/closure', [ProjectClosureController::class, 'closureSubmit'])->name('projects.closureSubmit');
+    Route::get('projects/{project}/closure/verify', [ProjectClosureController::class, 'closureVerifyForm'])->name('projects.closureVerifyForm');
+    Route::post('projects/{project}/closure/verify', [ProjectClosureController::class, 'closureVerifySubmit'])->name('projects.closureVerifySubmit');
+    Route::post('projects/{project}/closure/cancel', [ProjectClosureController::class, 'closureCancel'])->name('projects.closureCancel');
+    Route::get('projects-approval', [ProjectClosureController::class, 'approvalIndex'])->name('projects.approvalIndex');
+    Route::get('projects/{project}/approval', [ProjectClosureController::class, 'approvalForm'])->name('projects.approvalForm');
+    Route::post('projects/{project}/approval', [ProjectClosureController::class, 'approvalSubmit'])->name('projects.approvalSubmit');
 
     Route::get('projects/{project}/generateApprovalDocument', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
     Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');

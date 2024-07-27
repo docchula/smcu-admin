@@ -31,6 +31,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('admin-action', function (User $user) {
             return in_array('admin', explode(',', $user->roles));
         });
+        Gate::define('faculty-action', function (User $user) {
+            // Role: Associate/Assistant Dean for Student Affairs
+            return in_array('faculty', explode(',', $user->roles));
+        });
         Gate::define('update-document', function (User $user, Document $document) {
             return is_null($document->id) OR ($document->user_id === $user->id) OR $user->can('admin-action');
         });

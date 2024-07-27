@@ -23,6 +23,7 @@
         "phpoffice/phpspreadsheet": "^2.0",
         "phpoffice/phpword": "^1.2",
         "sentry/sentry-laravel": "^4.4",
+        "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-health": "^1.29",
         "spatie/simple-excel": "^3.5",
         "tightenco/ziggy": "^2.0"
@@ -78,7 +79,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "pestphp/pest-plugin": true
-        }
+        },
+        "process-timeout": 600
     },
     "prefer-stable": true
 }

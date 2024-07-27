@@ -8,15 +8,18 @@
                     </h2>
                 </div>
                 <div class="flex-auto flex items-center justify-end gap-2">
+                    <a v-if="is_faculty" :href="route('projects.approvalIndex')"
+                       class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    >
+                        <CheckBadgeIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
+                        อนุมัติ <span class="hidden sm:inline px-1">Activity </span> Transcript
+                    </a>
                     <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
                                 class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
                             >
-                                <DocumentChartBarIcon
-                                    class="-ml-1 mr-2 h-5 w-5"
-                                    aria-hidden="true"
-                                />
+                                <DocumentChartBarIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                                 รายงาน
                             </MenuButton>
                         </div>
@@ -149,12 +152,11 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
-import {Bars4Icon, CalculatorIcon, CalendarDaysIcon, DocumentChartBarIcon} from "@heroicons/vue/20/solid";
+import {Bars4Icon, CalculatorIcon, CalendarDaysIcon, CheckBadgeIcon, DocumentChartBarIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
-import {Menu, MenuButton, MenuItems, MenuItem} from '@headlessui/vue'
-import {Link} from '@inertiajs/vue3'
+import {Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/vue'
+import {Link, router} from '@inertiajs/vue3'
 import {ref, watch} from 'vue';
-import {router} from '@inertiajs/vue3'
 import {debounce} from "lodash/function";
 
 const props = defineProps({
@@ -164,6 +166,7 @@ const props = defineProps({
     },
     list: Object,
     is_admin: Boolean,
+    is_faculty: Boolean,
 });
 const searchKeyword = ref(props.keyword ?? "");
 const searchMessage = ref('');

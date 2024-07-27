@@ -44,6 +44,7 @@ class ProjectController extends Controller {
             ])->paginate(15)->withQueryString(),
             'keyword' => $keyword,
             'is_admin' => $request->user()->can('admin-action'),
+            'is_faculty' => $request->user()->can('faculty-action'),
         ]);
     }
 
@@ -138,7 +139,7 @@ class ProjectController extends Controller {
         });
         $project->shouldBeClosed = (
             $canUpdateProject
-            and $project->created_at->isBetween(now()->subYear(), now()->subWeeks(3))
+            and $project->created_at->isBetween(now()->subYear(), now()->subWeeks(1))
             and $project->documents->isNotEmpty()
             and ($project->documents->where('tag', 'summary')->isEmpty() or (!$project->hasSubmittedClosure() and $project->canSubmitClosure()))
         );
@@ -261,127 +262,6 @@ class ProjectController extends Controller {
      */
     public function destroy($id) {
         //
-    }
-
-    public function closureForm(Project $project): Response {
-        $this->authorize('update-project', $project);
-        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted');
-
-        $project->load(['department', 'participants', 'participants.user']);
-        $project->participants->transform(function (ProjectParticipant $participant) {
-            $participant->user->makeHidden('id', 'profile_photo_url');
-
-            return $participant;
-        });
-
-        return Inertia::render('ProjectClosure', [
-            'item' => $project,
-            'can_submit' => $project->canSubmitClosure(),
-        ]);
-    }
-
-    /**
-     * @throws \Throwable
-     */
-    public function closureSubmit(Request $request, Project $project) {
-        $this->validate($request, [
-            'objectives' => 'required|array',
-            'expense' => 'nullable|array',
-            'action' => 'nullable|string',
-        ]);
-        $this->authorize('update-project', $project);
-        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted.');
-        $action = $request->input('action');
-
-        $project->objectives = $request->input('objectives');
-        $project->expense = $request->input('expense');
-        if ($action == 'yes') {
-            if (!$project->canSubmitClosure()) {
-                $project->saveOrFail();
-                abort(403, 'Not in closure submission timeframe.');
-            }
-            $project->submitClosure();
-        }
-        $project->saveOrFail();
-
-        if ($action == 'generate_document') {
-            return Inertia::location(route('projects.generateSummaryDocument', ['project' => $project->id]));
-        }
-
-        return redirect()
-            ->route('projects.show', ['project' => $project->id])
-            ->with('flash.banner', 'บันทึกข้อมูลรายงานผลโครงการเลขที่ '.$project->getNumber().' แล้ว')
-            ->with('flash.bannerStyle', 'success');
-    }
-
-    public function closureVerifyForm(Request $request, Project $project): Response {
-        abort_unless($project->hasSubmittedClosure(), 403, 'Closure not submitted');
-
-        $project->load(['department', 'participants', 'participants.user']);
-        $project->participants->transform(function (ProjectParticipant $participant) {
-            $participant->user->makeHidden('id', 'profile_photo_url');
-            // Convert to boolean in order to hide approval/disapproval
-            $participant->verify_status = !empty($participant->verify_status);
-            $participant->makeHidden('reject_reason', 'reject_participants');
-
-            return $participant;
-        });
-        $project->can = [
-            'update-project' => $request->user()->can('update-project', $project),
-        ];
-
-        return Inertia::render('ProjectClosureVerify', [
-            'item' => $project,
-            'my_participant' => $project->participants->where('user_id', Auth::id())->first(),
-        ]);
-    }
-
-    public function closureVerifySubmit(Request $request, Project $project) {
-        $this->validate($request, [
-            'approve' => 'required|in:yes,no',
-            'reason' => 'nullable|required_if:approve,no|string',
-            'reason_participants' => 'nullable|required_if:approve,no|array',
-        ]);
-        abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
-        $participant = $project->participants()->where('user_id', $request->user()->id)->first();
-        abort_unless($participant and in_array($participant->type, ['organizer', 'staff']), 403, 'Only organizer/staff can verify closure.');
-
-        if ($request->input('approve') == 'yes') {
-            $participant->verify_status = 1;
-        } else {
-            $participant->verify_status = -1;
-            $participant->reject_reason = $request->input('reason');
-            $participant->reject_participants = $request->input('reason_participants');
-        }
-        $participant->saveOrFail();
-
-        return redirect()
-            ->route('projects.closureVerifyForm', ['project' => $project->id])
-            ->with('flash.banner', 'บันทึกข้อมูลการรับรองรายชื่อนิสิตผู้เกี่ยวข้อง โครงการเลขที่ '.$project->getNumber().' แล้ว')
-            ->with('flash.bannerStyle', 'success');
-    }
-
-    public function closureCancel(Request $request, Project $project) {
-        $this->validate($request, [
-            'confirm' => 'required|filled',
-        ]);
-        $this->authorize('update-project', $project);
-        abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
-
-        $project->closure_submitted_at = null;
-        $project->closure_submitted_by = null;
-        $project->save();
-        // Cancel all participant's verification status
-        $project->participants()->update([
-            'verify_status' => 0,
-            'reject_reason' => null,
-            'reject_participants' => [],
-        ]);
-
-        return redirect()
-            ->route('projects.show', ['project' => $project->id])
-            ->with('flash.banner', 'ยกเลิกการส่งข้อมูล โครงการเลขที่ '.$project->getNumber().' แล้ว')
-            ->with('flash.bannerStyle', 'success');
     }
 
     /**
@@ -522,7 +402,7 @@ class ProjectController extends Controller {
         for ($i = 0; $i < $objectiveCount; $i++) {
             $objectiveSum []= [
                 'objectives_goal' => $project->objectives[$i]['goal'] ?? '...',
-                'objectives_result' => isset($project->objectives[$i]['result']) ? ($project->objectives[$i]['result'].' ('.$project->objectives[$i]['percentage'].'%)') : '...',
+                'objectives_result' => isset($project->objectives[$i]['result']) ? ($project->objectives[$i]['result'].' ('.($project->objectives[$i]['percentage'] ?? '').'%)') : '...',
                 'aims_text' => $aims[$i] ?? '...',
             ];
         }

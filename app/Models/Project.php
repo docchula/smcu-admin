@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helper;
+use App\ProjectClosureStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -39,8 +40,13 @@ use Illuminate\Support\Str;
  * @property Department                      $department
  * @property User                            $user
  * @property Collection|ProjectParticipant[] $participants
- * @property \Illuminate\Support\Carbon|null $closure_submitted_at
- * @property int|string|null $closure_submitted_by
+ * @property Carbon|null $closure_reminded_at
+ * @property Carbon|null $closure_submitted_at
+ * @property Carbon|null $closure_approved_at
+ * @property int|null $closure_submitted_by
+ * @property int|null $closure_approved_status
+ * @property int|null $closure_approved_by
+ * @property string|null $closure_approved_message
  */
 class Project extends Model {
     use HasFactory;
@@ -91,11 +97,11 @@ class Project extends Model {
         return $this->belongsTo(User::class)->select('id', 'name');
     }
 
-    public function setPeriodStartAttribute($value) {
+    public function setPeriodStartAttribute($value): void {
         $this->attributes['period_start'] = new Carbon($value);
     }
 
-    public function setPeriodEndAttribute($value) {
+    public function setPeriodEndAttribute($value): void {
         $this->attributes['period_end'] = new Carbon($value);
     }
 
@@ -182,9 +188,31 @@ class Project extends Model {
         $this->closure_submitted_by = auth()->id();
     }
 
+    public function getClosureStatus(): ProjectClosureStatus {
+        if ($this->hasSubmittedClosure()) {
+            switch ($this->closure_approved_status) {
+                case 1:
+                    return ProjectClosureStatus::APPROVED;
+                case -1:
+                    return ProjectClosureStatus::REJECTED;
+            }
+            // Count participants who have verified
+            $organizers = $this->participants->where('type', 'organizer');
+            $staff = $this->participants->where('type', 'staff');
+            $isOrganizerCountMet = $organizers->whereIn('verify_status', [-1, 1])->count() == $organizers->count();
+            $isStaffCountMet = $staff->whereIn('verify_status', [-1, 1])->count() >= ($staff->count() / 2);
+            if ($isOrganizerCountMet and $isStaffCountMet) {
+                return ProjectClosureStatus::REVIEWING;
+            }
+
+            return ProjectClosureStatus::SUBMITTED;
+        }
+
+        return ProjectClosureStatus::NOT_SUBMITTED;
+    }
+
     public function canVerify(): bool {
-        return $this->hasSubmittedClosure()
-            and empty($this->closure_approved_at)
+        return in_array($this->getClosureStatus(), [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING])
             and ($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT or ($this->year == 2567 and now()->isBefore('2024-10-31')));
     }
 }

@@ -19,7 +19,7 @@ class ProjectParticipant extends Model {
     use HasFactory;
 
     protected $fillable = ['user_id', 'type', 'title'];
-    protected $visible = ['id', 'type', 'title', 'user', 'project', 'verify_status'];
+    protected $visible = ['id', 'type', 'title', 'user', 'project'];
     protected $casts = [
         'reject_participants' => AsArrayObject::class,
     ];

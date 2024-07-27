@@ -76,6 +76,7 @@
                     </div>
                 </div>
             </div>
+            <ProjectClosureStatus v-if="isSubmitted" :participants="item.participants"/>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -220,6 +221,7 @@ import Checkbox from "@/Jetstream/Checkbox.vue";
 import Input from "@/Jetstream/Input.vue";
 import Button from "@/Jetstream/Button.vue";
 import ClosureCancelDialog from "@/Components/ClosureCancelDialog.vue";
+import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
 
 const props = defineProps({
     item: Object,

@@ -230,7 +230,7 @@
                                         <td class="px-1 py-3 text-sm">
                                             {{ member.method }}
                                         </td>
-                                        <td class="px-1 py-3 whitespace-nowrap">
+                                        <td class="px-1 py-3">
                                             {{ member.result }}
                                         </td>
                                         <td class="px-1 py-3 whitespace-nowrap">
