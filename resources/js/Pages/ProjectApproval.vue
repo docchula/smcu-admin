@@ -184,6 +184,30 @@
                             </template>
                             </tbody>
                         </table>
+                        <div class="mt-4">
+                            <div class="mt-4 text-gray-500">
+                                <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Activity Transcript</h6>
+                                <p v-if="!organizerCountCompliance || !staffCountCompliance"
+                                   class="mt-2 mb-1 text-orange-500 border-orange-500 border p-2 w-full rounded-md">
+                                    <span class="font-semibold">ไม่ตรงตามเงื่อนไข</span>
+                                    เมื่อยืนยันและส่งเอกสารแล้ว ให้ติดต่อชี้แจงกับผู้ช่วยคณบดี/รองคณบดีที่ได้รับมอบหมาย
+                                </p>
+                                <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
+                                    <li class="font-bold"
+                                        :class="{'text-green-600': organizerCountCompliance, 'text-red-500': !organizerCountCompliance}">
+                                        ผู้รับผิดชอบ พึงมีจำนวนไม่เกินร้อยละ 20 ของจำนวนผู้ปฏิบัติงาน ยกเว้นโครงการที่ไม่มีนิสิตเป็นผู้ปฏิบัติงาน
+                                    </li>
+                                    <li class="font-bold" :class="{'text-green-600': staffCountCompliance, 'text-red-500': !staffCountCompliance}">
+                                        ผู้ปฏิบัติงาน พึงมีจำนวนไม่เกิน 2 ใน 3 ของผู้มีส่วนร่วมในกิจกรรมทั้งหมด ทั้งผู้รับผิดชอบ ผู้ปฏิบัติงาน
+                                        และผู้เข้าร่วม ทั้งนิสิตและบุคคลภายนอก
+                                    </li>
+                                    <li>ผู้เข้าร่วม ต้องลงชื่อเข้าร่วมกิจกรรมทุกวัน ทุกครึ่งวัน หรือตามความเหมาะสมต่อลักษณะกิจกรรม
+                                        โดยมีหลักฐานว่าเข้าร่วมกิจกรรมไม่น้อยกว่า 2 ใน 3 ของระยะเวลากิจกรรมทั้งหมด
+                                        ให้ผู้รับผิดชอบโครงการเก็บรักษาหลักฐานดังกล่าวไว้
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -308,6 +332,14 @@ const selectedParticipants = ref(props.item.participants.map(e => e.id));
 // Computed
 const participantsGrouped = computed(() => {
     return (props.item.participants.length > 0) ? groupBy(props.item.participants, 'type') : null;
+});
+const organizerCountCompliance = computed(() => {
+    if (!participantsGrouped.value || !participantsGrouped.value['organizer'] || !participantsGrouped.value['staff']) return true;
+    return participantsGrouped.value['organizer'].length <= 0.2 * participantsGrouped.value['staff'].length;
+});
+const staffCountCompliance = computed(() => {
+    if (!participantsGrouped.value || !participantsGrouped.value['staff']) return true;
+    return participantsGrouped.value['staff'].length <= 0.66667 * ((participantsGrouped.value['attendee'] && participantsGrouped.value['attendee'].length > 0) ? props.item.participants.length : (props.item.participants.length + Number(props.item.estimated_attendees)));
 });
 const hasRejectedVerify = computed(() => Boolean(props.item.participants.find(e => e.verify_status === -1)));
 const showCheckbox = computed(() => (form.approve !== 'no' || props.item.closure_status >= 10) && props.item.closure_status >= 1);
