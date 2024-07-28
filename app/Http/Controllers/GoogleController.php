@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\InvalidStateException;
 use Storage;
 use VestaClient;
@@ -20,13 +21,21 @@ class GoogleController extends Controller {
     public const ADMIN_ACCOUNT_TOKEN_FILE = '.admin_account_token';
     public const ADMIN_ACCOUNT_EMAIL = 'itdivision@docchula.com';
 
+    private function socialiteDriver(): GoogleProvider {
+        return Socialite::driver('google');
+    }
+
     public function redirectToGoogle() {
-        return Socialite::driver('google')->with(['hd' => 'docchula.com'])->redirect();
+        return $this->socialiteDriver()->with(['hd' => 'docchula.com'])->redirect();
+    }
+
+    public function redirectWithoutHd() {
+        return $this->socialiteDriver()->redirect();
     }
 
     public function redirectToGoogleWithGmailAccess()
     {
-        return Socialite::driver('google')->with([
+        return $this->socialiteDriver()->with([
             'access_type' => 'offline',
             'hd' => 'docchula.com',
             'login_hint' => self::ADMIN_ACCOUNT_EMAIL,
@@ -37,16 +46,17 @@ class GoogleController extends Controller {
         ])->redirect();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function handleGoogleCallback(): RedirectResponse {
         try {
-            $googleUser = Socialite::driver('google')->user();
-        } catch (InvalidStateException $exception) {
+            $googleUser = $this->socialiteDriver()->user();
+        } catch (InvalidStateException) {
             return redirect('/')->with('flash.banner', 'Invalid state. Try again.')->with('flash.bannerStyle', 'danger');
         }
-        if (!Str::endsWith($googleUser->email, '@docchula.com')) {
-            return redirect('/')->with('flash.banner', 'Invalid email')->with('flash.bannerStyle', 'danger');
-        }
-        if ($googleUser->email == self::ADMIN_ACCOUNT_EMAIL and in_array(Gmail::GMAIL_READONLY, $googleUser->approvedScopes)) {
+        if ($googleUser->email == self::ADMIN_ACCOUNT_EMAIL
+            and in_array(Gmail::GMAIL_READONLY, $googleUser->approvedScopes)) {
             // For admin account with authorized permission: save token in file for later use
             $oldToken = [];
             try {
@@ -65,16 +75,20 @@ class GoogleController extends Controller {
                 'google_id' => $googleUser->id,
             ]);
         } elseif ($user = User::where('google_id', $googleUser->id)->orWhere('email', $googleUser->email)->first()) {
-            /** @var User $user */
             if ($user->email == $googleUser->email) {
                 // Double check Google ID as the email may be changed
                 if (empty($user->google_id)) {
                     $user->google_id = $googleUser->id;
                     $user->saveOrFail();
                 } elseif ($user->google_id != $googleUser->id) {
-                    return redirect('/')->with('flash.banner', 'Invalid credential, please contact administrator.')->with('flash.bannerStyle', 'danger');
+                    return redirect('/')
+                        ->with('flash.banner', 'Invalid credential, please contact administrator.')
+                        ->with('flash.bannerStyle', 'danger');
                 }
             }
+        } elseif (!Str::endsWith($googleUser->email, '@docchula.com')) {
+            // Allow only authorized domain, don't check if user is already registered.
+            return redirect('/')->with('flash.banner', 'Invalid email')->with('flash.bannerStyle', 'danger');
         } else {
             $user = new User([
                 'name' => $googleUser->name,

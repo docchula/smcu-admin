@@ -10,6 +10,8 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
     - Retrieves DocHub document status updates from Gmail, and notify document's owner of any error via Email
 - Project Index : Records of the union's projects since academic year 2565
   - Record project participants, which can be viewed and printed by each participants
+- Project Closure & Activity Transcript
+    - Associate/Assistant Dean can access the interface by having user role of _faculty_ and login with non-Docchula account at /login/google/faculty.
 - Personnel Index : List of the union committee members, accessible to the public at https://admin.docchula.com/board
 - Links to the union manual (hosted at Notion)
 

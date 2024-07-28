@@ -39,6 +39,7 @@ Route::get('/board/{year?}', function (?string $year = null) {
 });
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('auth/google/faculty', [GoogleController::class, 'redirectWithoutHd'])->name('login.googleWithoutHd');
 Route::get('auth/google/itdivision', [GoogleController::class, 'redirectToGoogleWithGmailAccess']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
