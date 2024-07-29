@@ -8,6 +8,7 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectClosureController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TranscriptController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Personnel;
 use Illuminate\Support\Facades\Route;
@@ -88,6 +89,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
     Route::get('/user/profile/printMyProjects', [UserProfileController::class, 'printMyProjects'])->name('profile.printMyProjects');
+
+    Route::get('transcript', [TranscriptController::class, 'index'])->name('transcript.index');
+    Route::get('transcript/{user}/print', [TranscriptController::class, 'print'])->name('transcript.print');
 
     Route::get('health/board', HealthCheckResultsController::class);
 });

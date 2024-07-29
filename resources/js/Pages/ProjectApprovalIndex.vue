@@ -1,18 +1,30 @@
 <template>
     <AppLayout>
         <template #header>
-            <Link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
-                </svg>
-                <p>โครงการ</p>
-            </Link>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                สถานะการอนุมัติรายงานผลโครงการ
-            </h2>
-            <p class="mt-2 text-gray-500">
-                เพื่อบันทึกใน Student Profile/Activity Transcript
-            </p>
+            <div class="flex flex-wrap gap-y-4 items-center">
+                <div class="flex-grow">
+                    <Link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"
+                                  class="text-gray-500"/>
+                        </svg>
+                        <p>โครงการ</p>
+                    </Link>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        สถานะการอนุมัติรายงานผลโครงการ
+                    </h2>
+                    <p class="mt-2 text-gray-500">
+                        เพื่อบันทึกใน Student Profile/Activity Transcript
+                    </p>
+                </div>
+                <div class="flex-auto flex items-center justify-end gap-2">
+                    <a :href="route('transcript.index')"
+                       class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-purple-500 border-purple-500 border rounded-lg shadow hover:shadow-md focus:ring-purple-500 focus:ring-offset-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    >
+                        ดู <span class="hidden sm:inline px-1">Activity </span> Transcript ของนิสิต
+                    </a>
+                </div>
+            </div>
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">

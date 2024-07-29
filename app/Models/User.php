@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -100,8 +101,23 @@ class User extends Authenticatable {
         return $this->participants->whereNotNull('project.approvalDocument')->sortByDesc('id')->values();
     }
 
-
     public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany {
         return $this->hasMany(Project::class);
+    }
+
+    public static function searchQuery(string $keyword = null): ?Builder {
+        $query = self::query();
+        if (empty($keyword) or strlen($keyword) < 3) {
+            return null;
+        }
+        if (is_numeric($keyword)) {
+            $query->where('student_id', $keyword);
+        } elseif (str_contains($keyword, '@')) {
+            $query->where('email', $keyword);
+        } else {
+            $query->where('name', 'like', "%$keyword%");
+        }
+
+        return $query;
     }
 }
