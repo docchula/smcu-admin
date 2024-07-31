@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -21,6 +20,7 @@ class TranscriptController extends Controller {
     public function print(User $user) {
         $this->authorize('faculty-action');
 
-        return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user])->output())]);
+        return view('my-projects', ['user' => $user]);
+        // return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user])->output())]);
     }
 }

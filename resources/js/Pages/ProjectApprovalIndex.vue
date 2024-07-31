@@ -18,11 +18,11 @@
                     </p>
                 </div>
                 <div class="flex-auto flex items-center justify-end gap-2">
-                    <a :href="route('transcript.index')"
+                    <Link :href="route('transcript.index')"
                        class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-purple-500 border-purple-500 border rounded-lg shadow hover:shadow-md focus:ring-purple-500 focus:ring-offset-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
                     >
                         ดู <span class="hidden sm:inline px-1">Activity </span> Transcript ของนิสิต
-                    </a>
+                    </Link>
                 </div>
             </div>
         </template>
@@ -107,7 +107,7 @@ const searchMessage = ref('');
 
 // Methods
 const search = (keyword) => {
-    router.get(this.route('projects.approvalIndex'), {search: keyword}, {
+    router.get(route('projects.approvalIndex'), {search: keyword}, {
         only: ['list', 'keyword'],
         preserveState: true
     });

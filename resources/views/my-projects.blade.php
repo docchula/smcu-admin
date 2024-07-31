@@ -1,5 +1,6 @@
 @php
     /** @var \App\Models\User $user */
+$user->load('participants.project.department');
 @endphp
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">
@@ -9,29 +10,55 @@
         font-weight: 400;
     }
 
-    h3, h4 {
-        margin: 0.5rem 0;
+    th, td {
+        vertical-align: top;
+        word-break: break-all;
     }
 </style>
-<h2>ประวัติการเข้าร่วมกิจกรรม (Activity Transcript)</h2>
-<h4>สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h4>
-<p>
-    <span style="margin-right: 4rem">{{ $user->name }}</span>
-    เลขประจำตัวนิสิต&nbsp;{{ $user->student_id }}
-</p>
-<hr/>
 <table style="width: 100%">
     <tr>
+        @if(empty($draft))
+            <td style="vertical-align: middle;text-align: center">
+                <img src="/phrakiao.jpg" alt="Logo" style="width: 50px"/>
+            </td>
+        @endif
+        <td>
+            @if(!empty($draft))
+                <h2 style="color:red">ร่าง</h2>
+            @endif
+            <h3>ระเบียนประวัติการเข้าร่วมกิจกรรมนอกหลักสูตร</h3>
+            <p>คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p>
+            <p>
+                <span style="margin-right: 4rem">{{ $user->name }}</span>
+                เลขประจำตัวนิสิต&nbsp;{{ $user->student_id }}
+            </p>
+        </td>
+    </tr>
+</table>
+<hr/>
+<table style="width: 100%">
+    <tr style="font-size: 0.85em">
         <th>โครงการ</th>
-        <th>บทบาท</th>
-        <th>หน้าที่</th>
+        <th>หน่วยงาน</th>
+        <th style="width: 5em">จัดเมื่อ</th>
+        <th style="width: 4.5em">ระยะเวลา (ชม.)</th>
+        <th style="width: 4em">บทบาท</th>
     </tr>
     @foreach($user->participantAndProjects() as $participant)
         <tr>
-            <td>({{ $participant->project->getNumber() }}) {{ $participant->project->name }}</td>
-            <td>{{ ['organizer' => 'ผู้รับผิดชอบ', 'staff' => 'ผู้ปฏิบัติงาน', 'attendee' => 'ผู้เข้าร่วม'][$participant->type] ?? $participant->type }}</td>
-            <td>{{ $participant->title }}</td>
+            <td>{{ $participant->project->name }}</td>
+            <td>{{ $participant->project->department->name }}</td>
+            <td>{{ $participant->project->period_end->format('M Y') }}</td>
+            <td style="text-align: center">{{ $participant->project->duration }}</td>
+            <td style="text-align: center">
+                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$participant->type] ?? $participant->type }}
+            </td>
         </tr>
     @endforeach
 </table>
-<p style="margin-top:2rem; font-size:0.8rem; color:gray; text-align: right">พิมพ์เมื่อ {{ date('F j, Y') }}</p>
+<p style="margin-top:2em; font-size:0.9em; color:gray">บทบาท : ร = ผู้รับผิดชอบ / ป = ผู้ปฏิบัติงาน / ข = ผู้เข้าร่วม</p>
+<p style="margin-top:2em; font-size:0.7em; color:lightgray; text-align: right">พิมพ์เมื่อ {{ date('F j, Y') }}</p>
+<script>
+    window.print();
+    window.onafterprint = window.close;
+</script>

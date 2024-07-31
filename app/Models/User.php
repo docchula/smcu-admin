@@ -110,8 +110,14 @@ class User extends Authenticatable {
         if (empty($keyword) or strlen($keyword) < 3) {
             return null;
         }
-        if (is_numeric($keyword)) {
-            $query->where('student_id', $keyword);
+        if (is_numeric($keyword) and strlen($keyword) <= 10) {
+            if (strlen($keyword) === 10) {
+                $query->where('student_id', $keyword);
+            } elseif (strlen($keyword) >= 7) {
+                $query->where('student_id', 'like', "$keyword%");
+            } else {
+                return null;
+            }
         } elseif (str_contains($keyword, '@')) {
             $query->where('email', $keyword);
         } else {

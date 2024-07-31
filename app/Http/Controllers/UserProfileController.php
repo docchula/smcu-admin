@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Http\Controllers\Inertia\UserProfileController as JetstreamUserProfileController;
@@ -16,7 +15,7 @@ class UserProfileController extends JetstreamUserProfileController {
         return Jetstream::inertia()->render($request, 'Profile/Show', [
             'confirmsTwoFactorAuthentication' => Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm'),
             'sessions' => $this->sessions($request)->all(),
-            'projects' => $request->user()->participantAndProjects(),
+            'participants' => $request->user()->load(['participants', 'participants.project', 'participants.project.department'])->participants,
         ]);
     }
 
@@ -24,6 +23,7 @@ class UserProfileController extends JetstreamUserProfileController {
     {
         $user = $request->user();
 
-        return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user])->output())]);
+        return view('my-projects', ['user' => $user, 'draft' => true]);
+        // return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user, 'draft' => true])->output())]);
     }
 }
