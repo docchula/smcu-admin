@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifyProjectVerifyJob;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
@@ -59,6 +60,8 @@ class ProjectClosureController extends Controller {
 
         if ($action == 'generate_document') {
             return Inertia::location(route('projects.generateSummaryDocument', ['project' => $project->id]));
+        } elseif ($project->closure_submitted_at) {
+            NotifyProjectVerifyJob::dispatch($project)->delay(now()->addMinutes(30));
         }
 
         return redirect()

@@ -14,7 +14,7 @@ services:
     restart: on-failure:2
     environment:
       # https://serversideup.net/open-source/docker-php/docs/getting-started/default-configurations
-      - PHP_UPLOAD_MAX_FILE_SIZE="30M"
+      - PHP_UPLOAD_MAX_FILE_SIZE=30M
       - PHP_OPCACHE_ENABLE=1
       # Enable Laravel config/route/view/event caching (caution: do not call env() in other places than config files)
       #- AUTORUN_ENABLED=true
@@ -80,7 +80,27 @@ services:
       resources:
         limits:
           cpus: '2'
-          memory: 1G
+          memory: 500M
+
+
+  queue-runner:
+    image: smcu-admin-app
+    command: [ "php", "/var/www/html/artisan", "queue:work", "-v" ]
+    restart: on-failure:2
+    environment:
+      - APP_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - CACHE_DRIVER=redis
+      - LOG_CHANNEL=stderr
+    env_file:
+      - stack.env
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 500M
 
 
   redis:

@@ -1,7 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Jetstream/Welcome.vue';
-import {PROJECT_PARTICIPANT_ROLES} from "@/static";
+import {PROJECT_PARTICIPANT_ROLES} from '@/static';
+import {Link} from '@inertiajs/vue3';
 
 const props = defineProps({myProjects: Array});
 const lastYear = new Date();
@@ -9,9 +10,11 @@ lastYear.setMonth(lastYear.getMonth() - 18);
 const participants = props.myProjects.map(participant => {
     participant.project.awaitingSummary = participant.project.approval_document && !participant.project.summary_document && ![32, 38, 39].includes(participant.project.department_id) && (new Date(participant.project.created_at) > lastYear);
     participant.project.awaitingSummaryAlert = participant.project.awaitingSummary && (new Date(participant.project.created_at) > lastYear) && (participant.type === 'organizer');
+    participant.project.awaitingVerify = [1, 5].includes(participant.project.closure_status) && ['organizer', 'staff'].includes(participant.type) && !participant.verify_status;
     return participant;
 });
-const projectsAwaitingSummary = props.myProjects.map(participant => participant.project).filter(project => project.awaitingSummaryAlert);
+const projectsAwaitingSummary = participants.map(participant => participant.project).filter(project => project.awaitingSummaryAlert);
+const projectsAwaitingVerify = participants.map(participant => participant.project).filter(project => project.awaitingVerify);
 </script>
 <template>
     <app-layout>
@@ -22,6 +25,31 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
         </template>
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-12">
+            <div v-if="projectsAwaitingVerify.length > 0"
+                 class="animate-pulse bg-purple-100 border-purple-600 text-purple-600 border-l-4 rounded p-4 mb-6">
+                <p class="font-bold">
+                    กรุณารับรองรายชื่อนิสิตผู้เกี่ยวข้อง
+                </p>
+                <p>
+                    โครงการที่จะบันทึกเป็นส่วนหนึ่งของ Activity Transcript ต้องผ่านการรับรองรายชื่อนิสิตผู้เกี่ยวข้อง
+                    โดยนิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคนภายใน 60 วัน นับจากสิ้นสุดกิจกรรม
+                </p>
+                <table class="text-sm">
+                    <tr v-for="project in projectsAwaitingVerify">
+                        <td>•</td>
+                        <td class="px-2">
+                            <Link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600 text-xs">
+                                {{ project.year }}-{{ project.number }}
+                            </Link>
+                        </td>
+                        <td>
+                            <Link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
+                                {{ project.name }}
+                            </Link>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <div v-if="projectsAwaitingSummary.length > 0" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded p-4 mb-6" role="alert">
                 <p class="font-bold">
                     มี {{ projectsAwaitingSummary.length }} โครงการที่กำลังดำเนินงานอยู่
@@ -31,14 +59,14 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
                     <tr v-for="project in projectsAwaitingSummary">
                         <td>•</td>
                         <td class="px-2">
-                            <inertia-link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600 text-xs">
+                            <Link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600 text-xs">
                                 {{ project.year }}-{{ project.number }}
-                            </inertia-link>
+                            </Link>
                         </td>
                         <td>
-                            <inertia-link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
+                            <Link :href="route('projects.show', {project: project.id})" class="hover:text-blue-600">
                                 {{ project.name }}
-                            </inertia-link>
+                            </Link>
                         </td>
                     </tr>
                 </table>
@@ -62,7 +90,9 @@ const projectsAwaitingSummary = props.myProjects.map(participant => participant.
                             <div class="items-center md:flex gap-4">
                                 <p :class="{'text-gray-400': participant.project.awaitingSummary, 'text-gray-900': !participant.project.awaitingSummary}"
                                    class="flex-auto font-medium">
-                                    <span class="text-xs text-gray-500 px-0.5">{{ participant.project.year }}-{{ participant.project.number }}</span>
+                                    <Link :href="route('projects.show', {project: participant.project.id})" class="text-xs text-gray-500 px-0.5">
+                                        {{ participant.project.year }}-{{ participant.project.number }}
+                                    </Link>
                                     {{ participant.project.name }}
                                 </p>
                                 <p class="flex-auto text-sm text-gray-500 md:text-right">
