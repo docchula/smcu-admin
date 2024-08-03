@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Activitylog\Models\Activity;
 
 class ProjectClosureController extends Controller {
     public function closureForm(Project $project): Response {
@@ -51,6 +52,8 @@ class ProjectClosureController extends Controller {
                 abort(403, 'Not in closure submission timeframe.');
             }
             $project->submitClosure();
+            activity()->causedBy($request->user())->performedOn($project)
+                ->event('closure_submit')->log('ส่งยืนยันรายงานผลโครงการ และบันทึกใน Activity Transcript แล้ว');
         }
         $project->saveOrFail();
 
@@ -71,6 +74,8 @@ class ProjectClosureController extends Controller {
         $this->authorize('update-project', $project);
         abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
 
+        activity()->causedBy($request->user())->performedOn($project)
+            ->event('closure_cancel')->log('ยกเลิกการส่งรายงานผลโครงการแล้ว');
         $project->closure_submitted_at = null;
         $project->closure_submitted_by = null;
         $project->save();
@@ -126,6 +131,8 @@ class ProjectClosureController extends Controller {
             $participant->reject_reason = $request->input('reason');
             $participant->reject_participants = $request->input('reason_participants');
         }
+        activity()->causedBy($request->user())->performedOn($project)
+            ->event('closure_verify')->log('ตรวจสอบรายชื่อนิสิตผู้เกี่ยวข้องของโครงการแล้ว');
         $participant->saveOrFail();
 
         return redirect()
@@ -193,6 +200,8 @@ class ProjectClosureController extends Controller {
             $project->closure_approved_message = $request->input('reason');
             $project->participants()->update(['approve_status' => -1]);
         }
+        activity()->causedBy($request->user())->performedOn($project)
+            ->event('closure_approve')->log('บันทึกผลการอนุมัติรายงานผลโครงการแล้ว');
         $project->save();
         DB::commit();
 
@@ -200,5 +209,18 @@ class ProjectClosureController extends Controller {
             ->route('projects.approvalForm', ['project' => $project->id])
             ->with('flash.banner', 'บันทึกผลการอนุมัติรายงานผลโครงการ เลขที่ '.$project->getNumber().' แล้ว')
             ->with('flash.bannerStyle', 'success');
+    }
+
+    public function viewLogs(Request $request, Project $project): \Illuminate\Http\JsonResponse {
+        abort_unless($request->user()->can('update-project', $project) or $request->user()->can('faculty-action'), 403);
+
+        return response()->json([
+            'logs' => $project->activities()->with('causer')->limit(100)->get()->map(fn(Activity $activity) => [
+                'id' => $activity->id,
+                'description' => $activity->description,
+                'created_at' => $activity->created_at->format('j M Y H:i'),
+                'causer' => $activity->causer?->name,
+            ]),
+        ]);
     }
 }

@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Activity;
 
 /**
  * @property int                             $id
@@ -95,6 +97,10 @@ class Project extends Model {
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class)->select('id', 'name');
+    }
+
+    public function activities(): MorphMany {
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function setPeriodStartAttribute($value): void {

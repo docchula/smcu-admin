@@ -297,7 +297,11 @@
                     </div>
                 </div>
             </div>
+            <p class="mt-4 px-2 text-xs">
+                <a class="text-blue-500 cursor-pointer" @click="showLogDialog = true">ดูประวัติ</a>
+            </p>
         </div>
+        <ClosureLogDialog :show-modal="showLogDialog" :project="item" @close="showLogDialog = false"/>
     </app-layout>
 </template>
 
@@ -316,6 +320,7 @@ import Checkbox from "@/Jetstream/Checkbox.vue";
 import Input from "@/Jetstream/Input.vue";
 import Button from "@/Jetstream/Button.vue";
 import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
+import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
 
 const props = defineProps({
     item: Object,
@@ -328,6 +333,7 @@ const form = useForm({
     approve_participants: [],
 });
 const selectedParticipants = ref(props.item.participants.map(e => e.id));
+const showLogDialog = ref(false);
 
 // Computed
 const participantsGrouped = computed(() => {

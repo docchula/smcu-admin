@@ -199,10 +199,12 @@
                 เมื่อส่งข้อมูลรายงานผลโครงการแล้ว ไม่สามารถแก้ไขได้
                 หากข้อมูลพื้นฐานหรือรายชื่อนิสิตผู้เกี่ยวข้องไม่ถูกต้อง ต้อง
                 <a class="text-red-500 cursor-pointer" @click="showCancelDialog = true">ยกเลิกการส่งข้อมูล</a>
-                ซึ่งจะยกเลิกการรับรองรายชื่อทั้งหมด แล้วจึงส่งใหม่
+                ซึ่งจะยกเลิกการรับรองรายชื่อทั้งหมด แล้วจึงส่งใหม่ |
+                <a class="text-blue-500 cursor-pointer" @click="showLogDialog = true">ดูประวัติ</a>
             </p>
         </div>
         <ClosureCancelDialog :show-modal="showCancelDialog" :project="item" @close="showCancelDialog = false"/>
+        <ClosureLogDialog :show-modal="showLogDialog" :project="item" @close="showLogDialog = false"/>
     </app-layout>
 </template>
 
@@ -222,6 +224,7 @@ import Input from "@/Jetstream/Input.vue";
 import Button from "@/Jetstream/Button.vue";
 import ClosureCancelDialog from "@/Components/ClosureCancelDialog.vue";
 import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
+import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
 
 const props = defineProps({
     item: Object,
@@ -236,6 +239,7 @@ const form = useForm({
 });
 const selectedParticipants = ref([]);
 const showCancelDialog = ref(false);
+const showLogDialog = ref(false);
 
 // Computed
 const participantsGrouped = computed(() => {
