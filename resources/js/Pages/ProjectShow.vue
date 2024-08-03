@@ -338,7 +338,7 @@
                     </template>
                 </div>
                 <ImportParticipantDialog :show-modal="showImportParticipantDialog" :project="item" @close="showImportParticipantDialog = false"/>
-                <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user.student_id)"
+                <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user?.student_id)"
                                  @close="showStudentIdDialog = false" @selected="addParticipant($event)"/>
                 <div class="border-t border-gray-200">
                     <dl>
@@ -353,10 +353,10 @@
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 <ol class="list-decimal" v-if="participantsGrouped[type]">
                                     <li v-for="e in participantsGrouped[type]">
-                                        {{ e.user.name }}
-                                        <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
+                                        {{ e.user?.name }}
+                                        <span v-if="e.user?.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user?.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
-                                        <XMarkIcon v-if="e.user.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1))"
+                                        <XMarkIcon v-if="e.user?.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1))"
                                                    class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)"/>
                                     </li>
                                 </ol>

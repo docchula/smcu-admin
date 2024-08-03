@@ -130,9 +130,9 @@ class ProjectController extends Controller {
         $project->load(['user', 'department', 'documents', 'participants', 'participants.user']);
         $project->user->makeHidden('id', 'student_id', 'profile_photo_url');
         $project->participants->transform(function (ProjectParticipant $participant) use ($canUpdateProject) {
-            $participant->user->makeHidden('id', 'profile_photo_url');
+            $participant->user?->makeHidden('id', 'profile_photo_url');
             if (!$canUpdateProject) {
-                $participant->user->makeHidden('student_id');
+                $participant->user?->makeHidden('student_id');
             }
 
             return $participant;
