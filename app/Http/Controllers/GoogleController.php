@@ -109,7 +109,7 @@ class GoogleController extends Controller {
             }
         }
 
-        if (isset($user->student_id) or $user->email == self::ADMIN_ACCOUNT_EMAIL) {
+        if (isset($user->student_id) or $user->email == self::ADMIN_ACCOUNT_EMAIL or !empty($user->roles)) {
             Auth::login($user);
 
             return redirect()->intended('dashboard');
