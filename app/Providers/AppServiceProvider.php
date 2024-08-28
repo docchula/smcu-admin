@@ -45,7 +45,8 @@ class AppServiceProvider extends ServiceProvider
             ScheduleCheck::new()->heartbeatMaxAgeInMinutes(60),
             StorageCheck::new(),
             // Disk space check only works on Linux
-            UsedDiskSpaceCheck::new()->failWhenUsedSpaceIsAbovePercentage(95),
+            UsedDiskSpaceCheck::new()->warnWhenUsedSpaceIsAbovePercentage(90)
+                ->failWhenUsedSpaceIsAbovePercentage(95),
         ]);
     }
 }
