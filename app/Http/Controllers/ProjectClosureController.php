@@ -54,7 +54,7 @@ class ProjectClosureController extends Controller {
             }
             $project->submitClosure();
             activity()->causedBy($request->user())->performedOn($project)
-                ->event('closure_submit')->log('ส่งยืนยันรายงานผลโครงการ และบันทึกใน Activity Transcript แล้ว');
+                ->event('closure_submit')->log('ส่งยืนยันรายงานผลโครงการ และบันทึกใน Activity Transcript');
         }
         $project->saveOrFail();
 
@@ -78,7 +78,7 @@ class ProjectClosureController extends Controller {
         abort_if(!$project->canVerify(), 403, 'Closure expired or hasn\'t been submitted.');
 
         activity()->causedBy($request->user())->performedOn($project)
-            ->event('closure_cancel')->log('ยกเลิกการส่งรายงานผลโครงการแล้ว');
+            ->event('closure_cancel')->log('ยกเลิกการส่งรายงานผลโครงการ');
         $project->closure_submitted_at = null;
         $project->closure_submitted_by = null;
         $project->save();
@@ -135,7 +135,7 @@ class ProjectClosureController extends Controller {
             $participant->reject_participants = $request->input('reason_participants');
         }
         activity()->causedBy($request->user())->performedOn($project)
-            ->event('closure_verify')->log('ตรวจสอบรายชื่อนิสิตผู้เกี่ยวข้องของโครงการแล้ว');
+            ->event('closure_verify')->log('ตรวจสอบรายชื่อนิสิตผู้เกี่ยวข้องของโครงการ');
         $participant->saveOrFail();
 
         return redirect()
@@ -204,7 +204,7 @@ class ProjectClosureController extends Controller {
             $project->participants()->update(['approve_status' => -1]);
         }
         activity()->causedBy($request->user())->performedOn($project)
-            ->event('closure_approve')->log('บันทึกผลการอนุมัติรายงานผลโครงการแล้ว');
+            ->event('closure_approve')->log('บันทึกผลการอนุมัติรายงานผลโครงการ');
         $project->save();
         DB::commit();
 
