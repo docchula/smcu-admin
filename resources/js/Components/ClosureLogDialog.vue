@@ -6,7 +6,7 @@
 
         <template #content>
             <template v-if="logs">
-                <table class="min-w-full divide-y divide-gray-200 border-b border-gray-200">
+                <table v-if="logs.length > 0" class="min-w-full divide-y divide-gray-200 border-b border-gray-200">
                     <thead class="bg-gray-50">
                     <tr>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
@@ -28,6 +28,7 @@
                     </tr>
                     </tbody>
                 </table>
+                <p v-else>ไม่พบข้อมูล</p>
                 <p class="text-xs text-gray-500 mt-4">แสดงเฉพาะ 100 รายการล่าสุด ประวัติรายการเก่าอาจถูกลบออกจากระบบ</p>
             </template>
             <p v-else class="my-8 text-center text-gray-500">กำลังโหลด</p>

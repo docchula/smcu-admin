@@ -97,7 +97,7 @@
                                 <th v-if="isSubmitted" scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     สถานะ
                                 </th>
-                                <th v-if="form.approve === 'no'"
+                                <th v-if="!isSubmitted && form.approve === 'no'"
                                     scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     ไม่รับรอง
                                 </th>
@@ -106,7 +106,7 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                             <template v-for="(name, type) in PROJECT_PARTICIPANT_ROLES">
                                 <tr class="text-sm bg-gray-300 text-gray-800">
-                                    <td :colspan="form.approve === 'no' ? 3 : (isSubmitted ? 1 : 2)" class="px-2 py-0.5">{{ name }}</td>
+                                    <td :colspan="isSubmitted ? 1 : (form.approve === 'no' ? 3 : 2)" class="px-2 py-0.5">{{ name }}</td>
                                     <td v-if="isSubmitted" colspan="2" class="px-2 py-0.5 text-right">
                                         <span v-if="participantsGrouped[type]">
                                             ตรวจสอบแล้ว
@@ -122,7 +122,7 @@
                                         <CheckCircleIcon v-if="e.verify_status" class="w-5 h-5 inline-block text-green-500"/>
                                         <span v-else class="text-sm">ยังไม่ตรวจสอบ</span>
                                     </td>
-                                    <td v-if="form.approve === 'no'" class="px-2 py-1 text-center">
+                                    <td v-if="!isSubmitted && form.approve === 'no'" class="px-2 py-1 text-center">
                                         <Checkbox :checked="selectedParticipants.includes(e.id)" @click="selectParticipant(e.id)"
                                                   class="text-red-600 focus:border-red-300 focus:ring-red-200"/>
                                     </td>
