@@ -40,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         Gate::define('update-project', function (User $user, Project $project) {
             return is_null($project->id)
-                OR $user->can('admin-action')
+                or $user->can('admin-action') or $user->can('faculty-action')
                 OR (
                     ($project->user_id === $user->id or $project->participants()->where('user_id', $user->id)->where('type', 'organizer')->exists())
                     AND $project->created_at->diffInMonths(now()) < 15 // Created in the last 15 months

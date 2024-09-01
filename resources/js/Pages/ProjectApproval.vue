@@ -47,6 +47,9 @@
                         ข้อมูลโครงการ
                     </h3>
                     <div class="flex-auto text-right text-sm">
+                        <a :href="route('projects.edit', {project: item.id})" target="_blank" class="ml-4 text-orange-400 hover:text-orange-600">
+                            <PencilIcon class="inline-block h-4 w-4"/>
+                        </a>
                         <a :href="route('projects.show', {project: item.id})" target="_blank" class="ml-4 text-orange-500 hover:text-orange-700">
                             รายละเอียดทั้งหมด
                         </a>
@@ -306,7 +309,7 @@
 </template>
 
 <script setup>
-import {CheckCircleIcon, CheckIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {CheckCircleIcon, CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import InputError from '@/Jetstream/InputError.vue'

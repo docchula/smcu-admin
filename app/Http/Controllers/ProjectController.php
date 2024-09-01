@@ -197,6 +197,11 @@ class ProjectController extends Controller {
             'attendees' => 'nullable|array',
         ]);
         $this->authorize('update-project', $project);
+
+        // Disable editing if closure is submitted, unless for faculty users
+        abort_if($project->hasSubmittedClosure() and $request->user()->cannot('faculty-action'),
+            403, 'Cannot edit after submitted closure.');
+
         $project->fill($request->all());
         if (empty($project->user_id)) {
             $project->user_id = Auth::id();
