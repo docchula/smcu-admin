@@ -148,7 +148,7 @@
                                 <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     รับรอง/ไม่รับรองรายชื่อ
                                 </th>
-                                <th v-if="showCheckbox"
+                                <th v-if="showCheckbox" @click="toggleAll" :class="{ 'cursor-pointer': item.closure_status < 10 }"
                                     scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     อนุมัติ
                                 </th>
@@ -358,6 +358,13 @@ const selectParticipant = (id) => {
         selectedParticipants.value = selectedParticipants.value.filter(e => e !== id);
     } else {
         selectedParticipants.value.push(id);
+    }
+};
+const toggleAll = () => {
+    if (selectedParticipants.value.length > 0) {
+        selectedParticipants.value = [];
+    } else {
+        selectedParticipants.value = props.item.participants.map(e => e.id);
     }
 };
 const submit = () => {
