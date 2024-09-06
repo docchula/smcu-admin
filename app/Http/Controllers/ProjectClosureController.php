@@ -17,7 +17,8 @@ use Spatie\Activitylog\Models\Activity;
 class ProjectClosureController extends Controller {
     public function closureForm(Project $project): Response {
         $this->authorize('update-project', $project);
-        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted');
+        abort_unless(in_array($project->getClosureStatus(), [ProjectClosureStatus::NOT_SUBMITTED, ProjectClosureStatus::REJECTED_AND_RESUBMIT])
+            , 403, 'Closure already submitted');
 
         $project->load(['department', 'participants', 'participants.user']);
         $project->participants->transform(function (ProjectParticipant $participant) {
@@ -42,7 +43,9 @@ class ProjectClosureController extends Controller {
             'action' => 'nullable|string',
         ]);
         $this->authorize('update-project', $project);
-        abort_if($project->hasSubmittedClosure(), 403, 'Closure already submitted.');
+        abort_if($project->hasSubmittedClosure()
+            and $project->getClosureStatus() !== ProjectClosureStatus::REJECTED_AND_RESUBMIT,
+            403, 'Closure already submitted.');
         $action = $request->input('action');
 
         $project->objectives = $request->input('objectives');
@@ -187,7 +190,8 @@ class ProjectClosureController extends Controller {
             'approve_participants' => 'nullable|required_if:approve,yes|array',
         ]);
         $closureStatus = $project->getClosureStatus();
-        abort_unless(in_array($closureStatus, [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING]), 403,
+        abort_unless(in_array($closureStatus,
+            [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REJECTED_AND_RESUBMIT]), 403,
             'Closure approved or hasn\'t been submitted.');
 
         $project->closure_approved_by = $request->user()->id;
@@ -198,6 +202,9 @@ class ProjectClosureController extends Controller {
             $project->closure_approved_message = null;
             $project->participants()->whereIn('user_id', $request->input('approve_participants'))->update(['approve_status' => 1]);
             $project->participants()->whereNotIn('user_id', $request->input('approve_participants'))->update(['approve_status' => -1]);
+        } elseif ($request->input('allow_resubmit', false)) {
+            $project->closure_approved_status = -2;
+            $project->closure_approved_message = $request->input('reason');
         } else {
             $project->closure_approved_status = -1;
             $project->closure_approved_message = $request->input('reason');

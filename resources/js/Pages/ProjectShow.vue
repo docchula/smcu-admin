@@ -88,11 +88,31 @@
                     </inertia-link>
                 </div>
             </div>
+            <div v-if="item.closure_status !== 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                <div class="border-t border-gray-200 p-4 sm:px-6">
+                    สถานะการพิจารณาเพื่อบันทึกลงใน Activity Transcript :
+                    <ClosureStatusText class="font-bold" :closure_status="item.closure_status"/>
+                    <p v-if="item.closure_status < 0 && item.closure_approved_message">
+                        <span class="text-red-700">เหตุผล</span> : {{ item.closure_approved_message }}
+                    </p>
+                    <p v-if="item.closure_status === -2" class="mt-1 text-gray-500">
+                        ให้
+                        <inertia-link :href="route('projects.closureForm', {project: item.id})"
+                                      class="text-green-600">
+                            แก้ไขรายละเอียดแล้วส่งใหม่
+                        </inertia-link>
+                        หรือ
+                        <a class="text-red-500 cursor-pointer" @click="showCancelDialog = true">ยกเลิกการส่งเพื่อแก้ไขรายชื่อผู้เกี่ยวข้อง</a>แล้วส่งใหม่
+                        ภายใน 30 วัน จากวันที่ได้รับการพิจารณาให้ไปแก้ไข
+                    </p>
+                </div>
+            </div>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
-                        <inertia-link v-if="item.can['update-project'] && !hasProjectClosure" :href="route('projects.edit', {project: item.id})"
+                        <inertia-link v-if="item.can['update-project'] && (item.closure_status === 0 || item.closure_status === -2)"
+                                      :href="route('projects.edit', {project: item.id})"
                                       class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                                 <path
@@ -356,7 +376,8 @@
                                         {{ e.user?.name }}
                                         <span v-if="e.user?.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user?.student_id }}</span>
                                         <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
-                                        <XMarkIcon v-if="e.user?.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1))"
+                                        <XMarkIcon
+                                            v-if="e.user?.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1)) && item.can['update-project'] && !hasProjectClosure"
                                                    class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)"/>
                                     </li>
                                 </ol>
@@ -373,20 +394,35 @@
                 </span>
             </p>
         </div>
+        <ClosureCancelDialog :show-modal="showCancelDialog" :project="item" @close="showCancelDialog = false"/>
     </app-layout>
 </template>
 
 <script>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetButton from '@/Jetstream/Button.vue'
-import {ArrowUpTrayIcon, CheckIcon, DocumentChartBarIcon, DocumentTextIcon, PlusIcon, PrinterIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {
+    ArrowUpTrayIcon,
+    CheckCircleIcon,
+    CheckIcon,
+    DocumentChartBarIcon,
+    DocumentTextIcon,
+    PlusIcon,
+    PrinterIcon,
+    XMarkIcon
+} from "@heroicons/vue/20/solid";
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import _ from "lodash";
 import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
 import {PROJECT_PARTICIPANT_ROLES} from "@/static";
+import ClosureStatusText from "@/Components/ClosureStatusText.vue";
+import ClosureCancelDialog from "@/Components/ClosureCancelDialog.vue";
 
 export default {
     components: {
+        ClosureCancelDialog,
+        ClosureStatusText,
+        CheckCircleIcon,
         CheckIcon, DocumentChartBarIcon, DocumentTextIcon,
         ImportParticipantDialog,
         StudentIdDialog,
@@ -428,6 +464,7 @@ export default {
         return {
             showStudentIdDialog: false,
             showImportParticipantDialog: false,
+            showCancelDialog: false,
             addParticipantForm: this.$inertia.form({
                 type: '',
                 student_ids: [],

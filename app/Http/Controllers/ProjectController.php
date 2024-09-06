@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
 use App\Models\User;
+use App\ProjectClosureStatus;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -137,13 +138,18 @@ class ProjectController extends Controller {
 
             return $participant;
         });
+        $project->closure_status = $project->getClosureStatus();
         $project->shouldBeClosed = (
             $canUpdateProject
             and $project->created_at->isBetween(now()->subYear(), now()->subWeeks(1))
             and $project->documents->isNotEmpty()
             and ($project->documents->where('tag', 'summary')->isEmpty() or (!$project->hasSubmittedClosure() and $project->canSubmitClosure()))
         );
-        $project->shouldVerify = $project->canVerify() and $project->participants->where('user_id', Auth::id())->isNotEmpty();
+        $project->shouldVerify = (
+            $project->canVerify()
+            and $project->participants->where('user_id', Auth::id())->isNotEmpty()
+            and ($project->closure_status != ProjectClosureStatus::REJECTED_AND_RESUBMIT)
+        );
 
         // and !in_array($project->department_id, [32, 38, 39]);
 
@@ -160,6 +166,12 @@ class ProjectController extends Controller {
         $project->organizers = $project->participants()->with('user')->where('type', 'organizer')->get()->map(function (ProjectParticipant $p) {
             return ['name' => $p->user->name, 'student_id' => $p->user->student_id];
         });
+        $project->closure_status = $project->getClosureStatus();
+
+        // Disable editing if closure is submitted, unless for faculty users
+        abort_if(!in_array($project->closure_status,
+                [ProjectClosureStatus::NOT_SUBMITTED, ProjectClosureStatus::REJECTED_AND_RESUBMIT]) and $request->user()->cannot('faculty-action'),
+            403, 'Cannot edit after submitted closure.');
 
         return Inertia::render('ProjectCreate', [
             'item' => $project->castDateAsDateString(),
@@ -199,7 +211,8 @@ class ProjectController extends Controller {
         $this->authorize('update-project', $project);
 
         // Disable editing if closure is submitted, unless for faculty users
-        abort_if($project->hasSubmittedClosure() and $request->user()->cannot('faculty-action'),
+        abort_if(!in_array($project->getClosureStatus(),
+                [ProjectClosureStatus::NOT_SUBMITTED, ProjectClosureStatus::REJECTED_AND_RESUBMIT]) and $request->user()->cannot('faculty-action'),
             403, 'Cannot edit after submitted closure.');
 
         $project->fill($request->all());

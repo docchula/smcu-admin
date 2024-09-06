@@ -394,7 +394,7 @@
                             <th scope="col" class="px-3 pb-2 text-left text-sm font-medium text-gray-500 tracking-wider">
                                 เลขประจำตัวนิสิต
                             </th>
-                            <th scope="col" class="relative px-1 pb-2"></th>
+                            <th v-if="canEditParticipants" scope="col" class="relative px-1 pb-2"></th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -405,7 +405,8 @@
                             <td class="px-3 py-2 whitespace-nowrap">
                                 {{ member.student_id }}
                             </td>
-                            <td class="px-1 py-2 whitespace-nowrap text-right text-sm font-medium">
+                            <td v-if="canEditParticipants"
+                                class="px-1 py-2 whitespace-nowrap text-right text-sm font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-pointer" viewBox="0 0 20 20" fill="currentColor" @click="organizers.splice(index, 1)">
                                     <path fill-rule="evenodd"
                                           d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -417,7 +418,10 @@
                     </table>
                     <div class="col-span-6">
                         <p v-if="organizers.length === 0" class="mb-2 text-red-800">กรุณาเพิ่มนิสิตผู้รับผิดชอบโครงการ</p>
-                        <jet-button class="bg-purple-500 hover:bg-purple-600 focus:border-purple-900" :disabled="form.processing" type="button" @click="showStudentIdDialog = true">
+                        <p v-if="!canEditParticipants" class="mb-2 text-red-700">ไม่อนุญาตให้แก้ไขรายชื่อ</p>
+                        <jet-button class="bg-purple-500 hover:bg-purple-600 focus:border-purple-900"
+                                    :disabled="form.processing" v-if="canEditParticipants"
+                                    type="button" @click="showStudentIdDialog = true">
                             เพิ่มนิสิตผู้รับผิดชอบโครงการ
                         </jet-button>
                         <jet-input-error :message="form.errors.organizers" class="mt-2"/>
@@ -519,6 +523,10 @@ export default {
         },
         outcomeLines() {
             return (this.form.outcomes.length > 0) ? this.form.outcomes.split("\n").length : 0;
+        },
+        canEditParticipants() {
+            // Can't edit participants after the closure has been submitted, even for REJECT_AND_RESUBMIT status.
+            return this.item.closure_status === 0;
         },
     },
 

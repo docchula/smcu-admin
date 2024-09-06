@@ -61,6 +61,8 @@ class Project extends Model {
         'period_end' => 'date:j M Y',
         'objectives' => 'array',
         'expense' => 'array',
+        'closure_submitted_at' => 'datetime',
+        'closure_approved_at' => 'datetime',
     ];
     protected $hidden = ['user_id'];
 
@@ -182,7 +184,9 @@ class Project extends Model {
      * Is the project's period end within the summary time limit?
      */
     public function canSubmitClosure(): bool {
-        return ($this->period_end->diffInDays() <= self::SUMMARY_TIME_LIMIT) or ($this->year == 2567 and now()->isBefore('2024-09-30'));
+        return ($this->period_end->diffInDays() <= self::SUMMARY_TIME_LIMIT)
+            or ($this->year == 2567 and now()->isBefore('2024-09-30'))
+            or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT);
     }
 
     public function hasSubmittedClosure(): bool {
@@ -201,6 +205,10 @@ class Project extends Model {
                     return ProjectClosureStatus::APPROVED;
                 case -1:
                     return ProjectClosureStatus::REJECTED;
+                case -2:
+                    if ($this->closure_approved_at?->isAfter($this->closure_submitted_at)) {
+                        return ProjectClosureStatus::REJECTED_AND_RESUBMIT;
+                    }
             }
             // Count participants who have verified
             $organizers = $this->participants->where('type', 'organizer');
@@ -218,7 +226,11 @@ class Project extends Model {
     }
 
     public function canVerify(): bool {
-        return in_array($this->getClosureStatus(), [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING])
-            and ($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT or ($this->year == 2567 and now()->isBefore('2024-10-31')));
+        return in_array($this->getClosureStatus(),
+                [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REJECTED_AND_RESUBMIT])
+            and (($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT)
+                or ($this->year == 2567 and now()->isBefore('2024-10-31'))
+                or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT)
+            );
     }
 }

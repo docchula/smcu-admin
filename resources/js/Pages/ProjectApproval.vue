@@ -18,27 +18,6 @@
                 โครงการที่จะบันทึกเป็นส่วนหนึ่งของ Activity Transcript ต้องผ่านการรับรองรายชื่อนิสิตผู้เกี่ยวข้อง
                 โดยนิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคน<b>ภายใน 60 วัน นับจากสิ้นสุดกิจกรรม</b>
             </p>
-            <div class="mt-4 text-gray-500">
-                <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Activity Transcript (Student Profile)</h6>
-                <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
-                    <li>บทบาทของนิสิตผู้เกี่ยวข้อง ประกอบด้วย ผู้รับผิดชอบ ผู้ปฏิบัติงาน และผู้เข้าร่วม
-                        ตามสัดส่วนความรับผิดชอบในการดำเนินงาน
-                    </li>
-                    <li>ผู้รับผิดชอบ พึงมีจำนวนไม่เกินร้อยละ 20 ของจำนวนผู้ปฏิบัติงาน ยกเว้นโครงการที่ไม่มีนิสิตเป็นผู้ปฏิบัติงาน
-                    </li>
-                    <li>ผู้ปฏิบัติงาน พึงมีจำนวนไม่เกิน 2 ใน 3 ของผู้มีส่วนร่วมในกิจกรรมทั้งหมด ทั้งผู้รับผิดชอบ ผู้ปฏิบัติงาน
-                        และผู้เข้าร่วม
-                        ทั้งนิสิตและบุคคลภายนอก
-                    </li>
-                    <li>ผู้เข้าร่วม ต้องลงชื่อเข้าร่วมกิจกรรมทุกวัน ทุกครึ่งวัน หรือตามความเหมาะสมต่อลักษณะกิจกรรม
-                        โดยมีหลักฐานว่าเข้าร่วมกิจกรรมไม่น้อยกว่า 2 ใน 3 ของระยะเวลากิจกรรมทั้งหมด
-                        ให้ผู้รับผิดชอบโครงการเก็บรักษาหลักฐานดังกล่าวไว้
-                    </li>
-                    <li>กิจกรรมที่มีความจำเป็นต้องแบ่งบทบาทของนิสิตในสัดส่วนที่ไม่เป็นไปตามเงื่อนไขข้างต้น
-                        ให้ปรึกษาผู้ช่วย/รองคณบดีฝ่ายกิจการนิสิตพิจารณาอนุญาตเป็นรายกรณี
-                    </li>
-                </ul>
-            </div>
         </template>
         <div class="max-w-7xl mx-auto pt-4 pb-10 sm:px-6 lg:px-8">
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
@@ -51,7 +30,7 @@
                             <PencilIcon class="inline-block h-4 w-4"/>
                         </a>
                         <a :href="route('projects.show', {project: item.id})" target="_blank" class="ml-4 text-orange-500 hover:text-orange-700">
-                            รายละเอียดทั้งหมด
+                            รายละเอียดโครงการ
                         </a>
                         <a v-if="item.summary_document" class="ml-4 text-yellow-500 hover:text-yellow-700"
                            :href="route('documents.show', {document: item.summary_document.id})" target="_blank">
@@ -70,18 +49,7 @@
                             </div>
                             <div class="col-span-2 space-y-2">
                                 <jet-label value="สถานะ"/>
-                                <span
-                                    :class="{'text-blue-600': item.closure_status === 5, 'text-green-600': item.closure_status === 10,'text-gray-600': item.closure_status === 10,'text-yellow-600': item.closure_status === 1}">
-                                    {{
-                                        {
-                                            1: 'ส่งปิดโครงแล้ว',
-                                            5: 'นิสิตผู้เกี่ยวข้องยืนยันแล้ว รอพิจารณา',
-                                            10: 'อนุมัติ',
-                                            '-1': 'ไม่อนุมัติ'
-                                        }[item.closure_status] ?? item.closure_status
-                                    }}
-                                    <CheckCircleIcon v-if="item.closure_status === 10" class="inline-block h-4 w-4"/>
-                                </span>
+                                <ClosureStatusText class="font-bold" :closure_status="item.closure_status"/>
                             </div>
                             <div class="col-span-4 space-y-2">
                                 <jet-label value="หน่วยงาน (สพจ.)"/>
@@ -291,12 +259,40 @@
                                 <Input id="reason" type="text" class="mt-1 block w-full" v-model.trim="form.reason" ref="reason" required/>
                                 <InputError :message="form.errors.reason" class="mt-2"/>
                             </div>
+                            <div class="flex items-start col-span-6">
+                                <div class="flex items-center h-5">
+                                    <Checkbox id="allow_resubmit" :checked="form.allow_resubmit"
+                                              @update:checked="newValue => form.allow_resubmit = newValue"/>
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <label for="allow_resubmit" class="font-medium text-gray-700">
+                                        ให้ไปแก้ไขและส่งใหม่
+                                    </label>
+                                    <p class="text-gray-400">ระบบจะขยายกรอบเวลาในการส่งใหม่ออกไปอีก 30 วัน</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
                         <Button type="button" :disabled="form.processing || !form.approve" @click="submit">
                             บันทึก
                         </Button>
+                    </div>
+                </div>
+            </div>
+            <div v-if="item.closure_status <= -1" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        ไม่อนุมัติรายงานผลโครงการ
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6">
+                        <p class="font-bold text-lg">
+                            <ClosureStatusText :closure_status="item.closure_status"/>
+                        </p>
+                        <span class="text-gray-600 underline">เหตุผล</span>&ensp;
+                        {{ item.closure_approved_message }}
                     </div>
                 </div>
             </div>
@@ -309,7 +305,7 @@
 </template>
 
 <script setup>
-import {CheckCircleIcon, CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import AppLayout from '@/Layouts/AppLayout.vue'
 import JetInputError from '@/Jetstream/InputError.vue'
 import InputError from '@/Jetstream/InputError.vue'
@@ -324,6 +320,7 @@ import Input from "@/Jetstream/Input.vue";
 import Button from "@/Jetstream/Button.vue";
 import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
 import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
+import ClosureStatusText from "@/Components/ClosureStatusText.vue";
 
 const props = defineProps({
     item: Object,
@@ -334,6 +331,7 @@ const form = useForm({
     approve: '', // "yes" or "no"
     reason: '',
     approve_participants: [],
+    allow_resubmit: false,
 });
 const selectedParticipants = ref(props.item.participants.map(e => e.id));
 const showLogDialog = ref(false);

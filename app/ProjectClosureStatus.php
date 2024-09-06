@@ -8,4 +8,5 @@ enum ProjectClosureStatus: int {
     case REVIEWING = 5;
     case APPROVED = 10;
     case REJECTED = -1;
+    case REJECTED_AND_RESUBMIT = -2; // Rejected but allow resubmission within the time limit
 }

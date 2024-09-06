@@ -76,8 +76,16 @@
                             {{ item.participants_count }}
                         </td>
                         <td class="px-2 py-2 md:px-4 text-gray-600 text-xs"
-                            :class="{'bg-blue-300': item.status === 5, 'bg-green-300': item.status === 10,'bg-gray-300': item.status === 10,'bg-yellow-300': item.status === 1}">
-                            {{ {1: 'ส่งปิดโครง', 5: 'ผู้เกี่ยวข้องยืนยัน', 10: 'อนุมัติ', '-1': 'ไม่อนุมัติ'}[item.status] ?? item.status }}
+                            :class="{'bg-blue-300': item.status === 5, 'bg-green-300': item.status === 10,'bg-gray-300': item.status <= -1,'bg-yellow-300': item.status === 1}">
+                            {{
+                                {
+                                    1: 'ส่งปิดโครง',
+                                    5: 'ผู้เกี่ยวข้องยืนยัน',
+                                    10: 'อนุมัติ',
+                                    '-1': 'ไม่อนุมัติ',
+                                    '-2': 'ไม่อนุมัติ ให้แก้ไข'
+                                }[item.status] ?? item.status
+                            }}
                         </td>
                     </tr>
                     </tbody>
