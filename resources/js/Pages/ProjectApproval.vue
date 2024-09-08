@@ -207,7 +207,33 @@
                     </div>
                 </div>
             </div>
-            <div v-if="item.closure_status >= 1 && item.closure_status <= 5" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.closure_status <= -1" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        ไม่อนุมัติรายงานผลโครงการ
+                    </h3>
+                </div>
+                <div class="border-t border-gray-200">
+                    <div class="px-4 py-4 sm:px-6">
+                        <p class="font-bold text-lg">
+                            <ClosureStatusText :closure_status="item.closure_status"/>
+                        </p>
+                        <span class="text-gray-600 underline">เหตุผล</span>&ensp;
+                        {{ item.closure_approved_message }}
+                    </div>
+                </div>
+            </div>
+            <div v-if="!(item.closure_status >= 1 && item.closure_status <= 5) && item.closure_status !== 0" class="relative flex gap-x-3">
+                <div class="flex h-6 items-center">
+                    <input id="force_approve" v-model="forceShowApproveBox"
+                           type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"/>
+                </div>
+                <div class="text-sm leading-6">
+                    <label for="force_approve" class="font-medium text-gray-700">แก้ไขผลการอนุมัติ/ไม่อนุมัติ</label>
+                </div>
+            </div>
+            <div v-if="(item.closure_status >= 1 && item.closure_status <= 5) || forceShowApproveBox"
+                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         อนุมัติรายงานผลโครงการ และรายชื่อนิสิตผู้เกี่ยวข้องหรือไม่
@@ -280,22 +306,6 @@
                     </div>
                 </div>
             </div>
-            <div v-if="item.closure_status <= -1" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        ไม่อนุมัติรายงานผลโครงการ
-                    </h3>
-                </div>
-                <div class="border-t border-gray-200">
-                    <div class="px-4 py-4 sm:px-6">
-                        <p class="font-bold text-lg">
-                            <ClosureStatusText :closure_status="item.closure_status"/>
-                        </p>
-                        <span class="text-gray-600 underline">เหตุผล</span>&ensp;
-                        {{ item.closure_approved_message }}
-                    </div>
-                </div>
-            </div>
             <p class="mt-4 px-2 text-xs">
                 <a class="text-blue-500 cursor-pointer" @click="showLogDialog = true">ดูประวัติ</a>
             </p>
@@ -335,6 +345,7 @@ const form = useForm({
 });
 const selectedParticipants = ref(props.item.participants.map(e => e.id));
 const showLogDialog = ref(false);
+const forceShowApproveBox = ref(false);
 
 // Computed
 const participantsGrouped = computed(() => {

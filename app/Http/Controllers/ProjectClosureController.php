@@ -190,9 +190,7 @@ class ProjectClosureController extends Controller {
             'approve_participants' => 'nullable|required_if:approve,yes|array',
         ]);
         $closureStatus = $project->getClosureStatus();
-        abort_unless(in_array($closureStatus,
-            [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REJECTED_AND_RESUBMIT]), 403,
-            'Closure approved or hasn\'t been submitted.');
+        abort_if($closureStatus == ProjectClosureStatus::NOT_SUBMITTED, 403, 'Closure approved or hasn\'t been submitted.');
 
         $project->closure_approved_by = $request->user()->id;
         $project->closure_approved_at = now();
