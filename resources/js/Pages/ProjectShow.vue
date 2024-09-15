@@ -223,6 +223,12 @@
                                 </p>
                             </dd>
                         </div>
+                        <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">เป้าหมายการพัฒนาอย่างยั่งยืน (SDGs)</dt>
+                            <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
+                                <SDGSelector v-model="item.sdgs" view/>
+                            </dd>
+                        </div>
                     </dl>
                 </div>
             </div>
@@ -417,9 +423,11 @@ import ImportParticipantDialog from "../Components/ImportParticipantDialog.vue";
 import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 import ClosureStatusText from "@/Components/ClosureStatusText.vue";
 import ClosureCancelDialog from "@/Components/ClosureCancelDialog.vue";
+import SDGSelector from "@/Components/SDGSelector.vue";
 
 export default {
     components: {
+        SDGSelector,
         ClosureCancelDialog,
         ClosureStatusText,
         CheckCircleIcon,

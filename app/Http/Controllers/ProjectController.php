@@ -37,7 +37,8 @@ class ProjectController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ProjectIndex', [
-            'list' => Project::searchQuery($keyword)->orderByDesc('year')->orderByDesc('number')->with([
+            'list' => Project::searchQuery($keyword)->addSelect(['sdgs'])->orderByDesc('year')->orderByDesc('number')
+                ->with([
                 'documents' => function ($query) {
                     $query->select('id', 'tag', 'project_id');
                     $query->whereNotNull('tag');
@@ -53,7 +54,7 @@ class ProjectController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ProjectYearIndex', [
-            'list' => Project::searchQuery($keyword)->addSelect(['advisor'])->with([
+            'list' => Project::searchQuery($keyword)->addSelect(['advisor', 'sdgs'])->with([
                 'documents' => function ($query) {
                     $query->select('id', 'year', 'number', 'number_to', 'title', 'tag', 'project_id');
                     $query->whereNotNull('tag');
@@ -207,6 +208,7 @@ class ProjectController extends Controller {
             'organizers' => 'required|array',
             'staff' => 'nullable|array',
             'attendees' => 'nullable|array',
+            'sdgs' => 'nullable|array',
         ]);
         $this->authorize('update-project', $project);
 

@@ -63,6 +63,7 @@ class Project extends Model {
         'expense' => 'array',
         'closure_submitted_at' => 'datetime',
         'closure_approved_at' => 'datetime',
+        'sdgs' => 'array',
     ];
     protected $hidden = ['user_id'];
 

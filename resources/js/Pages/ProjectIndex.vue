@@ -113,6 +113,7 @@
                             <Link :href="route('projects.show', {project: item.id})">
                                 {{ item.name }}
                             </Link>
+                            <SDGBadge :value="item.sdgs" class="ml-2"/>
                             <span class="pl-1">
                                     <Link v-for="document in item.documents" :href="route('documents.show', {document: document.id})">
                                         <DocumentTextIcon v-if="document.tag === 'approval'" class="text-gray-300 h-3 w-3 inline-block"/>
@@ -138,11 +139,7 @@
         <Link :href="route('projects.create')">
             <button
                 class="p-0 w-16 h-16 bg-yellow-600 rounded-full hover:bg-yellow-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
-                <svg viewBox="0 0 20 20" enable-background="new 0 0 20 20" class="w-6 h-6 inline-block">
-                    <path fill="#FFFFFF" d="M16,10c0,0.553-0.048,1-0.601,1H11v4.399C11,15.951,10.553,16,10,16c-0.553,0-1-0.049-1-0.601V11H4.601
-                                    C4.049,11,4,10.553,4,10c0-0.553,0.049-1,0.601-1H9V4.601C9,4.048,9.447,4,10,4c0.553,0,1,0.048,1,0.601V9h4.399
-                                    C15.952,9,16,9.447,16,10z"/>
-                </svg>
+                <PlusIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </Link>
     </app-layout>
@@ -151,8 +148,9 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from "@/Components/SearchInput.vue";
+import SDGBadge from "@/Components/SDGBadge.vue";
 import Pagination from "@/Components/Pagination.vue";
-import {Bars4Icon, CalculatorIcon, CalendarDaysIcon, CheckBadgeIcon, DocumentChartBarIcon} from "@heroicons/vue/20/solid";
+import {Bars4Icon, CalculatorIcon, CalendarDaysIcon, CheckBadgeIcon, DocumentChartBarIcon, PlusIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
 import {Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/vue'
 import {Link, router} from '@inertiajs/vue3'

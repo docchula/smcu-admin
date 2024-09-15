@@ -228,6 +228,19 @@
                 </template>
             </jet-form-section>
             <jet-section-border/ -->
+            <jet-form-section>
+                <template #title>ความสอดคล้องตามเป้าหมายการพัฒนาอย่างยั่งยืน</template>
+                <template #description>
+                    <p>จุฬาลงกรณ์มหาวิทยาลัยมุ่งมั่นที่จะบรรลุ<a href="https://sdgs.un.org/goals" target="_blank" class="text-green-600">เป้าหมายการพัฒนาอย่างยั่งยืน
+                        (SDGs)</a>
+                        17 ประการขององค์การสหประชาชาติ</p>
+                    <p class="mt-2">กรุณากดเลือกเป้าหมายที่เกี่ยวข้อง (ถ้ามี)</p>
+                </template>
+                <template #form>
+                    <SDGSelector class="col-span-6" v-model="form.sdgs"/>
+                </template>
+            </jet-form-section>
+            <jet-section-border/>
             <jet-form-section @submitted="submit">
                 <template #title>ตัวชี้วัด และวิธีการประเมินผล</template>
                 <template #description>
@@ -289,6 +302,8 @@
                     </a>
                 </template>
                 <template #form>
+                    <p v-if="!canEditParticipants" class="col-span-6 mb-2 text-red-700">ไม่อนุญาตให้แก้ไขข้อมูลงบประมาณในหน้านี้</p>
+                    <template v-else>
                     <table v-if="expense.length > 0" class="col-span-6 divide-y divide-gray-200">
                         <thead>
                         <tr>
@@ -376,6 +391,7 @@
                         </jet-button>
                         <jet-input-error :message="form.errors.expense" class="mt-2"/>
                     </div>
+                    </template>
                 </template>
             </jet-form-section>
             <jet-section-border/>
@@ -475,9 +491,11 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 // import draggable from 'vuedraggable'
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import Combobox from "../Components/Combobox.vue";
+import SDGSelector from "@/Components/SDGSelector.vue";
 
 export default {
     components: {
+        SDGSelector,
         Combobox,
         StudentIdDialog,
         AppLayout, JetActionMessage,
@@ -509,6 +527,7 @@ export default {
                 outcomes: this.item.outcomes ?? "",
                 duration: this.item.duration ?? "",
                 estimated_attendees: this.item.estimated_attendees ?? "",
+                sdgs: this.item.sdgs ?? [],
             }),
             objectives: this.item.objectives ?? [],
             expense: this.item.expense ?? [],

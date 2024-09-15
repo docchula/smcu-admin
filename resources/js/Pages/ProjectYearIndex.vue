@@ -34,6 +34,9 @@
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             อาจารย์ที่ปรึกษา
                         </th>
+                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                            SDGs
+                        </th>
                         <th scope="col" class="relative px-2 py-2 md:px-4 md:py-3 hidden md:table-cell">
                             <span class="sr-only">Edit</span>
                         </th>
@@ -44,7 +47,7 @@
                         <tr v-if="!tableMode" class="bg-gray-200 text-gray-700">
                             <td class="px-2 py-1 md:px-4"></td>
                             <td class="px-2 py-1 md:px-4" colspan="2">{{ static_departments.find(a => parseInt(a.id) === parseInt(department_id))?.name ?? department_id }}</td>
-                            <td class="px-2 py-1 md:px-4 text-sm text-right" colspan="2">{{ projects.length }} โครงการ</td>
+                            <td class="px-2 py-1 md:px-4 text-sm text-right" colspan="3">{{ projects.length }} โครงการ</td>
                         </tr>
                         <template v-for="item in projects" :key="item.id">
                             <tr>
@@ -61,14 +64,17 @@
                                 <td v-if="tableMode" class="px-2 py-2 md:px-4">
                                     {{ item.department.name }}
                                 </td>
-                                <td class="px-2 py-2 md:px-4 text-gray-600 text-sm">
+                                <td class="px-2 py-2 md:px-4 text-gray-600 text-xs">
                                     {{ item.period_start }}
                                     <span v-if="item.period_start !== item.period_end">- {{ item.period_end }}</span>
                                 </td>
                                 <td class="px-2 py-2 md:px-4 text-gray-600 text-xs">
                                     {{ item.advisor }}
                                 </td>
-                                <td class="px-2 py-2 md:px-4 text-right text-sm font-medium hidden md:table-cell">
+                                <td class="px-2 py-2 md:px-4 text-gray-600 text-xs">
+                                    {{ item.sdgs?.join(', ') }}
+                                </td>
+                                <td class="px-2 py-2 md:px-4 text-right text-xs font-medium hidden md:table-cell">
                                     <span v-if="item.documents.find(d => d.tag === 'approval') && item.documents.find(d => d.tag === 'summary')" class="text-green-500 mx-1">✓</span>
                                     {{ item.participants_count }} 👤
                                 </td>
@@ -80,7 +86,7 @@
                                         <span class="text-xs">/{{ document.year }}</span>
                                     </inertia-link>
                                 </td>
-                                <td class="px-2 py-1 md:px-4" colspan="4">
+                                <td class="px-2 py-1 md:px-4" colspan="5">
                                     <DocumentChartBarIcon class="text-yellow-700 h-4 w-4 inline-block" v-if="document.tag === 'summary'" />
                                     <DocumentTextIcon class="text-purple-700 h-4 w-4 inline-block" v-if="document.tag === 'approval'"/>
                                     <inertia-link :href="route('documents.show', {document: document.id})">
