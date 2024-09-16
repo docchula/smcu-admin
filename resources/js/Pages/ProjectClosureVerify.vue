@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </div>
-            <ProjectClosureStatus v-if="isSubmitted" :participants="item.participants"/>
+            <ProjectClosureStatus :participants="item.participants"/>
             <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -133,7 +133,8 @@
                     </div>
                 </div>
             </div>
-            <div v-if="my_participant && !isSubmitted" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="my_participant && my_participant.type !== 'attendee' && !isSubmitted"
+                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         กรุณาตรวจสอบรายชื่อนิสิตผู้เกี่ยวข้องข้างต้น

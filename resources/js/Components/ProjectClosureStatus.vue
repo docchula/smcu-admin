@@ -51,6 +51,6 @@ const organizerPercentage = computed(() => {
 });
 const staff = computed(() => props.participants.filter(p => p.type === 'staff'));
 const staffPercentage = computed(() => {
-    return Math.round(staff.filter(p => p.verify_status).length / staff.length * 100);
+    return Math.round(staff.value.filter(p => p.verify_status).length / staff.value.length * 100);
 });
 </script>

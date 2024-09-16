@@ -148,7 +148,7 @@ class ProjectController extends Controller {
         );
         $project->shouldVerify = (
             $project->canVerify()
-            and $project->participants->where('user_id', Auth::id())->isNotEmpty()
+            and $project->participants->where('user_id', Auth::id())->where('type', '!=', 'attendee')->isNotEmpty()
             and ($project->closure_status != ProjectClosureStatus::REJECTED_AND_RESUBMIT)
         );
 
