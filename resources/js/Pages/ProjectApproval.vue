@@ -1,5 +1,5 @@
 <template>
-    <app-layout>
+    <AppLayout>
         <template #header>
             <Link :href="route('projects.approvalIndex')" class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
@@ -42,32 +42,32 @@
                     <div class="px-4 py-4 sm:px-6">
                         <div class="grid sm:grid-cols-6 gap-4">
                             <div class="col-span-4 space-y-2">
-                                <jet-label value="โครงการ"/>
+                                <Label value="โครงการ"/>
                                 <Link :href="route('projects.show', {project: item.id})">
                                     {{ item.name }}
                                 </Link>
                             </div>
                             <div class="col-span-2 space-y-2">
-                                <jet-label value="สถานะ"/>
+                                <Label value="สถานะ"/>
                                 <ClosureStatusText class="font-bold" :closure_status="item.closure_status"/>
                             </div>
                             <div class="col-span-4 space-y-2">
-                                <jet-label value="หน่วยงาน (สพจ.)"/>
+                                <Label value="หน่วยงาน (สพจ.)"/>
                                 {{ item.department.name }}
                             </div>
                             <div class="col-span-2 space-y-2">
-                                <jet-label value="ระยะเวลากิจกรรม"/>
+                                <Label value="ระยะเวลากิจกรรม"/>
                                 {{ item.duration ?? '?' }} ชั่วโมง
                             </div>
                             <div class="col-span-4 space-y-2">
-                                <jet-label value="อาจารย์ที่ปรึกษา"/>
+                                <Label value="อาจารย์ที่ปรึกษา"/>
                                 {{ item.advisor }}
                                 <p class="text-xs text-gray-500">
                                     มีหน้าที่ประเมินหลักฐานการเข้าร่วมกิจกรรมของนิสิต (เฉพาะนิสิตหลักสูตรพ.บ. 2567)
                                 </p>
                             </div>
                             <div class="col-span-2 space-y-2">
-                                <jet-label value="จำนวนผู้เข้าร่วม"/>
+                                <Label value="จำนวนผู้เข้าร่วม"/>
                                 {{ item.estimated_attendees ?? '?' }} คน
                                 <InputError v-if="!item.estimated_attendees" message="กรุณาแก้ไข"/>
                                 <p v-else class="text-xs text-gray-500 col-span-6">
@@ -75,18 +75,25 @@
                                 </p>
                             </div>
                             <div class="col-span-3 space-y-2">
-                                <jet-label value="วันที่จัดกิจกรรม"/>
+                                <Label value="วันที่จัดกิจกรรม"/>
                                 {{ (item.period_start === item.period_end) ? item.period_start : (item.period_start + ' - ' + item.period_end) }}
                                 <p class="text-xs text-gray-500">
                                     ใน Transcript อาจปรากฏเฉพาะเดือนและปี
                                 </p>
                             </div>
                             <div class="col-span-3 space-y-2">
-                                <jet-label value="วันที่ส่งรายงานผล"/>
+                                <Label value="วันที่ส่งรายงานผล"/>
                                 {{ item.closure_submitted_at }}
                                 <p class="text-xs text-gray-500">
                                     นิสิตผู้รับผิดชอบต้องส่งรายงานผลภายใน 30 วัน นับจากสิ้นสุดกิจกรรม
                                 </p>
+                            </div>
+                            <div v-if="item.closure_status < 10 && item.closure_status >= 0 && item.closure_approved_message"
+                                 class="col-span-6 space-y-2">
+                                <label class="block font-medium text-sm text-blue-500">
+                                    หมายเหตุการพิจารณาอนุมัติรายงานผล
+                                </label>
+                                {{ item.closure_approved_message }}
                             </div>
                         </div>
                     </div>
@@ -207,10 +214,10 @@
                     </div>
                 </div>
             </div>
-            <div v-if="item.closure_status <= -1" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.closure_status <= -1 || item.closure_status >= 10" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        ไม่อนุมัติรายงานผลโครงการ
+                        ผลการอนุมัติรายงานผลโครงการ
                     </h3>
                 </div>
                 <div class="border-t border-gray-200">
@@ -218,8 +225,12 @@
                         <p class="font-bold text-lg">
                             <ClosureStatusText :closure_status="item.closure_status"/>
                         </p>
-                        <span class="text-gray-600 underline">เหตุผล</span>&ensp;
-                        {{ item.closure_approved_message }}
+                        <p v-if="item.closure_approved_message">
+                            <span class="text-gray-600 underline">เหตุผล</span>&ensp;{{ item.closure_approved_message }}
+                        </p>
+                        <p class="mt-1 text-xs text-gray-500">
+                            บันทึกเมื่อ {{ item.closure_approved_at }} โดย {{ item.closure_approved_by_user.name }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -309,17 +320,21 @@
             </div>
             <p class="mt-4 px-2 text-xs">
                 <a class="text-blue-500 cursor-pointer" @click="showLogDialog = true">ดูประวัติ</a>
+                <a v-if="item.closure_status < 10 && item.closure_status >= 0" @click="showMessageDialog = true"
+                   class="ml-4 text-green-500 cursor-pointer">
+                    บันทึกหมายเหตุ
+                </a>
             </p>
         </div>
         <ClosureLogDialog :show-modal="showLogDialog" :project="item" @close="showLogDialog = false"/>
-    </app-layout>
+        <ClosureMessageDialog :show-modal="showMessageDialog" :project="item" @close="showMessageDialog = false"/>
+    </AppLayout>
 </template>
 
 <script setup>
 import {CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import AppLayout from '@/Layouts/AppLayout.vue'
 import InputError from '@/Jetstream/InputError.vue'
-import JetLabel from '@/Jetstream/Label.vue'
 import Label from '@/Jetstream/Label.vue'
 import {computed, ref} from 'vue';
 import {Link, useForm} from '@inertiajs/vue3'
@@ -331,6 +346,7 @@ import Button from "@/Jetstream/Button.vue";
 import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
 import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
 import ClosureStatusText from "@/Components/ClosureStatusText.vue";
+import ClosureMessageDialog from "@/Components/ClosureMessageDialog.vue";
 
 const props = defineProps({
     item: Object,
@@ -339,12 +355,14 @@ const props = defineProps({
 const form = useForm({
     _method: 'POST',
     approve: '', // "yes" or "no"
-    reason: '',
+    reason: props.item.closure_approved_message ?? '',
     approve_participants: [],
     allow_resubmit: false,
 });
-const selectedParticipants = ref(props.item.participants.map(e => e.id));
+const oldSelectedParticipants = props.item.participants.filter(p => p.approve_status === 1).map(p => p.id);
+const selectedParticipants = ref(oldSelectedParticipants.length > 0 ? oldSelectedParticipants : props.item.participants.map(e => e.id));
 const showLogDialog = ref(false);
+const showMessageDialog = ref(false);
 const forceShowApproveBox = ref(false);
 
 // Computed
@@ -360,7 +378,7 @@ const staffCountCompliance = computed(() => {
     return participantsGrouped.value['staff'].length <= 0.66667 * ((participantsGrouped.value['attendee'] && participantsGrouped.value['attendee'].length > 0) ? props.item.participants.length : (props.item.participants.length + Number(props.item.estimated_attendees)));
 });
 const hasRejectedVerify = computed(() => Boolean(props.item.participants.find(e => e.verify_status === -1)));
-const showCheckbox = computed(() => (form.approve !== 'no' || props.item.closure_status >= 10) && props.item.closure_status >= 1);
+const showCheckbox = computed(() => ((form.approve !== 'no' || props.item.closure_status >= 10) && props.item.closure_status >= 1) || forceShowApproveBox.value);
 
 const selectParticipant = (id) => {
     if (selectedParticipants.value.includes(id)) {

@@ -8,7 +8,7 @@ defineProps({
 
 <template>
     <span
-        :class="{'text-blue-600': closure_status === 5, 'text-green-600': closure_status === 10,'text-gray-600': closure_status <= -1,'text-yellow-600': closure_status === 1}">
+        :class="{'text-blue-600': closure_status === 5, 'text-green-600': closure_status === 10,'text-red-600': closure_status <= -1,'text-yellow-600': closure_status === 1}">
         {{
             {
                 0: 'ยังไม่รายงานผล',

@@ -93,7 +93,10 @@
                     สถานะการพิจารณาเพื่อบันทึกลงใน Activity Transcript :
                     <ClosureStatusText class="font-bold" :closure_status="item.closure_status"/>
                     <p v-if="item.closure_status < 0 && item.closure_approved_message">
-                        <span class="text-red-700">เหตุผล</span> : {{ item.closure_approved_message }}
+                        เหตุผล : <span class="text-red-700">{{ item.closure_approved_message }}</span>
+                    </p>
+                    <p v-else-if="item.closure_approved_message">
+                        หมายเหตุ : <span class="text-blue-700">{{ item.closure_approved_message }}</span>
                     </p>
                     <p v-if="item.closure_status === -2" class="mt-1 text-gray-500">
                         ให้

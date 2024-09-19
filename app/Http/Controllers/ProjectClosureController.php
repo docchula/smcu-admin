@@ -169,11 +169,11 @@ class ProjectClosureController extends Controller {
     public function approvalForm(Request $request, Project $project): Response {
         $this->authorize('faculty-action');
 
-        $project->load(['department', 'participants', 'participants.user', 'summaryDocument']);
+        $project->load(['department', 'participants', 'participants.user', 'summaryDocument', 'closureApprovedByUser']);
         $project->closure_status = $project->getClosureStatus();
         $project->participants->transform(function (ProjectParticipant $participant) {
             $participant->user->makeHidden('id', 'profile_photo_url');
-            $participant->makeVisible('verify_status', 'reject_reason', 'reject_participants');
+            $participant->makeVisible('verify_status', 'reject_reason', 'reject_participants', 'closureApprovedByUser');
 
             return $participant;
         });
@@ -208,14 +208,33 @@ class ProjectClosureController extends Controller {
             $project->closure_approved_message = $request->input('reason');
             $project->participants()->update(['approve_status' => -1]);
         }
-        activity()->causedBy($request->user())->performedOn($project)
-            ->event('closure_approve')->log('บันทึกผลการอนุมัติรายงานผลโครงการ');
+        activity()->causedBy($request->user())->performedOn($project)->event('closure_approve')
+            ->withProperties(['closure_approved_status' => $project->closure_approved_status])->log('บันทึกผลการอนุมัติรายงานผลโครงการ');
         $project->save();
         DB::commit();
 
         return redirect()
             ->route('projects.approvalForm', ['project' => $project->id])
             ->with('flash.banner', 'บันทึกผลการอนุมัติรายงานผลโครงการ เลขที่ '.$project->getNumber().' แล้ว')
+            ->with('flash.bannerStyle', 'success');
+    }
+
+    public function updateRemark(Request $request, Project $project) {
+        $this->validate($request, [
+            'remark' => 'nullable|string|max:250',
+        ]);
+        $closureStatus = $project->getClosureStatus();
+        abort_if(in_array($closureStatus, [ProjectClosureStatus::APPROVED, ProjectClosureStatus::REJECTED]),
+            403, 'Cannot edit remark when the project is approved/rejected.');
+
+        $project->closure_approved_message = $request->input('remark');
+        activity()->causedBy($request->user())->performedOn($project)
+            ->event('closure_remark')->log('แก้ไขหมายเหตุ');
+        $project->save();
+
+        return redirect()
+            ->route('projects.approvalForm', ['project' => $project->id])
+            ->with('flash.banner', 'บันทึกหมายเหตุการอนุมัติรายงานผลโครงการ เลขที่ '.$project->getNumber().' แล้ว')
             ->with('flash.bannerStyle', 'success');
     }
 

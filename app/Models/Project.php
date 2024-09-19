@@ -106,6 +106,10 @@ class Project extends Model {
         return $this->morphMany(Activity::class, 'subject');
     }
 
+    public function closureApprovedByUser(): BelongsTo {
+        return $this->belongsTo(User::class, 'closure_approved_by')->select('id', 'name');
+    }
+
     public function setPeriodStartAttribute($value): void {
         $this->attributes['period_start'] = new Carbon($value);
     }
