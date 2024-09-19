@@ -36,7 +36,8 @@
                     <div class="col-span-4 space-y-2">
                         <jet-label value="วันที่จัดกิจกรรม"/>
                         {{ (item.period_start === item.period_end) ? item.period_start : (item.period_start + ' - ' + item.period_end) }}
-                        <p class="text-xs text-gray-500">
+                        <jet-input-error v-if="warn_activity_date" message="ยังไม่สิ้นสุดการดำเนินกิจกรรม ไม่สามารถส่งรายงานผลได้"/>
+                        <p v-else class="text-xs text-gray-500">
                             ใน Transcript อาจปรากฏเฉพาะเดือนและปี
                         </p>
                     </div>
@@ -60,11 +61,13 @@
                         </p>
                     </div>
                     <div class="col-span-3 space-y-2">
-                        <jet-label value="ประมาณการจำนวนผู้เข้าร่วม"/>
-                        {{ item.estimated_attendees ?? '?' }} คน
-                        <jet-input-error v-if="!item.estimated_attendees" message="กรุณาแก้ไข"/>
+                        <jet-label>จำนวนผู้เข้าร่วม</jet-label>
+                        <jet-input type="number" class="w-24 md:w-auto" min="1" step="1" v-model.number="form.estimated_attendees"
+                                   required/>
+                        คน
+                        <jet-input-error v-if="!form.estimated_attendees" message="กรุณาแก้ไข"/>
                         <p v-else class="text-xs text-gray-500 col-span-6">
-                            อาจเป็นนิสิตแพทย์หรือบุคคลอื่นก็ได้
+                            ผู้เข้าร่วมอาจเป็นนิสิตแพทย์หรือบุคคลอื่นก็ได้
                         </p>
                     </div>
                 </template>
@@ -358,10 +361,10 @@
                                            class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500 focus:ring-2">
                                     <label for="radio-no" class="w-full py-3 ms-2 font-medium text-gray-900">
                                         ไม่ส่ง
-                                        <p class="mt-1 text-xs text-gray-600">
+                                        <span class="block mt-1 text-xs text-gray-600">
                                             กรณีต้องการแก้ไขเพิ่มเติมภายหลัง (ต้องกลับมายืนยันในกำหนดเวลา 30 วัน) หรือสำหรับโครงการที่จะไม่บันทึกลงใน
                                             Activity Transcript
-                                        </p>
+                                        </span>
                                     </label>
                                 </div>
                             </li>
@@ -373,16 +376,16 @@
                                            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 focus:ring-2">
                                     <label for="radio-yes" class="w-full py-3 ms-2 font-medium text-gray-900">
                                         ยืนยันส่งบันทึกลงใน Activity Transcript
-                                        <p v-if="item.year < 2567" class="mt-1 text-xs text-red-600">
+                                        <span v-if="item.year < 2567" class="block mt-1 text-xs text-red-600">
                                             เริ่มใช้ Activity Transcript สำหรับโครงการปีวาระ 2567 เป็นต้นไป
-                                        </p>
-                                        <p v-else-if="!can_submit" class="mt-1 text-xs text-red-600">
+                                        </span>
+                                        <span v-else-if="!can_submit" class="block mt-1 text-xs text-red-600">
                                             หมดเขตส่ง ต้องบันทึกและยืนยันรายงานผลการปฏิบัติงาน ภายใน 30 วันนับจากเสร็จสิ้นกิจกรรม
-                                        </p>
-                                        <p v-else class="mt-1 text-xs text-gray-600">
+                                        </span>
+                                        <span v-else class="block mt-1 text-xs text-gray-600">
                                             <b>เมื่อยืนยันแล้วไม่สามารถกลับมาแก้ไขข้อมูลได้อีก</b>
                                             ระบบจะให้นิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคนมาตรวจสอบและยืนยันรายชื่อผู้ปฏิบัติงานต่อไป
-                                        </p>
+                                        </span>
                                     </label>
                                 </div>
                             </li>
@@ -425,11 +428,13 @@ import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 const props = defineProps({
     item: Object,
     can_submit: Boolean,
+    warn_activity_date: Boolean,
 });
 
 // Data
 const form = useForm({
     _method: 'POST',
+    estimated_attendees: props.item.estimated_attendees ?? 0,
     objectives: props.item.objectives ?? [],
     expense: props.item.expense ?? [],
     action: '',

@@ -30,6 +30,7 @@ class ProjectClosureController extends Controller {
         return Inertia::render('ProjectClosure', [
             'item' => $project,
             'can_submit' => $project->canSubmitClosure(),
+            'warn_activity_date' => $project->period_end?->isFuture(),
         ]);
     }
 
@@ -38,6 +39,7 @@ class ProjectClosureController extends Controller {
      */
     public function closureSubmit(Request $request, Project $project) {
         $this->validate($request, [
+            'estimated_attendees' => 'required|integer|min:1',
             'objectives' => 'required|array',
             'expense' => 'nullable|array',
             'action' => 'nullable|string',
@@ -50,6 +52,7 @@ class ProjectClosureController extends Controller {
 
         $project->objectives = $request->input('objectives');
         $project->expense = $request->input('expense');
+        $project->estimated_attendees = $request->input('estimated_attendees');
         if ($action == 'yes') {
             if (!$project->canSubmitClosure()) {
                 $project->saveOrFail();

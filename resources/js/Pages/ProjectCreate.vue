@@ -155,7 +155,7 @@
                         <jet-input id="estimated_attendees" v-model="form.estimated_attendees" type="text" class="mt-1 block w-full" required/>
                         <jet-input-error v-if="form.errors.estimated_attendees" :message="form.errors.estimated_attendees" class="mt-2"/>
                         <p v-else class="mt-1 text-xs text-gray-500 col-span-6">
-                            อาจเป็นนิสิตหรือบุคคลอื่นก็ได้
+                            ผู้เข้าร่วมอาจเป็นนิสิตแพทย์หรือบุคคลอื่นก็ได้
                         </p>
                     </div>
                 </template>
