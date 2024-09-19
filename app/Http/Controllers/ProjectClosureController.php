@@ -196,15 +196,15 @@ class ProjectClosureController extends Controller {
         $project->closure_approved_at = now();
         DB::beginTransaction();
         if ($request->input('approve') == 'yes') {
+            if (count($request->input('approve_participants')) == 0) {
+                return back()->withErrors(['approve_participants' => 'กรุณาเลือกนิสิตที่ต้องการอนุมัติ']);
+            }
             $project->closure_approved_status = 1;
             $project->closure_approved_message = null;
-            $project->participants()->whereIn('user_id', $request->input('approve_participants'))->update(['approve_status' => 1]);
-            $project->participants()->whereNotIn('user_id', $request->input('approve_participants'))->update(['approve_status' => -1]);
-        } elseif ($request->input('allow_resubmit', false)) {
-            $project->closure_approved_status = -2;
-            $project->closure_approved_message = $request->input('reason');
+            $project->participants()->whereIn('id', $request->input('approve_participants'))->update(['approve_status' => 1]);
+            $project->participants()->whereNotIn('id', $request->input('approve_participants'))->update(['approve_status' => -1]);
         } else {
-            $project->closure_approved_status = -1;
+            $project->closure_approved_status = $request->input('allow_resubmit', false) ? -2 : -1;
             $project->closure_approved_message = $request->input('reason');
             $project->participants()->update(['approve_status' => -1]);
         }

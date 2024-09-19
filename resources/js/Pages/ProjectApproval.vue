@@ -67,9 +67,9 @@
                                 </p>
                             </div>
                             <div class="col-span-2 space-y-2">
-                                <jet-label value="ประมาณการจำนวนผู้เข้าร่วม"/>
+                                <jet-label value="จำนวนผู้เข้าร่วม"/>
                                 {{ item.estimated_attendees ?? '?' }} คน
-                                <jet-input-error v-if="!item.estimated_attendees" message="กรุณาแก้ไข"/>
+                                <InputError v-if="!item.estimated_attendees" message="กรุณาแก้ไข"/>
                                 <p v-else class="text-xs text-gray-500 col-span-6">
                                     อาจเป็นนิสิตแพทย์หรือบุคคลอื่นก็ได้
                                 </p>
@@ -144,7 +144,7 @@
                                         <span v-else class="text-sm">ยังไม่ตรวจสอบ</span>
                                     </td>
                                     <td v-if="showCheckbox" class="px-2 py-1 text-center">
-                                        <template v-if="item.closure_status >= 10">
+                                        <template v-if="item.closure_status >= 10 && !forceShowApproveBox">
                                             <span v-if="e.approve_status === 1" class="text-green-500">อนุมัติ</span>
                                             <span v-else class="text-red-500">ไม่อนุมัติ</span>
                                         </template>
@@ -267,9 +267,9 @@
                             </li>
                         </ul>
                         <div v-if="form.approve === 'yes'" class="mt-4">
-                            <p v-if="selectedParticipants.length <= 0" class="my-4 text-blue-500">กรุณากดเลือกนิสิตที่จะอนุมัติ</p>
+                            <p v-if="selectedParticipants.length <= 0" class="my-4 text-blue-500">กรุณากดเลือกนิสิตที่ต้องการอนุมัติ</p>
                             <template v-else-if="selectedParticipants.length !== item.participants.length">
-                                <Label value="นิสิตที่ไม่รับรอง"/>
+                                <Label value="นิสิตที่ไม่อนุมัติ"/>
                                 <ol class="my-2 list-inside list-decimal">
                                     <template v-for="participant in item.participants">
                                         <li v-if="!selectedParticipants.includes(participant.id)">
@@ -298,6 +298,7 @@
                                 </div>
                             </div>
                         </div>
+                        <InputError :message="form.errors.approve_participants" class="mt-2"/>
                     </div>
                     <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
                         <Button type="button" :disabled="form.processing || !form.approve" @click="submit">
@@ -317,7 +318,6 @@
 <script setup>
 import {CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import AppLayout from '@/Layouts/AppLayout.vue'
-import JetInputError from '@/Jetstream/InputError.vue'
 import InputError from '@/Jetstream/InputError.vue'
 import JetLabel from '@/Jetstream/Label.vue'
 import Label from '@/Jetstream/Label.vue'
@@ -378,6 +378,9 @@ const toggleAll = () => {
 };
 const submit = () => {
     form.approve_participants = selectedParticipants.value;
-    form.post(route('projects.approvalSubmit', {project: props.item.id}));
+    form.post(route('projects.approvalSubmit', {project: props.item.id}), {
+        preserveState: false,
+        preserveScroll: false,
+    });
 };
 </script>
