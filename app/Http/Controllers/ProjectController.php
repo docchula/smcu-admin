@@ -314,7 +314,9 @@ class ProjectController extends Controller {
             'signer_s2_title' => 'ประธานฝ่าย/ประธานนิสิตแพทย์ชั้นปีที่.....',
             'signer_s3_title' => 'อุปนายกสโมสรฝ่าย .....',
             'signer_s4_title' => "นายกสโมสรนิสิต\nคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
-            'background' => $project->background
+            'background' => $project->background,
+            'sdgs' => $project->sdgs
+                ? ('สอดคล้องกับเป้าหมายข้อที่ '.implode(', ', $project->sdgs)) : 'ไม่มีเป้าหมายที่สอดคล้อง',
         ]);
         if ($organizer = $project->participants->where('type', 'organizer')->first()) {
             $template->setValues([
