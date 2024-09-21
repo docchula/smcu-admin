@@ -107,15 +107,16 @@
                     </h3>
                 </div>
                 <div class="border-t border-gray-200">
-                    <div class="px-4 py-4 sm:px-6">
+                    <div class="py-4 sm:px-6">
                         <table class="w-full divide-y divide-gray-200">
                             <thead>
                             <tr>
                                 <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     ชื่อ
                                 </th>
-                                <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                    เลขประจำตัวนิสิต
+                                <th scope="col"
+                                    class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider hidden sm:block">
+                                    เลขประจำตัว
                                 </th>
                                 <th scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     ตำแหน่ง
@@ -127,12 +128,16 @@
                                     scope="col" class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider">
                                     อนุมัติ
                                 </th>
+                                <th v-if="item.closure_status < 10" scope="col"
+                                    class="px-2 pb-1 text-left text-xs font-medium text-gray-500 tracking-wider"></th>
                             </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                             <template v-for="(name, type) in PROJECT_PARTICIPANT_ROLES">
                                 <tr class="text-sm bg-gray-300 text-gray-800">
-                                    <td :colspan="showCheckbox ? 3 : 2" class="px-2 py-0.5">{{ name }}</td>
+                                    <td class="px-2 py-0.5">{{ name }}</td>
+                                    <td class="px-2 py-0.5 hidden sm:block"></td>
+                                    <td class="px-2 py-0.5"></td>
                                     <td colspan="2" class="px-2 py-0.5 text-right">
                                         <span v-if="participantsGrouped[type]">
                                             ตรวจสอบแล้ว
@@ -140,10 +145,15 @@
                                             จาก {{ participantsGrouped[type].length }} คน
                                         </span>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr v-for="(e, i) in participantsGrouped[type]">
-                                    <td class="px-2 py-1"><span class="text-gray-400">{{ i + 1 }}.</span>&ensp;{{ e.user.name }}</td>
-                                    <td class="px-2 py-1">{{ e.user.student_id }}</td>
+                                    <td class="px-2 py-1">
+                                        <span class="text-gray-400">{{ i + 1 }}.</span>&ensp;
+                                        {{ e.user.name }}
+                                        <p class="text-xs text-gray-400 sm:hidden">{{ e.user.student_id }}</p>
+                                    </td>
+                                    <td class="px-2 py-1 hidden sm:block">{{ e.user.student_id }}</td>
                                     <td class="px-2 py-1" :class="{'text-gray-300': !e.title}">{{ e.title ?? '-' }}</td>
                                     <td class="px-2 py-1 text-center">
                                         <span v-if="e.verify_status === 1">รับรอง</span>
@@ -158,33 +168,34 @@
                                         <Checkbox v-else :checked="selectedParticipants.includes(e.id)" @click="selectParticipant(e.id)"
                                                   class="text-blue-600 focus:border-blue-300 focus:ring-blue-200"/>
                                     </td>
+                                    <td v-if="item.closure_status < 10" class="px-1 py-1 text-center text-gray-400">
+                                        <PencilIcon @click="showParticipantEditDialog=e" class="cursor-pointer w-4"/>
+                                    </td>
                                 </tr>
                             </template>
                             </tbody>
                         </table>
-                        <div class="mt-4">
-                            <div class="mt-4 text-gray-500">
-                                <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Activity Transcript</h6>
-                                <p v-if="!organizerCountCompliance || !staffCountCompliance"
-                                   class="mt-2 mb-1 text-orange-500 border-orange-500 border p-2 w-full rounded-md">
-                                    <span class="font-semibold">ไม่ตรงตามเงื่อนไข</span>
-                                    เมื่อยืนยันและส่งเอกสารแล้ว ให้ติดต่อชี้แจงกับผู้ช่วยคณบดี/รองคณบดีที่ได้รับมอบหมาย
-                                </p>
-                                <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
-                                    <li class="font-bold"
-                                        :class="{'text-green-600': organizerCountCompliance, 'text-red-500': !organizerCountCompliance}">
-                                        ผู้รับผิดชอบ พึงมีจำนวนไม่เกินร้อยละ 20 ของจำนวนผู้ปฏิบัติงาน ยกเว้นโครงการที่ไม่มีนิสิตเป็นผู้ปฏิบัติงาน
-                                    </li>
-                                    <li class="font-bold" :class="{'text-green-600': staffCountCompliance, 'text-red-500': !staffCountCompliance}">
-                                        ผู้ปฏิบัติงาน พึงมีจำนวนไม่เกิน 2 ใน 3 ของผู้มีส่วนร่วมในกิจกรรมทั้งหมด ทั้งผู้รับผิดชอบ ผู้ปฏิบัติงาน
-                                        และผู้เข้าร่วม ทั้งนิสิตและบุคคลภายนอก
-                                    </li>
-                                    <li>ผู้เข้าร่วม ต้องลงชื่อเข้าร่วมกิจกรรมทุกวัน ทุกครึ่งวัน หรือตามความเหมาะสมต่อลักษณะกิจกรรม
-                                        โดยมีหลักฐานว่าเข้าร่วมกิจกรรมไม่น้อยกว่า 2 ใน 3 ของระยะเวลากิจกรรมทั้งหมด
-                                        ให้ผู้รับผิดชอบโครงการเก็บรักษาหลักฐานดังกล่าวไว้
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="mt-4 px-4 sm:px-0 text-gray-500">
+                            <h6 class="font-semibold">เงื่อนไขจำนวนนิสิตผู้เกี่ยวข้อง เพื่อบันทึกใน Activity Transcript</h6>
+                            <p v-if="!organizerCountCompliance || !staffCountCompliance"
+                               class="mt-2 mb-1 text-orange-500 border-orange-500 border p-2 w-full rounded-md">
+                                <span class="font-semibold">ไม่ตรงตามเงื่อนไข</span>
+                                เมื่อยืนยันและส่งเอกสารแล้ว ให้ติดต่อชี้แจงกับผู้ช่วยคณบดี/รองคณบดีที่ได้รับมอบหมาย
+                            </p>
+                            <ul class="mt-1 space-y-1 text-sm text-gray-500 list-inside list-disc">
+                                <li class="font-bold"
+                                    :class="{'text-green-600': organizerCountCompliance, 'text-red-500': !organizerCountCompliance}">
+                                    ผู้รับผิดชอบ พึงมีจำนวนไม่เกินร้อยละ 20 ของจำนวนผู้ปฏิบัติงาน ยกเว้นโครงการที่ไม่มีนิสิตเป็นผู้ปฏิบัติงาน
+                                </li>
+                                <li class="font-bold" :class="{'text-green-600': staffCountCompliance, 'text-red-500': !staffCountCompliance}">
+                                    ผู้ปฏิบัติงาน พึงมีจำนวนไม่เกิน 2 ใน 3 ของผู้มีส่วนร่วมในกิจกรรมทั้งหมด ทั้งผู้รับผิดชอบ ผู้ปฏิบัติงาน
+                                    และผู้เข้าร่วม ทั้งนิสิตและบุคคลภายนอก
+                                </li>
+                                <li>ผู้เข้าร่วม ต้องลงชื่อเข้าร่วมกิจกรรมทุกวัน ทุกครึ่งวัน หรือตามความเหมาะสมต่อลักษณะกิจกรรม
+                                    โดยมีหลักฐานว่าเข้าร่วมกิจกรรมไม่น้อยกว่า 2 ใน 3 ของระยะเวลากิจกรรมทั้งหมด
+                                    ให้ผู้รับผิดชอบโครงการเก็บรักษาหลักฐานดังกล่าวไว้
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -328,16 +339,18 @@
         </div>
         <ClosureLogDialog :show-modal="showLogDialog" :project="item" @close="showLogDialog = false"/>
         <ClosureMessageDialog :show-modal="showMessageDialog" :project="item" @close="showMessageDialog = false"/>
+        <ParticipantEditDialog :show-modal="showParticipantEditDialog" @close="showParticipantEditDialog = null"
+                               :participant="showParticipantEditDialog"/>
     </AppLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
-import AppLayout from '@/Layouts/AppLayout.vue'
-import InputError from '@/Jetstream/InputError.vue'
-import Label from '@/Jetstream/Label.vue'
+import AppLayout from '@/Layouts/AppLayout.vue';
+import InputError from '@/Jetstream/InputError.vue';
+import Label from '@/Jetstream/Label.vue';
 import {computed, ref} from 'vue';
-import {Link, useForm} from '@inertiajs/vue3'
+import {Link, useForm} from '@inertiajs/vue3';
 import {groupBy} from "lodash";
 import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 import Checkbox from "@/Jetstream/Checkbox.vue";
@@ -347,10 +360,12 @@ import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
 import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
 import ClosureStatusText from "@/Components/ClosureStatusText.vue";
 import ClosureMessageDialog from "@/Components/ClosureMessageDialog.vue";
+import {Project, ProjectParticipant} from '@/types';
+import ParticipantEditDialog from '@/Components/ParticipantEditDialog.vue';
 
-const props = defineProps({
-    item: Object,
-});
+const props = defineProps<{
+    item: Project,
+}>();
 
 const form = useForm({
     _method: 'POST',
@@ -363,6 +378,7 @@ const oldSelectedParticipants = props.item.participants.filter(p => p.approve_st
 const selectedParticipants = ref(oldSelectedParticipants.length > 0 ? oldSelectedParticipants : props.item.participants.map(e => e.id));
 const showLogDialog = ref(false);
 const showMessageDialog = ref(false);
+const showParticipantEditDialog = ref<ProjectParticipant | null>(null);
 const forceShowApproveBox = ref(false);
 
 // Computed

@@ -84,6 +84,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('projects/{project}/importParticipantUpload', [ProjectController::class, 'importParticipantUpload'])->name('projects.importParticipantUpload');
     Route::post('projects/{project}/importParticipantCommit', [ProjectController::class, 'importParticipantCommit'])->name('projects.importParticipantCommit');
     Route::post('projects/removeParticipant/{participant}', [ProjectController::class, 'removeParticipant'])->name('projects.removeParticipant');
+    Route::post('projects/editParticipant/{participant}', [ProjectController::class, 'editParticipant'])->name('projects.editParticipant');
     Route::get('projects/{project}/exportParticipant', [ProjectController::class, 'exportParticipant'])->name('projects.exportParticipant');
     Route::get('search-participants', [ProjectController::class, 'searchNewParticipant'])->name('projects.searchNewParticipant');
     Route::get('search-student', [PersonnelController::class, 'searchStudent'])->name('personnels.searchStudent');

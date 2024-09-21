@@ -533,6 +533,23 @@ class ProjectController extends Controller {
         return back()->with('flash.banner', 'ลบ ' . $participant->user->name . ' แล้ว')->with('flash.bannerStyle', 'success');
     }
 
+    public function editParticipant(Request $request, ProjectParticipant $participant) {
+        $this->validate($request, [
+            'type' => 'required|string|in:organizer,staff,attendee',
+            'title' => 'nullable|string|max:255',
+        ]);
+        $participant->load(['project', 'user']);
+        $this->authorize('update-project', $participant->project);
+        if ($participant->project->hasSubmittedClosure() and $request->user()->cannot('faculty-action')) {
+            return back()->with('flash.banner', 'ไม่อนุญาตให้แก้ไขหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        }
+        $participant->type = $request->input('type');
+        $participant->title = $request->input('title');
+        $participant->save();
+
+        return back()->with('flash.banner', 'แก้ไข '.$participant->user->name.' แล้ว')->with('flash.bannerStyle', 'success');
+    }
+
     public function importParticipantUpload(Request $request, Project $project) {
         $this->validate($request, [
             'import' => 'required|file|mimes:csv,xlsx,xls'
