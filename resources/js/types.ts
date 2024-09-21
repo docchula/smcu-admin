@@ -1,3 +1,37 @@
+export interface Document {
+    id: number;
+    created_at: string | null;
+    updated_at: string | null;
+    year: number;
+    number: number;
+    number_to: number | null;
+    title: string;
+    recipient: string | null;
+    user_id: number | null;
+    project_id: number | null;
+    department_id: number | null;
+    attachment_path: string | null;
+    tag: string | null;
+    approved_path: string | null;
+    status: string | null;
+}
+
+export interface Personnel {
+    id: number;
+    year: number;
+    department_id: number | null;
+    email: string | null;
+    name: string;
+    name_en: string | null;
+    position: string;
+    position_en: string | null;
+    supervisor: number | null;
+    sequence: number;
+    photo_path: string | null;
+    created_at: string | null;
+    updated_at: string | null;
+}
+
 export interface Project {
     id: number;
     created_at: string | null;

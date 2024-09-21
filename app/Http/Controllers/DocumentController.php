@@ -47,6 +47,7 @@ class DocumentController extends Controller {
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Throwable
      */
     public function store(Request $request): \Symfony\Component\HttpFoundation\Response {
         return $this->update($request, new Document());
@@ -57,32 +58,34 @@ class DocumentController extends Controller {
      */
     public function show(Request $request, Document $document): Response {
         $isAuthorized = $request->user()->can('update-document', $document);
-        $document->can = [
-            'download-document' => $isAuthorized,
-            'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
-        ];
-        $document->has_attachment = $isAuthorized && !empty($document->attachment_path);
-        $document->has_approved = $isAuthorized && !empty($document->approved_path);
-        $document->load(['user:id,name', 'department:id,name', 'project:id,name,advisor']);
+        $document->load(['user:id,name', 'department:id,name,group', 'project:id,name,advisor']);
         if ($document->user) {
             unset($document->user->id);
         }
 
         // Get signers
-        $personnels = Personnel::getYear($document->year);
         $signers = [];
-        if ($personnels->isNotEmpty() and $person = $personnels->where('department_id', $document->department_id)->first()) {
-            $i = 0;
-            do {
-                $signers[] = $person;
-                $person = $person->supervisor ? $personnels->where('id', $person->supervisor)->first() : null;
-                $i++;
-            } while (!empty($person) and $i < 10);
+        $personnel = Personnel::getYear($document->year);
+        if ($document->department?->group) {
+            if ($person = $personnel->where('department_id', $document->department_id)->first()) {
+                $i = 0;
+                do {
+                    $signers[] = $person;
+                    $person = $person->supervisor ? $personnel->where('id', $person->supervisor)->first() : null;
+                    $i++;
+                } while (!empty($person) and $i < 10);
+            }
         }
-        $document->signers = $signers;
 
         return Inertia::render('DocumentShow', [
-            'item' => $document
+            'item' => $document,
+            'can' => [
+                'download-document' => $isAuthorized,
+                'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
+            ],
+            'has_attachment' => $isAuthorized && !empty($document->attachment_path),
+            'has_approved' => $isAuthorized && !empty($document->approved_path),
+            'signers' => $signers,
         ]);
     }
 
@@ -202,15 +205,5 @@ class DocumentController extends Controller {
             ->route('documents.show', ['document' => $document->id])
             ->with('flash.banner', 'บันทึกเอกสารแล้ว')
             ->with('flash.bannerStyle', 'success');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id) {
-        return response('Not Implemented', 501);
     }
 }

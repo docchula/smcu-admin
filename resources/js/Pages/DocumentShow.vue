@@ -1,12 +1,12 @@
 <template>
     <app-layout>
         <template #header>
-            <inertia-link :href="route('documents.index')" class="mb-4 block flex items-center text-gray-700">
+            <Link :href="route('documents.index')" class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" class="text-gray-500"/>
                 </svg>
                 สารบรรณ
-            </inertia-link>
+            </Link>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 หนังสือสพจ. ที่ {{ item.number }}<span v-if="item.number_to">-{{ item.number_to }}</span>/{{ item.year }}
             </h2>
@@ -21,14 +21,15 @@
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
-                        <inertia-link v-if="item.can['update-document']" :href="route('documents.edit', {document: item.id})" class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
+                        <Link v-if="can['update-document']" :href="route('documents.edit', {document: item.id})"
+                              class="text-yellow-600 hover:text-yellow-900 text-sm ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
                             </svg>
                             แก้ไข
-                        </inertia-link>
+                        </Link>
                     </h3>
-                    <p v-if="!item.can['update-document']" class="mt-1 max-w-2xl text-sm text-gray-500">หากต้องการแก้ไขข้อมูล กรุณาติดต่อผู้ดูแลระบบ</p>
+                    <p v-if="!can['update-document']" class="mt-1 max-w-2xl text-sm text-gray-500">หากต้องการแก้ไขข้อมูล กรุณาติดต่อผู้ดูแลระบบ</p>
                 </div>
                 <div class="border-t border-gray-200">
                     <dl class="grid grid-cols-2 text-gray-900">
@@ -45,7 +46,9 @@
                         <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6" v-if="item.project">
                             <dt class="text-sm font-medium text-gray-500">โครงการ</dt>
                             <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                                <inertia-link :href="route('projects.show', {project: item.project_id})" class="text-yellow-600 hover:text-yellow-900">{{ item.project.name }}</inertia-link>
+                                <Link :href="route('projects.show', {project: item.project_id})" class="text-yellow-600 hover:text-yellow-900">
+                                    {{ item.project.name }}
+                                </Link>
                             </dd>
                         </div>
                         <div class="px-3 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -71,37 +74,37 @@
                     </dl>
                 </div>
             </div>
-            <div v-if="item.can['download-document']" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="can['download-document']" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารต้นฉบับ
                     </h3>
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <a v-if="item.has_attachment" :href="route('documents.download', {document: item.id})"
+                    <a v-if="has_attachment" :href="route('documents.download', {document: item.id})"
                        class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดร่างเอกสาร</a>
                     <p v-else class="text-gray-500">ไม่พบไฟล์</p>
                 </div>
             </div>
 
-            <div v-if="item.has_approved" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="has_approved" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารได้รับการอนุมัติแล้ว
                     </h3>
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
-                    <inertia-link :href="route('documents.downloadApproved', {document: item.id})"
+                    <Link :href="route('documents.downloadApproved', {document: item.id})"
                                   class="inline-block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
                         ดูเอกสาร
-                    </inertia-link>
+                    </Link>
                     <a :href="route('documents.downloadApproved', {document: item.id, download: true})">
                         <ArrowDownTrayIcon class="inline-block ml-2 h-4 w-4 text-gray-400"/>
                     </a>
                 </div>
             </div>
             <!-- File Naming Instruction -->
-            <div v-else-if="item.can['update-document']" class="bg-blue-100 border-blue-500 text-blue-600 border-l-4 rounded p-4 mb-6" role="alert">
+            <div v-else-if="can['update-document']" class="bg-blue-100 border-blue-500 text-blue-600 border-l-4 rounded p-4 mb-6" role="alert">
                 <p class="font-bold">
                     ขั้นตอนต่อไป : ส่งให้ผู้เกี่ยวข้องลงลายมือชื่อ
                 </p>
@@ -112,12 +115,12 @@
                 <span class="text-lg py-1 px-2 bg-blue-200 text-blue-600">
                     สพจ <span class="font-mono">{{ item.number }}-{{ item.year }}</span> {{ item.title.substring(0, 90) }}<span class="font-mono">.pdf</span>
                 </span>
-                <template v-if="item.signers && item.signers.length > 0">
+                <template v-if="signers && signers.length > 0">
                     <p class="mt-2">
                         และส่งให้ผู้เกี่ยวข้องลงลายมือชื่อตามลำดับ ซึ่งอาจมีดังนี้
                     </p>
                     <table>
-                        <tr v-for="signer in item.signers">
+                        <tr v-for="signer in signers">
                             <td class="px-1">-</td>
                             <td class="px-2">{{ signer.name }}</td>
                             <td class="px-2">{{ signer.position }}</td>
@@ -156,11 +159,17 @@
     </app-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import {Link} from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {ArrowDownTrayIcon} from '@heroicons/vue/20/solid';
+import {Document, Personnel} from '@/types';
 
-defineProps({
-    item: Object,
-});
+defineProps<{
+    item: Document,
+    can: { downloadDocument: boolean, updateDocument: boolean },
+    has_attachment: boolean,
+    has_approved: boolean,
+    signers: Personnel[],
+}>();
 </script>
