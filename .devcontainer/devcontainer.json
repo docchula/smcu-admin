@@ -1,0 +1,28 @@
+// https://aka.ms/devcontainer.json
+{
+    "name": "Laravel dev",
+    build: {
+        context: "..",
+        dockerfile: "Dockerfile"
+    },
+    "workspaceFolder": "/var/www/html",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "mikestead.dotenv",
+                "amiralizadeh9480.laravel-extra-intellisense",
+                "ryannaddy.laravel-artisan",
+                // "onecentlin.laravel5-snippets",
+                // "onecentlin.laravel-blade"
+            ],
+            "settings": {}
+        }
+    },
+    "remoteUser": "www-data",
+    "postCreateCommand": "chown -R 1000:1000 /var/www/html 2>/dev/null || true",
+    "forwardPorts": [
+        8080
+    ],
+    // "runServices": [],
+    // "shutdownAction": "none",
+}
