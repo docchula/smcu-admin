@@ -190,7 +190,7 @@ class Project extends Model {
      */
     public function canSubmitClosure(): bool {
         return ($this->period_end->diffInDays() <= self::SUMMARY_TIME_LIMIT)
-            or ($this->year == 2567 and now()->isBefore('2024-09-30'))
+            or ($this->year == 2567 and now()->isBefore('2024-11-16'))
             or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT);
     }
 
