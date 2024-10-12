@@ -80,7 +80,7 @@ class DocumentController extends Controller {
         return Inertia::render('DocumentShow', [
             'item' => $document,
             'can' => [
-                'download-document' => $isAuthorized,
+                'download-document' => $isAuthorized or $request->user()->can('download-action'),
                 'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
             ],
             'has_attachment' => $isAuthorized && !empty($document->attachment_path),

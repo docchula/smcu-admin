@@ -18,7 +18,11 @@ Successor of [docchula/smcu-document-number](https://github.com/docchula/smcu-do
 ## Required maintenance
 
 - Update personnel index (union committee member) yearly.
-- Grant administrative privileges to the union's executive committee members (set roles to ADMIN in _users_ database table).
+- Grant administrative privileges to the union's executive committee members and authorized faculty members: by setting _roles_ in _users_ database
+  table
+    - `admin`: Union executive committee members (read/write access except for faculty functions)
+    - `faculty`: Associate/Assistant Dean (read/write access to project closure and activity transcript)
+    - `download`: Student Affairs supporting staff (read access to document drafts)
 - Update union department list in case of establishment of new club (see _departments_ table).
 - Delete or edit document/project information as requested (if any).
 
