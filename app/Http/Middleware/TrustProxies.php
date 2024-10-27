@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class TrustProxies extends Middleware
 {
@@ -23,6 +24,6 @@ class TrustProxies extends Middleware
 
     // Load the trusted proxies from the config file
     public function __construct() {
-        $this->proxies = config('app.trusted_proxies', []);
+        $this->proxies = (App::environment(['local', 'staging']) and config('app.debug')) ? '*' : config('app.trusted_proxies', []);
     }
 }
