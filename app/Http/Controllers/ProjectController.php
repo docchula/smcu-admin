@@ -583,7 +583,7 @@ class ProjectController extends Controller {
                     ]);
                 } else {
                     $messages [] = 'WARNING: ' . $row['student_id'] . ' ไม่พบนิสิต';
-                    break;
+                    continue;
                 }
             }
             if ($existingParticipant = $project->participants->where('user_id', $student->id)->first()) {
