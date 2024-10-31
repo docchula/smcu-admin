@@ -234,7 +234,7 @@ class Project extends Model {
         return in_array($this->getClosureStatus(),
                 [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REJECTED_AND_RESUBMIT])
             and (($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT)
-                or ($this->year == 2567 and now()->isBefore('2024-10-31'))
+                or ($this->year == 2567 and now()->isBefore('2024-12-01'))
                 or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT)
             );
     }
