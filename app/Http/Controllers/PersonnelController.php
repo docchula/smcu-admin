@@ -123,7 +123,7 @@ class PersonnelController extends Controller
                 // If image size > 100 kB -> resize and convert to webp
                 $path = 'personnels/'.$fileName.'webp';
                 Storage::disk('public')->put($path, Image::read($request->file('attachment'))
-                    ->scaleDown(600, 700)->encode(new WebpEncoder(quality: 80)));
+                    ->scaleDown(1000, 1000)->encode(new WebpEncoder(quality: 80)));
             } else {
                 $path = $request->file('attachment')
                     ->storePubliclyAs('personnels', $fileName.$request->file('attachment')->guessExtension(), 'public');
