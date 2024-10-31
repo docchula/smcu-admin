@@ -295,6 +295,7 @@
                                 </table>
                                 <div class="col-span-6">
                                     <p v-if="selectedProject.expense.length === 0" class="mb-2">ไม่ได้ของบประมาณ</p>
+                                    <jet-input-error :message="errors.expense" class="col-span-6"/>
                                 </div>
                             </template>
                         </jet-form-section>

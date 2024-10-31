@@ -145,7 +145,7 @@ class DocumentController extends Controller {
             'approved_attachment' => 'nullable|file|mimes:pdf|max:20000',
             'project_id' => 'nullable|required_with:tag|integer|min:1|exists:projects,id',
             'objectives' => 'required_if:tag,summary|array',
-            'expense' => 'required_if:tag,summary|array',
+            'expense' => 'nullable|array',
         ]);
         $this->authorize('update-document', $document);
         $document->fill($request->except('objectives', 'expense'));
@@ -169,7 +169,12 @@ class DocumentController extends Controller {
         if ($request->input('tag') == 'summary' and $request->input('project_id')) {
             $document->project()->associate($request->input('project_id'));
             $document->project->objectives = $request->input('objectives');
-            $document->project->expense = $request->input('expense');
+            if ($document->project->expense) {
+                $this->validate($request, [
+                    'expense' => 'required|array',
+                ]);
+                $document->project->expense = $request->input('expense');
+            }
             $document->project->saveOrFail();
 
             if ($request->filled('generate_document')) {
