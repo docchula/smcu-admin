@@ -154,17 +154,18 @@ class ProjectClosureController extends Controller {
     public function approvalIndex(Request $request) {
         $this->authorize('faculty-action');
         $keyword = $request->input('search');
+        $sortOrder = [5 => 0, 1 => 1, -2 => 2, -1 => 3, 10 => 4, 0 => 5];
 
         return Inertia::render('ProjectApprovalIndex', [
-            'list' => Project::searchQuery($keyword)->withCount('participants')
-                ->addSelect(['closure_submitted_at', 'closure_approved_status'])
+            'list' => Project::searchQuery($keyword)->with('participants')
+                ->addSelect(['closure_submitted_at', 'closure_approved_at', 'closure_approved_status', 'closure_approved_message'])
                 ->whereNotNull('closure_submitted_at')
                 ->orderByDesc('closure_submitted_at')->limit(500)->get()
                 ->map(function (Project $project) {
                     $project->status = $project->getClosureStatus();
 
                     return $project;
-                }),
+                })->sort(fn($a, $b) => ($sortOrder[$a->status?->value] ?? 0) - ($sortOrder[$b->status?->value] ?? 0))->values(),
             'keyword' => $keyword ?? '',
             'static_departments' => Department::optionList(),
         ]);

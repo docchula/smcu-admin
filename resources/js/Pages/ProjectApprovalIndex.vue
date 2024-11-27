@@ -64,6 +64,7 @@
                             <Link :href="route('projects.approvalForm', {project: item.id})">
                                 {{ item.name }}
                             </Link>
+                            <p class="text-xs text-blue-500">{{ item.closure_approved_message }}</p>
                         </td>
                         <td class="px-2 py-2 md:px-4 text-sm">
                             {{ item.department.name }}
@@ -91,6 +92,10 @@
                     </tbody>
                 </table>
             </div>
+            <p class="mt-6 mb-4 text-xs text-gray-500">
+                สถานะโครงการ ได้แก่ <span class="bg-yellow-300">ส่งปิดโครง</span> > <span class="bg-blue-300">ผู้เกี่ยวข้องยืนยัน</span>ตามเกณฑ์ที่กำหนด
+                > <span class="bg-green-300">อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ ให้แก้ไข</span>
+            </p>
         </div>
     </AppLayout>
 </template>

@@ -8,12 +8,12 @@
                     </h2>
                 </div>
                 <div class="flex-auto flex items-center justify-end gap-2">
-                    <a v-if="is_faculty" :href="route('projects.approvalIndex')"
+                    <Link v-if="is_faculty" :href="route('projects.approvalIndex')"
                        class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
                     >
                         <CheckBadgeIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                         อนุมัติ <span class="hidden sm:inline px-1">Activity </span> Transcript
-                    </a>
+                    </Link>
                     <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
