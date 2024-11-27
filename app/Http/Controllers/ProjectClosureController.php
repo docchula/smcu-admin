@@ -6,6 +6,7 @@ use App\Jobs\NotifyProjectVerifyJob;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
+use App\Notifications\ClosureRemarkNotification;
 use App\ProjectClosureStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -225,6 +226,7 @@ class ProjectClosureController extends Controller {
     public function updateRemark(Request $request, Project $project) {
         $this->validate($request, [
             'remark' => 'nullable|string|max:250',
+            'notify' => 'nullable|boolean',
         ]);
         $closureStatus = $project->getClosureStatus();
         abort_if(in_array($closureStatus, [ProjectClosureStatus::APPROVED, ProjectClosureStatus::REJECTED]),
@@ -234,6 +236,13 @@ class ProjectClosureController extends Controller {
         activity()->causedBy($request->user())->performedOn($project)
             ->event('closure_remark')->log('แก้ไขหมายเหตุ');
         $project->save();
+
+        if ($request->boolean('notify')) {
+            // Send notification to project organizers
+            $project->participants()->where('type', 'organizer')->get()->each(function (ProjectParticipant $participant) use ($project) {
+                $participant->user->notify(new ClosureRemarkNotification($project, $project->closure_approved_message));
+            });
+        }
 
         return redirect()
             ->route('projects.approvalForm', ['project' => $project->id])
