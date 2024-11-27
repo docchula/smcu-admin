@@ -75,6 +75,8 @@ services:
       - LOG_CHANNEL=stderr
     env_file:
       - stack.env
+    healthcheck:
+      test: [ "CMD", "healthcheck-schedule" ]
     deploy:
       resources:
         limits:
@@ -95,6 +97,8 @@ services:
       - LOG_CHANNEL=stderr
     env_file:
       - stack.env
+    healthcheck:
+      test: [ "CMD", "healthcheck-queue" ]
     deploy:
       resources:
         limits:
@@ -111,6 +115,11 @@ services:
       - REDIS_PASSWORD=null
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
     deploy:
       resources:
         limits:
