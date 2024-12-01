@@ -8,13 +8,13 @@ use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectClosureController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SimpleHealthCheckController;
 use App\Http\Controllers\TranscriptController;
 use App\Http\Controllers\UserProfileController;
 use App\Models\Personnel;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
-use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
 
 /*
 |--------------------------------------------------------------------------
