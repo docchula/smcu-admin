@@ -1,3 +1,16 @@
+export interface Activity {
+    id: number;
+    name: string;
+    organization: string;
+    period_start: string;
+    period_end: string | null;
+    duration: number | null;
+    role: string;
+    description: string | null;
+    attachment: string | null;
+    participants: Array<{ name: string; student_id: string; nickname?: string; id?: string; }>;
+}
+
 export interface Document {
     id: number;
     created_at: string | null;
@@ -80,6 +93,20 @@ export interface ProjectParticipant {
     approve_status: number;
     // Relationship
     user: User;
+}
+
+export interface TranscriptItem {
+    identifier: string;
+    project_id?: number;
+    activity_id?: number;
+    name: string;
+    department: string;
+    period_start: string;
+    period_end: string | null;
+    duration: number | null;
+    role: string;
+    approve_status: number;
+    title: string | null;
 }
 
 export interface User {

@@ -1,7 +1,4 @@
-@php
-    /** @var \App\Models\User $user */
-$user->load('participants.project.department');
-@endphp
+@php    /** @var \App\Models\User $user */ @endphp
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">
 <style>
@@ -44,14 +41,14 @@ $user->load('participants.project.department');
         <th style="width: 4.5em">ระยะเวลา (ชม.)</th>
         <th style="width: 4em">บทบาท</th>
     </tr>
-    @foreach($user->participantAndProjects() as $participant)
+    @foreach($user->getActivityTranscript() as $item)
         <tr>
-            <td>{{ $participant->project->name }}</td>
-            <td>{{ $participant->project->department->name }}</td>
-            <td>{{ $participant->project->period_end->format('M Y') }}</td>
-            <td style="text-align: center">{{ $participant->project->duration }}</td>
+            <td>{{ $item['name'] }}</td>
+            <td>{{ $item['department'] }}</td>
+            <td>{{ str($item['period_end'])->explode(' ')->skip(1)->implode(' ') }}</td>
+            <td style="text-align: center">{{ $item['duration'] }}</td>
             <td style="text-align: center">
-                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$participant->type] ?? $participant->type }}
+                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$item['role']] ?? $item['role'] }}
             </td>
         </tr>
     @endforeach

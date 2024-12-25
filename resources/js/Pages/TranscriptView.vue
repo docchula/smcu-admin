@@ -25,7 +25,7 @@
                     </Link>
                 </div>
             </div>
-            <ActivityTranscriptTable :participants="user.participants" v-if="user && user.participants"
+            <ActivityTranscriptTable :transcript="transcript" v-if="user && transcript"
                                      class="overflow-hidden shadow sm:rounded-lg"/>
         </div>
     </app-layout>
@@ -45,6 +45,7 @@ import ActivityTranscriptTable from "@/Components/ActivityTranscriptTable.vue";
 const props = defineProps({
     keyword: String,
     user: Object,
+    transcript: Array,
     static_departments: Array,
 });
 const searchKeyword = ref(props.keyword ?? '');

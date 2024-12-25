@@ -15,7 +15,7 @@ class UserProfileController extends JetstreamUserProfileController {
         return Jetstream::inertia()->render($request, 'Profile/Show', [
             'confirmsTwoFactorAuthentication' => Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm'),
             'sessions' => $this->sessions($request)->all(),
-            'participants' => $request->user()->load(['participants', 'participants.project', 'participants.project.department'])->participants,
+            'transcript' => $request->user()->getActivityTranscript(),
         ]);
     }
 

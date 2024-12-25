@@ -10,9 +10,12 @@ class TranscriptController extends Controller {
     public function index(Request $request) {
         $this->authorize('faculty-action');
         $keyword = $request->input('search');
+        /** @var User $user */
+        $user = User::searchQuery($keyword)?->with(['participants', 'participants.project', 'participants.project.department'])->first();
 
         return Inertia::render('TranscriptView', [
-            'user' => User::searchQuery($keyword)?->with(['participants', 'participants.project', 'participants.project.department'])->first(),
+            'user' => $user,
+            'transcript' => $user?->getActivityTranscript(),
             'keyword' => $keyword,
         ]);
     }

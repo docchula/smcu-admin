@@ -2,9 +2,10 @@
     <div class="flex-auto" @paste="onPaste">
         <p v-if="modelValue" class="">
             <PaperClipIcon class="h-5 w-5 text-green-600 inline mr-1"/>
-            {{ modelValue.name }} ({{ modelValue.size / 1000 }} kB)
+            {{ modelValue.name }} ({{ Math.round(modelValue.size / 1000) }} kB)
             <XMarkIcon class="h-5 w-5 text-gray-500 cursor-pointer ml-4 inline" @click="emit('update:modelValue', null)"/>
         </p>
+        <p v-else-if="disabled">No attachment.</p>
         <div v-cloak v-else class="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
              @drop.prevent="dropFile"
              @dragover.prevent>
@@ -49,6 +50,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    }
 });
 const emit = defineEmits(['update:modelValue']);
 

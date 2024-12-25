@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'documents' => DocumentController::class,
         'projects' => ProjectController::class,
         'personnels' => PersonnelController::class,
+        'activities' => ActivityController::class,
     ]);
     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
     Route::get('documents/{document}/downloadApproved', [DocumentController::class, 'downloadApproved'])->name('documents.downloadApproved');

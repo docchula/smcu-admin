@@ -1,5 +1,5 @@
 <template>
-    <jet-action-section>
+    <ActionSection>
         <template #title>
             โครงการ
         </template>
@@ -13,24 +13,25 @@
 
         <template #content>
             <div class="max-w-xl text-sm text-gray-600">
-                คุณมีส่วนร่วมใน {{ participants.length }} โครงการ
+                คุณมีส่วนร่วมใน {{ transcript.length }} โครงการ
             </div>
 
-            <ActivityTranscriptTable v-if="participants && participants.length > 0" :participants="participants"
+            <ActivityTranscriptTable v-if="transcript && transcript.length > 0" :transcript="transcript"
                                      class="mt-4"/>
         </template>
-    </jet-action-section>
+    </ActionSection>
 </template>
 
-<script setup>
-import {Link} from '@inertiajs/vue3'
-import JetActionSection from '../../Jetstream/ActionSection.vue'
-import {PrinterIcon} from '@heroicons/vue/24/solid'
+<script setup lang="ts">
+import {Link} from '@inertiajs/vue3';
+import {PrinterIcon} from '@heroicons/vue/24/solid';
 import ActivityTranscriptTable from "@/Components/ActivityTranscriptTable.vue";
+import ActionSection from '@/Jetstream/ActionSection.vue';
+import {TranscriptItem} from '@/types';
 
 const props = defineProps({
-    participants: {
-        type: Array,
+    transcript: {
+        type: Array<TranscriptItem>,
         required: true,
     },
 });

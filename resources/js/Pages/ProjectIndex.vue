@@ -8,12 +8,57 @@
                     </h2>
                 </div>
                 <div class="flex-auto flex items-center justify-end gap-2">
-                    <Link v-if="is_faculty" :href="route('projects.approvalIndex')"
-                       class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    >
-                        <CheckBadgeIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
-                        อนุมัติ <span class="hidden sm:inline px-1">Activity </span> Transcript
-                    </Link>
+                    <Menu v-if="is_faculty" as="div" class="relative inline-block text-left z-10">
+                        <div>
+                            <MenuButton
+                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                            >
+                                สำหรับอาจารย์
+                            </MenuButton>
+                        </div>
+
+                        <transition
+                            enter-active-class="transition duration-100 ease-out"
+                            enter-from-class="transform scale-95 opacity-0"
+                            enter-to-class="transform scale-100 opacity-100"
+                            leave-active-class="transition duration-75 ease-in"
+                            leave-from-class="transform scale-100 opacity-100"
+                            leave-to-class="transform scale-95 opacity-0"
+                        >
+                            <MenuItems
+                                class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+                            >
+                                <Link :href="route('projects.approvalIndex')">
+                                    <MenuItem v-slot="{ active }">
+                                        <button
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                        >
+                                            <CheckBadgeIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
+                                            อนุมัติ <span class="hidden sm:inline px-1">Activity </span> Transcript
+                                        </button>
+                                    </MenuItem>
+                                </Link>
+                                <Link :href="route('transcript.index')">
+                                    <MenuItem v-slot="{ active }">
+                                        <button
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                        >
+                                            ดู Transcript ของนิสิต
+                                        </button>
+                                    </MenuItem>
+                                </Link>
+                                <Link :href="route('activities.index')">
+                                    <MenuItem v-slot="{ active }">
+                                        <button
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                        >
+                                            ประวัติกิจกรรมภายนอก
+                                        </button>
+                                    </MenuItem>
+                                </Link>
+                            </MenuItems>
+                        </transition>
+                    </Menu>
                     <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
@@ -42,7 +87,7 @@
                                         >
                                             <Bars4Icon
                                                 :active="active"
-                                                class="mr-2 h-5 w-5 text-yellow-500"
+                                                class="mr-2 h-5 w-5"
                                                 aria-hidden="true"
                                             />
                                             รายปี
@@ -56,7 +101,7 @@
                                         >
                                             <CalendarDaysIcon
                                                 :active="active"
-                                                class="mr-2 h-5 w-5 text-yellow-500"
+                                                class="mr-2 h-5 w-5"
                                                 aria-hidden="true"
                                             />
                                             ตารางวันที่
@@ -70,7 +115,7 @@
                                         >
                                             <CalculatorIcon
                                                 :active="active"
-                                                class="mr-2 h-5 w-5 text-yellow-500"
+                                                class="mr-2 h-5 w-5"
                                                 aria-hidden="true"
                                             />
                                             งบประมาณ

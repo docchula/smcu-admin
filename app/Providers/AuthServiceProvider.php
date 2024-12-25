@@ -50,5 +50,10 @@ class AuthServiceProvider extends ServiceProvider
                     AND $project->created_at->diffInMonths(now()) < 15 // Created in the last 15 months
                 );
         });
+        Gate::define('create-activity', function (User $user) {
+            $userRoles = explode(',', $user->roles);
+
+            return in_array('faculty', $userRoles) or in_array('activity', $userRoles);
+        });
     }
 }

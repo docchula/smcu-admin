@@ -9,7 +9,7 @@
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div>
-                    <my-projects :participants="participants"/>
+                    <my-projects :transcript="transcript"/>
 
                     <jet-section-border />
                 </div>
@@ -55,7 +55,7 @@ import UpdatePasswordForm from './UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue'
 
 export default {
-    props: ['sessions', 'participants'],
+    props: ['sessions', 'transcript'],
 
         components: {
             AppLayout,
