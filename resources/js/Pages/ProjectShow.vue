@@ -45,7 +45,8 @@
                     <template v-if="hasProjectClosure">
                         <p class="mt-2 font-bold text-blue-700">
                             <CheckIcon class="h-5 w-5 inline-block"/>
-                            ส่งข้อมูลเพื่อบันทึกลงใน Activity Transcript แล้ว กรุณาส่งเอกสารตามขั้นตอนต่อไป
+                            ส่งข้อมูลเพื่อบันทึกลงใน Activity Transcript แล้ว กรุณาส่งเอกสารตามขั้นตอนต่อไป<br/>
+                            (โครงการจะไม่ได้รับการพิจารณาบันทึก Activity Transcript จนกว่าเอกสารรายงานผลจะได้รับอนุมัติ)
                         </p>
                         <a :href="route('projects.generateSummaryDocument', {project: item.id})"
                            class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
