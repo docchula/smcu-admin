@@ -6,6 +6,8 @@ use App\Jobs\NotifyProjectVerifyJob;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
+use App\Notifications\ClosureApprovalNotification;
+use App\Notifications\ClosureRejectedNotification;
 use App\Notifications\ClosureRemarkNotification;
 use App\ProjectClosureStatus;
 use Illuminate\Http\Request;
@@ -217,6 +219,12 @@ class ProjectClosureController extends Controller {
             ->withProperties(['closure_approved_status' => $project->closure_approved_status])->log('บันทึกผลการอนุมัติรายงานผลโครงการ');
         $project->save();
         DB::commit();
+        // Notify project organizers (after commit)
+        if ($request->input('approve') == 'yes') {
+            ClosureApprovalNotification::notifyParticipants($project);
+        } else {
+            ClosureRejectedNotification::notifyParticipants($project);
+        }
 
         return redirect()
             ->route('projects.approvalForm', ['project' => $project->id])
