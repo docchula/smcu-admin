@@ -67,8 +67,8 @@ class Project extends Model {
     ];
     protected $hidden = ['user_id'];
 
-    public const SUMMARY_TIME_LIMIT = 30; // days
-    public const VERIFICATION_TIME_LIMIT = 60; // days
+    public const SUMMARY_TIME_LIMIT = 31; // days; plus one as the time should start from midnight after
+    public const VERIFICATION_TIME_LIMIT = 61; // days
 
     public function department(): BelongsTo {
         return $this->belongsTo(Department::class)->select('id', 'name');
