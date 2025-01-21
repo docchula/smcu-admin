@@ -14,7 +14,7 @@
                         <li><strong>type</strong> : เลือก {{ Object.keys(PROJECT_PARTICIPANT_ROLES).join('/') }} เท่านั้น
                             ({{ Object.values(PROJECT_PARTICIPANT_ROLES).join('/') }})
                         </li>
-                        <li><strong>title</strong> : ตำแหน่งงาน (ไม่จำเป็นต้องใส่) เช่น ประธานโครงการ หัวหน้าฝ่ายสถานที่</li>
+                        <li><strong>title</strong> : ตำแหน่งงาน (ไม่จำเป็นต้องใส่; จำกัด 100 ตัวอักษร) เช่น ประธานโครงการ หัวหน้าฝ่ายสถานที่</li>
                     </ul>
                 </li>
                 <li>

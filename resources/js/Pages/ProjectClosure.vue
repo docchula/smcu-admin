@@ -450,7 +450,7 @@ const organizerCountCompliance = computed(() => {
 });
 const staffCountCompliance = computed(() => {
     if (!participantsGrouped.value || !participantsGrouped.value['staff']) return true;
-    return participantsGrouped.value['staff'].length <= 0.66667 * ((participantsGrouped.value['attendee'] && participantsGrouped.value['attendee'].length > 0) ? props.item.participants.length : (props.item.participants.length + Number(props.item.estimated_attendees)));
+    return participantsGrouped.value['staff'].length <= 0.66667 * (props.item.estimated_attendees ? Number(props.item.estimated_attendees) : props.item.participants.length);
 });
 
 // Methods
