@@ -444,13 +444,26 @@ class ProjectController extends Controller {
         ]);
 
         // Set participant list
-        $template->cloneRowAndSetValues('ptcp_no', $project->participants->map(fn(ProjectParticipant $participant, int $i) => [
-            'ptcp_no' => $i + 1,
-            'ptcp_name' => $participant->user->name,
-            'ptcp_id' => $participant->user->student_id,
-            'ptcp_type' => ProjectParticipant::TYPES_OPTIONS[$participant->type] ?? $participant->type,
-            'ptcp_title' => $participant->title ?? '-',
-        ])->toArray());
+        if ($project->participants->count() <= 700) {
+            $template->cloneRowAndSetValues('ptcp_no', $project->participants->map(fn(ProjectParticipant $participant, int $i) => [
+                'ptcp_no' => $i + 1,
+                'ptcp_name' => $participant->user->name,
+                'ptcp_id' => $participant->user->student_id,
+                'ptcp_type' => ProjectParticipant::TYPES_OPTIONS[$participant->type] ?? $participant->type,
+                'ptcp_title' => $participant->title ?? '-',
+            ])->toArray());
+        } else {
+            // Too many participants
+            $template->cloneRowAndSetValues('ptcp_no', [
+                [
+                    'ptcp_no' => '',
+                    'ptcp_name' => 'แนบรายชื่อผู้รับผิดชอบแทนหน้านี้',
+                    'ptcp_id' => 'จากเมนู "พิมพ์" ที่ส่วน "นิสิตผู้เกี่ยวข้อง" ในหน้าข้อมูลโครงการ',
+                    'ptcp_type' => '',
+                    'ptcp_title' => '',
+                ],
+            ]);
+        }
 
         $tmpPath = tempnam(storage_path(), 'tmp-projectsummary-');
         $template->saveAs($tmpPath);
@@ -570,6 +583,10 @@ class ProjectController extends Controller {
             }
             if (empty($row['type']) or !in_array($row['type'], ['organizer', 'staff', 'attendee'])) {
                 $messages [] = 'ERROR: type ไม่ถูกต้อง';
+                break;
+            }
+            if (!empty($row['title']) and strlen($row['title']) > 100) {
+                $messages [] = 'ERROR: title ยาวเกินไป';
                 break;
             }
             if (!$student = User::where('email', $row['student_id'])->orWhere('student_id', $row['student_id'])->first()) {
