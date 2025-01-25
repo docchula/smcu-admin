@@ -212,7 +212,9 @@ class Project extends Model {
                     return ProjectClosureStatus::REJECTED;
                 case -2:
                     if ($this->closure_approved_at?->isAfter($this->closure_submitted_at)) {
-                        return ProjectClosureStatus::REJECTED_AND_RESUBMIT;
+                        return ($this->closure_approved_at->diffInDays() > self::SUMMARY_TIME_LIMIT)
+                            ? ProjectClosureStatus::REJECTED_RESUBMIT_EXPIRED
+                            : ProjectClosureStatus::REJECTED_AND_RESUBMIT;
                     }
             }
             // Count participants who have verified
@@ -221,7 +223,11 @@ class Project extends Model {
             $isOrganizerCountMet = $organizers->whereIn('verify_status', [-1, 1])->count() == $organizers->count();
             $isStaffCountMet = $staff->whereIn('verify_status', [-1, 1])->count() >= ($staff->count() / 2);
             if ($isOrganizerCountMet and $isStaffCountMet) {
-                return ProjectClosureStatus::REVIEWING;
+                return ($this->relationLoaded('summaryDocument') ? $this->summaryDocument : $this->summaryDocument()->exists())
+                    ? ProjectClosureStatus::REVIEWING
+                    : ProjectClosureStatus::REVIEWING_NO_CLOSURE_DOC;
+            } elseif (!$this->isInVerifyPeriod()) {
+                return ProjectClosureStatus::SUBMITTED_NO_VERIFICATION;
             }
 
             return ProjectClosureStatus::SUBMITTED;
@@ -232,10 +238,16 @@ class Project extends Model {
 
     public function canVerify(): bool {
         return in_array($this->getClosureStatus(),
-                [ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REJECTED_AND_RESUBMIT])
-            and (($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT)
-                or ($this->year == 2567 and now()->isBefore('2024-12-01'))
-                or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT)
-            );
+                [
+                    ProjectClosureStatus::SUBMITTED, ProjectClosureStatus::REVIEWING, ProjectClosureStatus::REVIEWING_NO_CLOSURE_DOC,
+                    ProjectClosureStatus::REJECTED_AND_RESUBMIT,
+                ])
+            and $this->isInVerifyPeriod();
+    }
+
+    protected function isInVerifyPeriod(): bool {
+        return ($this->period_end->diffInDays() <= self::VERIFICATION_TIME_LIMIT)
+            or ($this->year == 2567 and now()->isBefore('2024-12-01'))
+            or ($this->closure_approved_status == -2 and $this->closure_approved_at->diffInDays() <= self::SUMMARY_TIME_LIMIT);
     }
 }

@@ -20,6 +20,7 @@ use Spatie\Activitylog\Models\Activity;
 class ProjectClosureController extends Controller {
     public function closureForm(Project $project): Response {
         $this->authorize('update-project', $project);
+        abort_if($project->getClosureStatus() == ProjectClosureStatus::REJECTED_RESUBMIT_EXPIRED, 403, 'Resubmit time limit expired');
         abort_unless(in_array($project->getClosureStatus(), [ProjectClosureStatus::NOT_SUBMITTED, ProjectClosureStatus::REJECTED_AND_RESUBMIT])
             , 403, 'Closure already submitted');
 
@@ -156,10 +157,11 @@ class ProjectClosureController extends Controller {
     public function approvalIndex(Request $request) {
         $this->authorize('faculty-action');
         $keyword = $request->input('search');
-        $sortOrder = [5 => 0, 1 => 1, -2 => 2, -1 => 3, 10 => 4, 0 => 5];
+        $sortOrder = [5 => 0, 6 => 1, 1 => 2, -2 => 3, -1 => 4, 10 => 5, 3 => 6, -3 => 7, 0 => 8];
 
         return Inertia::render('ProjectApprovalIndex', [
             'list' => Project::searchQuery($keyword)->with('participants')
+                ->withCount('participants') // to get participants_count
                 ->addSelect(['closure_submitted_at', 'closure_approved_at', 'closure_approved_status', 'closure_approved_message'])
                 ->whereNotNull('closure_submitted_at')
                 ->orderByDesc('closure_submitted_at')->limit(500)->get()
