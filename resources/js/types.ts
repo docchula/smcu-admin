@@ -8,7 +8,16 @@ export interface Activity {
     role: string;
     description: string | null;
     attachment: string | null;
-    participants: Array<{ name: string; student_id: string; nickname?: string; id?: string; }>;
+}
+
+
+export interface ActivityParticipant {
+    name: string;
+    student_id: string;
+    nickname?: string;
+    id?: string;
+    type: string;
+    title: string | null;
 }
 
 export interface Document {

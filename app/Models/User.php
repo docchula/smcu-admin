@@ -93,12 +93,9 @@ class User extends Authenticatable {
      */
     public function participantAndProjects(): Collection
     {
-        $this->load([
-            'participants',
-            'participants.project', 'participants.project.approvalDocument', 'participants.project.summaryDocument',
-        ]);
-
-        return $this->participants->whereNotNull('project.approvalDocument')->sortByDesc('id')->values();
+        return $this->participants()->where('project_type', 'App\Models\Project')->with([
+            'project', 'project.approvalDocument', 'project.summaryDocument',
+        ])->orderByDesc('id')->get()->filter(fn(ProjectParticipant $participant) => $participant->project->approvalDocument)->values();
     }
 
     public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany {
@@ -111,33 +108,34 @@ class User extends Authenticatable {
      */
     public function getActivityTranscript() {
         if (!$this->relationLoaded('participants')) {
-            $this->load(['participants', 'participants.project', 'participants.project.department']);
+            $this->load(['participants', 'participants.project']);
+            $this->participants->where('project_type', 'App\Models\Project')->load('project.department');
         }
-        $myParticipants = $this->participants->map(fn($participant): array => [
-            'identifier' => $participant->project->year.'-'.$participant->project->number,
-            'project_id' => $participant->project->id,
-            'name' => $participant->project->name,
-            'department' => $participant->project->department->name,
-            'period_start' => $participant->project->period_start?->format('j M Y'),
-            'period_end' => $participant->project->period_end?->format('j M Y'),
-            'duration' => $participant->project->duration,
-            'role' => $participant->type,
-            'approve_status' => $participant->approve_status,
-            'title' => $participant->title,
-        ]);
-
-        // Merge activities onto projects
-        $myParticipants->push(...Activity::whereJsonContains('participants', $this->id)->get()->map(fn($activity) => [
-            'identifier' => 'A'.$activity->id,
-            'activity_id' => $activity->id,
-            'name' => $activity->name,
-            'department' => $activity->organization,
-            'period_start' => $activity->period_start?->format('j M Y'),
-            'period_end' => $activity->period_end?->format('j M Y'),
-            'duration' => $activity->duration,
-            'role' => $activity->role,
-            'approve_status' => 1,
-        ]));
+        $myParticipants = $this->participants->map(function ($participant): array {
+            return ($participant->project_type == 'App\Models\Project') ? [
+                'identifier' => $participant->project->year.'-'.$participant->project->number,
+                'project_id' => $participant->project->id,
+                'name' => $participant->project->name,
+                'department' => $participant->project->department?->name ?? '',
+                'period_start' => $participant->project->period_start?->format('j M Y'),
+                'period_end' => $participant->project->period_end?->format('j M Y'),
+                'duration' => $participant->project->duration,
+                'role' => $participant->type,
+                'approve_status' => $participant->approve_status,
+                'title' => $participant->title,
+            ] : [
+                'identifier' => 'A'.$participant->project->id,
+                'activity_id' => $participant->project->id,
+                'name' => $participant->project->name,
+                'department' => $participant->project->organization,
+                'period_start' => $participant->project->period_start?->format('j M Y'),
+                'period_end' => $participant->project->period_end?->format('j M Y'),
+                'duration' => $participant->project->duration,
+                'role' => $participant->type,
+                'approve_status' => 1,
+                'title' => $participant->title,
+            ];
+        });
 
 
         return $myParticipants->sortBy('period_start')->values();

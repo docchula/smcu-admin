@@ -27,9 +27,6 @@
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                             ระยะเวลา (ชม.)
                         </th>
-                        <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                            บทบาท
-                        </th>
                         <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
                             <UserIcon class="h-4 w-4 inline-block"/>
                         </th>
@@ -53,11 +50,8 @@
                         <td class="px-2 py-2 md:px-4 text-sm">
                             {{ item.duration }}
                         </td>
-                        <td class="px-2 py-2 md:px-4 text-sm">
-                            {{ PROJECT_PARTICIPANT_ROLES[item.role] ?? item.role }}
-                        </td>
                         <td class="px-2 py-2 md:px-4 text-right text-sm font-medium hidden md:table-cell">
-                            {{ item.participants.length }}
+                            {{ item.participants_count }}
                         </td>
                     </tr>
                     </tbody>
@@ -83,7 +77,6 @@ import {PlusIcon, UserIcon} from '@heroicons/vue/20/solid';
 import {ref, watch} from 'vue';
 import {debounce} from 'lodash';
 import {Activity} from '@/types';
-import {PROJECT_PARTICIPANT_ROLES} from '@/static';
 
 // Props
 const props = defineProps<{

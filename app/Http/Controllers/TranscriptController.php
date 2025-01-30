@@ -11,7 +11,8 @@ class TranscriptController extends Controller {
         $this->authorize('faculty-action');
         $keyword = $request->input('search');
         /** @var User $user */
-        $user = User::searchQuery($keyword)?->with(['participants', 'participants.project', 'participants.project.department'])->first();
+        $user = User::searchQuery($keyword)?->with(['participants', 'participants.project'])->first();
+        $user?->participants->where('project_type', 'App\Models\Project')->load('project.department');
 
         return Inertia::render('TranscriptView', [
             'user' => $user,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper;
+use App\Models\Activity;
 use App\Models\Department;
 use App\Models\Project;
 use App\Models\ProjectParticipant;
@@ -564,14 +565,22 @@ class ProjectController extends Controller {
         return back()->with('flash.banner', 'แก้ไข '.$participant->user->name.' แล้ว')->with('flash.bannerStyle', 'success');
     }
 
-    public function importParticipantUpload(Request $request, Project $project) {
-        $this->validate($request, [
-            'import' => 'required|file|mimes:csv,xlsx,xls'
-        ]);
-        $this->authorize('update-project', $project);
-        if ($project->hasSubmittedClosure()) {
-            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+    public function importParticipantUpload(Request $request) {
+        if ($request->filled('project')) {
+            $project = Project::findOrFail($request->input('project'));
+            $this->authorize('update-project', $project);
+            if ($project->hasSubmittedClosure()) {
+                return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+            }
+        } elseif ($request->filled('activity')) {
+            $this->authorize('faculty-action');
+            $project = Activity::findOrFail($request->input('activity'));
+        } else {
+            abort(400, 'Missing argument');
         }
+        $this->validate($request, [
+            'import' => 'required|file|mimes:csv,xlsx,xls',
+        ]);
         $uploadedFile = $request->file('import');
         $import = SimpleExcelReader::create($uploadedFile->path(), $uploadedFile->clientExtension())->getRows();
         $toAdd = collect();
@@ -657,9 +666,17 @@ class ProjectController extends Controller {
     }
 
     public function importParticipantCommit(Request $request, Project $project) {
-        $this->authorize('update-project', $project);
-        if ($project->hasSubmittedClosure()) {
-            return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+        if ($request->filled('project')) {
+            $project = Project::findOrFail($request->input('project'));
+            $this->authorize('update-project', $project);
+            if ($project->hasSubmittedClosure()) {
+                return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
+            }
+        } elseif ($request->filled('activity')) {
+            $this->authorize('faculty-action');
+            $project = Activity::findOrFail($request->input('activity'));
+        } else {
+            abort(400, 'Missing argument');
         }
         try {
             $toAdd = Crypt::decrypt($request->input('import'));

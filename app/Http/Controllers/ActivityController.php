@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\ProjectParticipant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -16,19 +18,19 @@ class ActivityController extends Controller {
         $keyword = $request->input('search');
 
         return Inertia::render('ActivityIndex', [
-            'list' => Activity::searchQuery($keyword)->paginate(50)->withQueryString(),
+            'list' => Activity::searchQuery($keyword)->withCount('participants')->paginate(50)->withQueryString(),
             'keyword' => $keyword,
         ]);
     }
 
-    public function create(Request $request): Response {
-        return $this->edit($request, new Activity());
+    public function create(): Response {
+        return $this->edit(new Activity());
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Activity $activity): Response {
+    public function edit(Activity $activity): Response {
         return $this->renderCreateView($activity, false);
     }
 
@@ -39,16 +41,21 @@ class ActivityController extends Controller {
     protected function renderCreateView(Activity $activity, bool $isViewOnly): Response {
         $this->authorize('create-activity');
         if ($activity->participants) {
-            $participantUsers = User::whereIn('id', $activity->participants)->get()->keyBy('id');
-            $activity->participants = $activity->participants->map(function (string $p) use ($participantUsers) {
-                $user = $participantUsers->get($p);
-
-                return $user ? ['name' => $user->name, 'student_id' => $user->student_id, 'id' => $user->id] : null;
-            })->filter();
+            $activity->load('participants.user');
+            $activity->participants = $activity->participants->map(fn(ProjectParticipant $participant) => [
+                ...$participant->toArray(), 'name' => $participant->user->name, 'student_id' => $participant->user->student_id,
+            ]);
         }
 
+        // Convert to array
+        $activityAttr = $activity->makeHidden('participants')->toArray();
+        $activityAttr['attachment_path'] = !empty($activityAttr['attachment_path']);
+        $activityAttr['period_start'] = $activity->period_start?->format('Y-m-d');
+        $activityAttr['period_end'] = $activity->period_end?->format('Y-m-d');
+
         return Inertia::render('ActivityCreate', [
-            'item' => $activity,
+            'item' => $activityAttr,
+            'participants' => $activity->participants ?? [],
             'view_only' => $isViewOnly,
         ]);
     }
@@ -73,22 +80,14 @@ class ActivityController extends Controller {
             'period_start' => 'required|date',
             'period_end' => 'required|date',
             'duration' => 'required|numeric|max:999|min:1',
-            'role' => 'required|filled|string|in:organizer,staff,attendee',
             'description' => 'nullable|string|max:4000',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20 MB
-            'participants' => 'required|array',
+            'participants' => 'nullable|array',
             'participants.*.student_id' => 'required|numeric',
+            'participants.*.type' => 'required|string|in:organizer,staff,attendee',
+            'participants.*.title' => 'nullable|string|max:100',
         ]);
         $activity->fill($request->all());
-
-        // Save participants as user IDs
-        $participantIds = collect($request->input('participants'))->map(function ($participant) {
-            return $participant['student_id'];
-        });
-        $participantUsers = User::whereIn('student_id', $participantIds)->get();
-        $activity->participants = $participantUsers->map(function ($user) {
-            return $user->id;
-        });
 
         if ($request->hasFile('attachment')) {
             $uploadedFile = $request->file('attachment');
@@ -103,12 +102,55 @@ class ActivityController extends Controller {
         }
         $activity->saveOrFail();
 
+        // Save participants
+        $existingParticipants = $activity->participants ?? new Collection();
+        if ($request->filled('participants')) {
+            $inputParticipants = new Collection($request->input('participants', []));
+            $newParticipants = new Collection();
+            $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])
+                ->get();
+            foreach ($inputParticipants as $student) {
+                // Add / edit existing
+                $user = $users->where('student_id', $student['student_id'])->first();
+                /** @var \App\Models\ProjectParticipant|null $participant */
+                if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
+                    // Existing
+                    $participant->type = $student['type'];
+                    $participant->title = $student['title'] ?? '';
+                    $participant->save();
+                } else {
+                    $newParticipants->push(['user_id' => $user->id, 'type' => $student['type'], 'title' => $student['title'] ?? '']);
+                }
+            }
+            if ($newParticipants->isNotEmpty()) {
+                $activity->participants()->createMany($newParticipants);
+            }
+            // Delete unused existing
+            $deleteParticipantIds = $existingParticipants->whereNotIn('user_id',
+                $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id'))->pluck('id');
+            if ($deleteParticipantIds->isNotEmpty()) {
+                $activity->participants()->whereIn('id', $deleteParticipantIds)->delete();
+            }
+        } elseif ($existingParticipants->isNotEmpty()) {
+            $activity->participants()->delete();
+        }
+
         activity()->causedBy($request->user())->performedOn($activity)
             ->event('update_activity');
 
         return redirect()
             ->route('activities.show', ['activity' => $activity->id])
-            ->with('flash.banner', "บันทึกประวัติกิจกรรม เลขที่ {$activity->id} แล้ว")
+            ->with('flash.banner', "บันทึกประวัติกิจกรรม เลขที่ $activity->id แล้ว")
             ->with('flash.bannerStyle', 'success');
+    }
+
+    public function downloadAttachment(Activity $activity): \Symfony\Component\HttpFoundation\StreamedResponse {
+        $this->authorize('faculty-action');
+        abort_if(empty($activity->attachment_path) or Storage::missing($activity->attachment_path), 404);
+
+        return Storage::download(
+            $activity->attachment_path,
+            'Activity '.$activity->id.' Attachment.'.Str::after($activity->attachment_path, '.')
+        );
     }
 }

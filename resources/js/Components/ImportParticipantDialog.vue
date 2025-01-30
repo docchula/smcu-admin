@@ -88,7 +88,14 @@ import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 
 const props = defineProps({
     'showModal': Boolean,
-    'project': Object,
+    'project': {
+        type: Object,
+        required: false,
+    },
+    'activity': {
+        type: Object,
+        required: false,
+    },
 });
 const emit = defineEmits(['close']);
 const importData = ref({preview: null, import: null, messages: []});
@@ -97,7 +104,7 @@ let uploading = ref(false);
 const uploadFile = (file) => {
     uploading.value = true;
     importData.value = {preview: null, import: null, messages: []};
-    axios.postForm(route('projects.importParticipantUpload', {project: props.project.id}), {
+    axios.postForm(route('projects.importParticipantUpload', {project: props.project?.id, activity: props.activity?.id}), {
         import: file
     }).then((response) => {
         uploading.value = false;
@@ -105,7 +112,17 @@ const uploadFile = (file) => {
     })
 };
 const importCommit = () => {
-    router.post(route('projects.importParticipantCommit', {project: props.project.id}), {import: importData.value.import}, {onSuccess: () => emit('close')});
+    router.post(route('projects.importParticipantCommit', {
+        project: props.project?.id,
+        activity: props.activity?.id
+    }), {import: importData.value.import}, {
+        onSuccess: () => {
+            if (props.activity) {
+                router.get(route('activities.show', {activity: props.activity.id}));
+            }
+            emit('close');
+        }
+    });
 };
 </script>
 

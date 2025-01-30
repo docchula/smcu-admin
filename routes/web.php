@@ -83,14 +83,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');
     Route::get('projects/search/{keyword}', [ProjectController::class, 'search'])->name('projects.search');
     Route::post('projects/{project}/addParticipant', [ProjectController::class, 'addParticipant'])->name('projects.addParticipant');
-    Route::post('projects/{project}/importParticipantUpload', [ProjectController::class, 'importParticipantUpload'])->name('projects.importParticipantUpload');
-    Route::post('projects/{project}/importParticipantCommit', [ProjectController::class, 'importParticipantCommit'])->name('projects.importParticipantCommit');
+    Route::post('projects/importParticipantUpload', [ProjectController::class, 'importParticipantUpload'])->name('projects.importParticipantUpload');
+    Route::post('projects/importParticipantCommit', [ProjectController::class, 'importParticipantCommit'])->name('projects.importParticipantCommit');
     Route::post('projects/removeParticipant/{participant}', [ProjectController::class, 'removeParticipant'])->name('projects.removeParticipant');
     Route::post('projects/editParticipant/{participant}', [ProjectController::class, 'editParticipant'])->name('projects.editParticipant');
     Route::get('projects/{project}/exportParticipant', [ProjectController::class, 'exportParticipant'])->name('projects.exportParticipant');
     Route::get('search-participants', [ProjectController::class, 'searchNewParticipant'])->name('projects.searchNewParticipant');
     Route::get('search-student', [PersonnelController::class, 'searchStudent'])->name('personnels.searchStudent');
     Route::get('advisor-list', [ProjectController::class, 'advisorList'])->name('advisor-list');
+
+    Route::get('activities/{activity}/download', [ActivityController::class, 'downloadAttachment'])->name('activities.download');
 
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
     Route::get('/user/profile/printMyProjects', [UserProfileController::class, 'printMyProjects'])->name('profile.printMyProjects');

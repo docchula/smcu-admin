@@ -94,8 +94,8 @@ class Project extends Model {
         });
     }
 
-    public function participants(): HasMany {
-        return $this->hasMany(ProjectParticipant::class);
+    public function participants(): MorphMany {
+        return $this->morphMany(ProjectParticipant::class, 'project');
     }
 
     public function user(): BelongsTo {
