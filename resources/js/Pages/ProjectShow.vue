@@ -217,7 +217,7 @@
                         <div class="px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">เป้าหมาย และวิธีการประเมิน</dt>
                             <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                                <ol v-if="item.objectives.length" class="list-decimal">
+                                <ol v-if="item.objectives.length" class="list-decimal list-inside md:list-outside">
                                     <li v-for="objective in item.objectives">
                                         <u>เป้าหมาย</u>&nbsp;{{ objective.goal }}<br/>
                                         <u>วิธีการประเมิน</u>&nbsp;{{ objective.method }}
@@ -387,7 +387,7 @@
                                           @click="showStudentIdDialog = type"/>
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <ol class="list-decimal" v-if="participantsGrouped[type]">
+                                <ol class="list-decimal list-inside md:list-outside" v-if="participantsGrouped[type]">
                                     <li v-for="e in participantsGrouped[type]">
                                         {{ e.user?.name }}
                                         <span v-if="e.user?.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user?.student_id }}</span>
