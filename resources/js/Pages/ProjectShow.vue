@@ -100,14 +100,20 @@
                         หมายเหตุ : <span class="text-blue-700">{{ item.closure_approved_message }}</span>
                     </p>
                     <p v-if="item.closure_status === -2" class="mt-1 text-gray-500">
-                        ให้
-                        <inertia-link :href="route('projects.closureForm', {project: item.id})"
-                                      class="text-green-600">
-                            แก้ไขรายละเอียดแล้วส่งใหม่
-                        </inertia-link>
-                        หรือ
-                        <a class="text-red-500 cursor-pointer" @click="showCancelDialog = true">ยกเลิกการส่งเพื่อแก้ไขรายชื่อผู้เกี่ยวข้อง</a>แล้วส่งใหม่
-                        ภายใน 30 วัน จากวันที่ได้รับการพิจารณาให้ไปแก้ไข
+                        <template v-if="item.can['update-project']">
+                            ให้
+                            <inertia-link :href="route('projects.closureForm', {project: item.id})"
+                                          class="text-green-600">
+                                แก้ไขรายละเอียดแล้วส่งใหม่
+                            </inertia-link>
+                            หรือ
+                            <a class="text-red-500 cursor-pointer" @click="showCancelDialog = true">ยกเลิกการส่งเพื่อแก้ไขรายชื่อผู้เกี่ยวข้อง</a>แล้วส่งใหม่
+                            ภายใน 30 วัน จากวันที่ได้รับการพิจารณาให้ไปแก้ไข
+                        </template>
+                        <template v-else>
+                            ให้นิสิตผู้รับผิดชอบโครงการแก้ไขรายละเอียดแล้วส่งใหม่ หรือยกเลิกการส่งเพื่อแก้ไขรายชื่อผู้เกี่ยวข้องแล้วส่งใหม่
+                            ภายใน 30 วัน จากวันที่ได้รับการพิจารณาให้ไปแก้ไข
+                        </template>
                     </p>
                 </div>
             </div>
