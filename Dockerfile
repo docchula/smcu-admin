@@ -19,7 +19,8 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 # corepack is an experimental feature in Node.js v20 which allows
 # installing and managing versions of pnpm, npm, yarn
-RUN corepack enable
+RUN npm install -g corepack@latest
+RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=base ${APP_BASE_DIR} /app
 WORKDIR /app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
