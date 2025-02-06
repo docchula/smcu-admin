@@ -48,6 +48,7 @@ class ProjectController extends Controller {
             'keyword' => $keyword,
             'is_admin' => $request->user()->can('admin-action'),
             'is_faculty' => $request->user()->can('faculty-action'),
+            'can_view_transcript' => $request->user()->can('view-transcript'),
         ]);
     }
 

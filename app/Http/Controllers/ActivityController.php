@@ -11,35 +11,40 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ActivityController extends Controller {
     public function index(Request $request) {
-        $this->authorize('create-activity');
+        $this->authorize('view-transcript');
         $keyword = $request->input('search');
 
         return Inertia::render('ActivityIndex', [
             'list' => Activity::searchQuery($keyword)->withCount('participants')->paginate(50)->withQueryString(),
             'keyword' => $keyword,
+            'can_create' => $request->user()->can('create-activity'),
         ]);
     }
 
-    public function create(): Response {
-        return $this->edit(new Activity());
+    public function create(Request $request): Response {
+        return $this->edit($request, new Activity());
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Activity $activity): Response {
-        return $this->renderCreateView($activity, false);
-    }
-
-    public function show(Activity $activity): Response {
-        return $this->renderCreateView($activity, true);
-    }
-
-    protected function renderCreateView(Activity $activity, bool $isViewOnly): Response {
+    public function edit(Request $request, Activity $activity): Response {
         $this->authorize('create-activity');
+
+        return $this->renderCreateView($request, $activity, false);
+    }
+
+    public function show(Request $request, Activity $activity): Response {
+        $this->authorize('view-transcript');
+
+        return $this->renderCreateView($request, $activity, true);
+    }
+
+    protected function renderCreateView(Request $request, Activity $activity, bool $isViewOnly): Response {
         if ($activity->participants) {
             $activity->load('participants.user');
             $activity->participants = $activity->participants->map(fn(ProjectParticipant $participant) => [
@@ -57,6 +62,7 @@ class ActivityController extends Controller {
             'item' => $activityAttr,
             'participants' => $activity->participants ?? [],
             'view_only' => $isViewOnly,
+            'can_edit' => $request->user()->can('create-activity'),
         ]);
     }
 
@@ -144,7 +150,7 @@ class ActivityController extends Controller {
             ->with('flash.bannerStyle', 'success');
     }
 
-    public function downloadAttachment(Activity $activity): \Symfony\Component\HttpFoundation\StreamedResponse {
+    public function downloadAttachment(Activity $activity): StreamedResponse {
         $this->authorize('faculty-action');
         abort_if(empty($activity->attachment_path) or Storage::missing($activity->attachment_path), 404);
 

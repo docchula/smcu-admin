@@ -55,5 +55,8 @@ class AuthServiceProvider extends ServiceProvider
 
             return in_array('faculty', $userRoles) or in_array('activity', $userRoles);
         });
+        Gate::define('view-transcript', function (User $user) {
+            return in_array('view_transcript', explode(',', $user->roles)) or $user->can('create-activity');
+        });
     }
 }

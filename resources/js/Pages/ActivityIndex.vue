@@ -58,7 +58,7 @@
                 </table>
                 <pagination class="mt-6" :links="list.links"/>
             </div>
-            <Link :href="route('activities.create')">
+            <Link v-if="can_create" :href="route('activities.create')">
                 <button
                     class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
                     <PlusIcon class="w-6 h-6 inline-block text-white"/>
@@ -82,6 +82,7 @@ import {Activity} from '@/types';
 const props = defineProps<{
     keyword: String,
     list: { data: Activity[], links: object[] },
+    can_create: boolean,
 }>();
 // Data
 const searchKeyword = ref(props.keyword ?? '');

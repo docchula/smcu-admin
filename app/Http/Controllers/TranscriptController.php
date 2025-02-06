@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 class TranscriptController extends Controller {
     public function index(Request $request) {
-        $this->authorize('faculty-action');
+        $this->authorize('view-transcript');
         $keyword = $request->input('search');
         /** @var User $user */
         $user = User::searchQuery($keyword)?->with(['participants', 'participants.project'])->first();
@@ -22,7 +22,7 @@ class TranscriptController extends Controller {
     }
 
     public function print(User $user) {
-        $this->authorize('faculty-action');
+        $this->authorize('view-transcript');
 
         return view('my-projects', ['user' => $user]);
         // return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user])->output())]);

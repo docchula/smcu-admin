@@ -186,7 +186,7 @@
                 </FormSection>
             </template>
         </div>
-        <Link :href="route('activities.edit', {activity: item.id})" v-if="view_only">
+        <Link :href="route('activities.edit', {activity: item.id})" v-if="view_only && can_edit">
             <button
                 class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
                 <PencilIcon class="w-6 h-6 inline-block text-white"/>
@@ -216,7 +216,7 @@ import {Link, useForm} from '@inertiajs/vue3';
 import {ref} from 'vue';
 import {ArrowUpTrayIcon, PencilIcon} from '@heroicons/vue/20/solid';
 
-const props = defineProps<{ item: Activity, view_only: boolean, participants: ActivityParticipant[] }>();
+const props = defineProps<{ item: Activity, view_only: boolean, participants: ActivityParticipant[], can_edit: boolean }>();
 const form = useForm({
     _method: props.item.id ? 'PUT' : 'POST',
     name: props.item.name ?? "",
