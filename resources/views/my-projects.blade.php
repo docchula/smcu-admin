@@ -41,7 +41,7 @@
         <th style="width: 4.5em">ระยะเวลา (ชม.)</th>
         <th style="width: 4em">บทบาท</th>
     </tr>
-    @foreach($user->getActivityTranscript() as $item)
+    @foreach($user->getActivityTranscript()->filter(fn($item) => $item['approve_status'] >= 1) as $item)
         <tr>
             <td>{{ $item['name'] }}</td>
             <td>{{ $item['department'] }}</td>

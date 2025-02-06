@@ -111,7 +111,8 @@ class User extends Authenticatable {
             $this->load(['participants', 'participants.project']);
             $this->participants->where('project_type', 'App\Models\Project')->load('project.department');
         }
-        $myParticipants = $this->participants->map(function ($participant): array {
+        $myParticipants = $this->participants->sortBy('project.period_start')
+            ->map(function ($participant): array {
             return ($participant->project_type == 'App\Models\Project') ? [
                 'identifier' => $participant->project->year.'-'.$participant->project->number,
                 'project_id' => $participant->project->id,
@@ -137,8 +138,7 @@ class User extends Authenticatable {
             ];
         });
 
-
-        return $myParticipants->sortBy('period_start')->values();
+        return $myParticipants->sortByDesc('approve_status')->values();
     }
 
     public static function searchQuery(string $keyword = null): ?Builder {

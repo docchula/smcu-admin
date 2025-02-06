@@ -151,7 +151,7 @@ class ActivityController extends Controller {
     }
 
     public function downloadAttachment(Activity $activity): StreamedResponse {
-        $this->authorize('faculty-action');
+        $this->authorize('view-transcript');
         abort_if(empty($activity->attachment_path) or Storage::missing($activity->attachment_path), 404);
 
         return Storage::download(
