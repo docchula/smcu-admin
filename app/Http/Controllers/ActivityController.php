@@ -90,7 +90,7 @@ class ActivityController extends Controller {
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20 MB
             'participants' => 'nullable|array',
             'participants.*.student_id' => 'required|numeric',
-            'participants.*.type' => 'required|string|in:organizer,staff,attendee',
+            'participants.*.type' => 'nullable|string|in:organizer,staff,attendee',
             'participants.*.title' => 'nullable|string|max:100',
         ]);
         $activity->fill($request->all());

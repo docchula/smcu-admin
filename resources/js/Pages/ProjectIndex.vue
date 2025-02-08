@@ -28,7 +28,7 @@
                             <MenuItems
                                 class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
                             >
-                                <Link v-if="is_admin" :href="route('projects.approvalIndex')">
+                                <Link v-if="is_faculty" :href="route('projects.approvalIndex')">
                                     <MenuItem v-slot="{ active }">
                                         <button
                                             :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"

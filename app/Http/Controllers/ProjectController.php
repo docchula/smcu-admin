@@ -591,12 +591,15 @@ class ProjectController extends Controller {
                 $messages [] = 'ERROR: student_id ไม่ถูกต้อง';
                 break;
             }
-            if (empty($row['type']) or !in_array($row['type'], ['organizer', 'staff', 'attendee'])) {
+            if ($request->filled('project') and (empty($row['type']) or !in_array($row['type'], ['organizer', 'staff', 'attendee']))) {
                 $messages [] = 'ERROR: type ไม่ถูกต้อง';
+                break;
+            } elseif ($request->filled('activity') and !in_array($row['type'], ['organizer', 'staff', 'attendee', ''])) {
+                $messages [] = 'ERROR: ข้อมูลบทบาท (type) ไม่ถูกต้อง';
                 break;
             }
             if (!empty($row['title']) and strlen($row['title']) > 100) {
-                $messages [] = 'ERROR: title ยาวเกินไป';
+                $messages [] = 'ERROR: ข้อมูลตำแหน่ง (title) ยาวเกินไป';
                 break;
             }
             if (!$student = User::where('email', $row['student_id'])->orWhere('student_id', $row['student_id'])->first()) {
@@ -615,7 +618,7 @@ class ProjectController extends Controller {
                 }
             }
             if ($existingParticipant = $project->participants->where('user_id', $student->id)->first()) {
-                if (ProjectParticipant::TYPES_RANK[$existingParticipant->type] < ProjectParticipant::TYPES_RANK[$row['type']]) {
+                if ($request->filled('project') and (ProjectParticipant::TYPES_RANK[$existingParticipant->type] < ProjectParticipant::TYPES_RANK[$row['type']])) {
                     $messages [] = 'WARNING: '.$row['student_id'].' มีอยู่แล้วและมีตำแหน่งที่สูงกว่า ไม่บันทึกข้อมูลใหม่';
                 } elseif ($existingParticipant->type != $row['type'] or $existingParticipant->title != $row['title']) {
                     $toAdd->add([

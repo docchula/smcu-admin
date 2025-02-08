@@ -100,7 +100,7 @@ const projectsAwaitingVerify = participants.map(participant => participant.proje
                                     <template v-else>
                                         <span v-if="participant.title">{{ participant.title }} :</span>
                                         {{
-                                            PROJECT_PARTICIPANT_ROLES[participant.type] ?? participant.type
+                                            PROJECT_PARTICIPANT_ROLES[participant.type] ?? participant.type ?? ''
                                         }}
                                     </template>
                                 </p>

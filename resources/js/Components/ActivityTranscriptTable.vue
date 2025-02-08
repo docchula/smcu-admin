@@ -59,7 +59,7 @@ const props = defineProps<{
                 </td>
                 <td class="px-2 py-2 md:px-4 text-sm">{{ item.duration }}</td>
                 <td class="px-2 py-2 md:px-4">
-                    {{ PROJECT_PARTICIPANT_ROLES[item.role] }}
+                    {{ PROJECT_PARTICIPANT_ROLES[item.role] ?? item.role ?? '' }}
                     <CheckCircleIcon v-if="item.approve_status === 1" class="inline-block ml-1 h-4 w-4 text-green-500"/>
                     <XCircleIcon v-if="item.approve_status === -1" class="inline-block ml-1 h-4 w-4 text-red-500"/>
                     <p v-if="item.title" class="text-xs">{{ item.title }}</p>

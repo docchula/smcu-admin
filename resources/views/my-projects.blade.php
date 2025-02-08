@@ -48,7 +48,7 @@
             <td>{{ str($item['period_end'])->explode(' ')->skip(1)->implode(' ') }}</td>
             <td style="text-align: center">{{ $item['duration'] }}</td>
             <td style="text-align: center">
-                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$item['role']] ?? $item['role'] }}
+                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$item['role']] ?? $item['role'] ?? '-' }}
             </td>
         </tr>
     @endforeach

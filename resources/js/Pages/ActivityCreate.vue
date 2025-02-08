@@ -119,6 +119,7 @@
                                 <select v-model="member.type" required :disabled="view_only"
                                         :class="{'border-red-500': !member.type, 'border-0': view_only}"
                                         class="mt-1 block w-full py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">-</option>
                                     <option v-for="(name, value, i) in PROJECT_PARTICIPANT_ROLES"
                                             v-bind:key="value" :value="value">
                                         {{ i + 1 }}. {{ name }}
@@ -160,7 +161,7 @@
             <template v-if="!view_only || item.attachment_path">
                 <SectionBorder/>
                 <FormSection @submitted="submit">
-                    <template #title>ไฟล์เอกสาร</template>
+                    <template #title>เอกสารแนบ</template>
                     <template #description v-if="!item.attachment_path">กรุณาแนบไฟล์เอกสารทั้งฉบับ รวมเป็นไฟล์เดียว ในรูปแบบ pdf หรือ docx ขนาดไม่เกิน
                         15 MB (ไม่จำเป็น)
                     </template>

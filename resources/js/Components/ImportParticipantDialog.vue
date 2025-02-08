@@ -13,6 +13,7 @@
                         <li><strong>student_id</strong> : เลขประจำตัวนิสิต (10 หลัก) หรือ อีเมล docchula ของนิสิต</li>
                         <li><strong>type</strong> : เลือก {{ Object.keys(PROJECT_PARTICIPANT_ROLES).join('/') }} เท่านั้น
                             ({{ Object.values(PROJECT_PARTICIPANT_ROLES).join('/') }})
+                            <span v-if="activity">หรือเว้นว่าง</span>
                         </li>
                         <li><strong>title</strong> : ตำแหน่งงาน (ไม่จำเป็นต้องใส่; จำกัด 100 ตัวอักษร) เช่น ประธานโครงการ หัวหน้าฝ่ายสถานที่</li>
                     </ul>
@@ -55,7 +56,7 @@
                             {{ e.user_name }}
                         </td>
                         <td class="p-2">
-                            {{ PROJECT_PARTICIPANT_ROLES[e.type] ?? e.type }}
+                            {{ PROJECT_PARTICIPANT_ROLES[e.type] ?? e.type ?? '' }}
                         </td>
                         <td class="p-2">
                             <span v-if="e.title">{{ e.title }}</span>
