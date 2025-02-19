@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Document;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -43,12 +44,12 @@ class AuthServiceProvider extends ServiceProvider
             return is_null($document->id) OR ($document->user_id === $user->id) OR $user->can('admin-action');
         });
         Gate::define('update-project', function (User $user, Project $project) {
-            return is_null($project->id)
+            return (is_null($project->id)
                 or $user->can('admin-action') or $user->can('faculty-action')
                 OR (
                     ($project->user_id === $user->id or $project->participants()->where('user_id', $user->id)->where('type', 'organizer')->exists())
                     AND $project->created_at->diffInMonths(now()) < 15 // Created in the last 15 months
-                );
+                )) ? Response::allow() : Response::deny('You are not authorized to update this project.');
         });
         Gate::define('create-activity', function (User $user) {
             $userRoles = explode(',', $user->roles);
