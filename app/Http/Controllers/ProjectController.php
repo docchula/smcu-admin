@@ -598,8 +598,8 @@ class ProjectController extends Controller {
                 $messages [] = 'ERROR: ข้อมูลบทบาท (type) ไม่ถูกต้อง';
                 break;
             }
-            if (!empty($row['title']) and strlen($row['title']) > 100) {
-                $messages [] = 'ERROR: ข้อมูลตำแหน่ง (title) ยาวเกินไป';
+            if (!empty($row['title']) and mb_strlen($row['title']) > 100) {
+                $messages [] = 'ERROR: ข้อมูลตำแหน่ง (title) ยาวเกินไป: '.$row['title'];
                 break;
             }
             if (!$student = User::where('email', $row['student_id'])->orWhere('student_id', $row['student_id'])->first()) {
