@@ -95,7 +95,7 @@ class User extends Authenticatable {
     {
         return $this->participants()->where('project_type', 'App\Models\Project')->with([
             'project', 'project.approvalDocument', 'project.summaryDocument',
-        ])->orderByDesc('id')->get()->filter(fn(ProjectParticipant $participant) => $participant->project->approvalDocument)->values();
+        ])->orderByDesc('id')->get()->filter(fn(ProjectParticipant $participant) => $participant->project?->approvalDocument)->values();
     }
 
     public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany {
@@ -111,7 +111,8 @@ class User extends Authenticatable {
             $this->load(['participants', 'participants.project']);
             $this->participants->where('project_type', 'App\Models\Project')->load('project.department');
         }
-        $myParticipants = $this->participants->sortBy('project.period_start')
+        $myParticipants = $this->participants->whereNotNull('project')
+            ->sortBy('project.period_start')
             ->map(function ($participant): array {
             return ($participant->project_type == 'App\Models\Project') ? [
                 'identifier' => $participant->project->year.'-'.$participant->project->number,
