@@ -240,7 +240,7 @@
                             <span class="text-gray-600 underline">เหตุผล</span>&ensp;{{ item.closure_approved_message }}
                         </p>
                         <p class="mt-1 text-xs text-gray-500">
-                            บันทึกเมื่อ {{ item.closure_approved_at }} โดย {{ item.closure_approved_by_user.name }}
+                            บันทึกเมื่อ {{ item.closure_approved_at }} โดย {{ item.closure_approved_by_user?.name }}
                         </p>
                     </div>
                 </div>
