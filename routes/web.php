@@ -50,7 +50,7 @@ Route::get('health', SimpleHealthCheckController::class);
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/manual', function () {
-        return redirect('https://tasteful-silk-0e3.notion.site/SMCU-Activity-Manual-46105744f57645a2afaa7a30f8ce1d06');
+        return redirect('https://smcu.notion.site/SMCU2568-14108afa9ec480ea9cb5c1eb25582d49');
     })->name('manual');
 
     Route::get('plan', [PlanController::class, 'index'])->name('plan.index');
