@@ -378,6 +378,7 @@ class ProjectController extends Controller {
             'number' => $project->getNumber(),
             'department' => in_array($project->department->sequence, [2, 3, 4]) ? $project->department->name : 'สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย',
             'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ') . $ranger->format($project->period_start, $project->period_end),
+            'duration' => $project->duration,
             'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
                 return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'กองทุนอื่นของคณะ']);
             })) ? 'พร้อมงบประมาณสนับสนุน' : '',
