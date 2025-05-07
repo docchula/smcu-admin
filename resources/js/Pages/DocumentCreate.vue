@@ -444,8 +444,8 @@ const searchProject = debounce(function (keyword) {
 }, 500)
 
 const selectProject = function (item) {
-    const isProjectNameLatin = /[\u+0000-\u+007F]/.test(selectedProject.value.name.charAt(0));
     selectedProject.value = item;
+    const isProjectNameLatin = /[\u0000-\u007F]/.test(selectedProject.value.name.charAt(0));
     if (!form.title) {
         if (form.tag) {
             if (form.tag === 'approval') {
