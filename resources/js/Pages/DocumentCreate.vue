@@ -444,13 +444,14 @@ const searchProject = debounce(function (keyword) {
 }, 500)
 
 const selectProject = function (item) {
+    const isProjectNameLatin = /[\u+0000-\u+007F]/.test(selectedProject.value.name.charAt(0));
     selectedProject.value = item;
     if (!form.title) {
         if (form.tag) {
             if (form.tag === 'approval') {
-                form.title = `ขออนุมัติดำเนินโครงการ${selectedProject.value.name}`;
+                form.title = `ขออนุมัติดำเนินโครงการ${isProjectNameLatin ? ' ' : ''}${selectedProject.value.name}`;
             } else if (form.tag === 'summary') {
-                form.title = `รายงานผลการดำเนินงานโครงการ${selectedProject.value.name}`;
+                form.title = `รายงานผลการดำเนินงานโครงการ${isProjectNameLatin ? ' ' : ''}${selectedProject.value.name}`;
             }
             form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
         }
