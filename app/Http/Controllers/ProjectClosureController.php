@@ -193,6 +193,7 @@ class ProjectClosureController extends Controller {
     }
 
     public function approvalSubmit(Request $request, Project $project) {
+        $this->authorize('faculty-action');
         $this->validate($request, [
             'approve' => 'required|in:yes,no',
             'reason' => 'nullable|required_if:approve,no|string',
@@ -235,6 +236,7 @@ class ProjectClosureController extends Controller {
     }
 
     public function updateRemark(Request $request, Project $project) {
+        $this->authorize('faculty-action');
         $this->validate($request, [
             'remark' => 'nullable|string|max:250',
             'notify' => 'nullable|boolean',
@@ -272,5 +274,30 @@ class ProjectClosureController extends Controller {
                 'causer' => $activity->causer?->name,
             ]),
         ]);
+    }
+
+    public function exportClosure(Project $project) {
+        $this->authorize('faculty-action');
+
+        return response()->json([
+            'identifier' => $project->year.'-'.$project->number,
+            'name' => $project->name,
+            'department' => $project->department->name,
+            'occurred_at' => $project->period_end->format('M Y'),
+            'duration' => $project->duration,
+            'participants' => $project->participants
+                ->filter(fn(ProjectParticipant $participant) => $participant->approve_status >= 1)
+                ->map(function (ProjectParticipant $participant) {
+                    return [
+                        'name' => $participant->user->name,
+                        'student_id' => $participant->user->student_id,
+                        'type' => $participant->type,
+                        'title' => $participant->title,
+                    ];
+                }),
+        ], 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="project-'.$project->year.'-'.$project->number.'.json"',
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 }

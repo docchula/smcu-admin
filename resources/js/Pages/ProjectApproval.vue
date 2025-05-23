@@ -331,6 +331,7 @@
             </div>
             <p class="mt-4 px-2 text-xs">
                 <a class="text-blue-500 cursor-pointer" @click="showLogDialog = true">ดูประวัติ</a>
+                <a class="ml-4 text-blue-500" :href="route('projects.export-closure', {project: item.id})">Export as JSON</a>
                 <a v-if="item.closure_status < 10 && item.closure_status >= 0" @click="showMessageDialog = true"
                    class="ml-4 text-green-500 cursor-pointer">
                     บันทึกหมายเหตุ

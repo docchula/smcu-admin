@@ -78,6 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('projects/{project}/approval', [ProjectClosureController::class, 'approvalSubmit'])->name('projects.approvalSubmit');
     Route::post('projects/{project}/remark', [ProjectClosureController::class, 'updateRemark'])->name('projects.updateRemark');
     Route::get('projects/{project}/logs', [ProjectClosureController::class, 'viewLogs'])->name('projects.logs');
+    Route::get('projects/{project}/export-closure', [ProjectClosureController::class, 'exportClosure'])->name('projects.export-closure');
 
     Route::get('projects/{project}/generateApprovalDocument', [ProjectController::class, 'generateApprovalDocument'])->name('projects.generateApprovalDocument');
     Route::get('projects/{project}/generateSummaryDocument', [ProjectController::class, 'generateSummaryDocument'])->name('projects.generateSummaryDocument');
