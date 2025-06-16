@@ -53,11 +53,11 @@
                         <select id="department" v-model="form.department_id" required
                                 class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <!-- hide if sequence >= 200 (deprecated values) -->
-                            <option v-for="department in static_departments"
-                                    v-show="department.sequence < 200 || department.id === form.department_id"
-                                    v-bind:key="department.id" :value="department.id">
-                                {{ department.name }}
-                            </option>
+                            <template v-for="department in static_departments" v-bind:key="department.id">
+                                <option v-if="department.sequence < 200 || department.id === form.department_id" :value="department.id">
+                                    {{ department.name }}
+                                </option>
+                            </template>
                         </select>
                         <jet-input-error :message="form.errors.department_id" class="mt-2"/>
                     </div>
