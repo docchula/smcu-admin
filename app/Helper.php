@@ -16,4 +16,15 @@ class Helper {
     public static function termYear(): int {
         return self::buddhistYear(Carbon::now()->subMonths(2)->year);
     }
+
+    public static function formatDepartmentName(string $departmentName): string {
+        if ($departmentName == 'คณะกรรมการบริหาร') {
+            return 'สโมสรนิสิตคณะแพทยศาสตร์';
+        } elseif (str_starts_with($departmentName, 'คณะกรรมการชั้น') or str_starts_with($departmentName, 'ชมรม') or str_starts_with($departmentName,
+                'ฝ่าย')) {
+            return $departmentName.' สโมสรนิสิตคณะแพทยศาสตร์';
+        }
+
+        return $departmentName;
+    }
 }

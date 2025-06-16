@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -112,15 +113,15 @@ class User extends Authenticatable {
             $this->participants->where('project_type', 'App\Models\Project')->load('project.department');
         }
         $myParticipants = $this->participants->whereNotNull('project')
-            ->sortBy('project.period_start')
+            ->sortByDesc('project.period_end')
             ->map(function ($participant): array {
             return ($participant->project_type == 'App\Models\Project') ? [
                 'identifier' => $participant->project->year.'-'.$participant->project->number,
                 'project_id' => $participant->project->id,
                 'name' => $participant->project->name,
-                'department' => $participant->project->department?->name ?? '',
-                'period_start' => $participant->project->period_start?->format('j M Y'),
-                'period_end' => $participant->project->period_end?->format('j M Y'),
+                'department' => Helper::formatDepartmentName($participant->project->department?->name ?? ''),
+                'period_start' => $participant->project->period_start?->addYears(543)->translatedFormat('j M Y'),
+                'period_end' => $participant->project->period_end?->addYears(543)->translatedFormat('j M Y'),
                 'duration' => $participant->project->duration,
                 'role' => $participant->type,
                 'approve_status' => $participant->approve_status,
@@ -130,8 +131,8 @@ class User extends Authenticatable {
                 'activity_id' => $participant->project->id,
                 'name' => $participant->project->name,
                 'department' => $participant->project->organization,
-                'period_start' => $participant->project->period_start?->format('j M Y'),
-                'period_end' => $participant->project->period_end?->format('j M Y'),
+                'period_start' => $participant->project->period_start?->addYears(543)->translatedFormat('j M Y'),
+                'period_end' => $participant->project->period_end?->addYears(543)->translatedFormat('j M Y'),
                 'duration' => $participant->project->duration,
                 'role' => $participant->type,
                 'approve_status' => 1,

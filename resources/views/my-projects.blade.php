@@ -11,6 +11,12 @@
         vertical-align: top;
         word-break: break-all;
     }
+
+    .department-name {
+        color: gray;
+        font-size: 0.9rem;
+        margin-top: 0;
+    }
 </style>
 <table style="width: 100%">
     <tr>
@@ -34,27 +40,45 @@
 </table>
 <hr/>
 <table style="width: 100%">
+    <thead>
     <tr style="font-size: 0.85em">
+        <th>ที่</th>
         <th>โครงการ</th>
-        <th>หน่วยงาน</th>
         <th style="width: 5em">จัดเมื่อ</th>
         <th style="width: 4.5em">ระยะเวลา (ชม.)</th>
         <th style="width: 4em">บทบาท</th>
     </tr>
-    @foreach($user->getActivityTranscript()->filter(fn($item) => $item['approve_status'] >= 1) as $item)
+    </thead>
+    <tbody>
+    @foreach($user->getActivityTranscript()->filter(fn($item) => $item['approve_status'] >= 1) as $i => $item)
         <tr>
-            <td>{{ $item['name'] }}</td>
-            <td>{{ $item['department'] }}</td>
+            <td style="white-space: nowrap">{{ $i + 1 }}.</td>
+            <td>
+                {{ $item['name'] }}
+                <p class="department-name">
+                    หน่วยงาน : {{ $item['department'] }}
+                    @if(!empty($item['title'])) &emsp; ตำแหน่ง : {{ $item['title'] }} @endif
+                </p>
+            </td>
             <td>{{ str($item['period_end'])->explode(' ')->skip(1)->implode(' ') }}</td>
-            <td style="text-align: center">{{ $item['duration'] }}</td>
-            <td style="text-align: center">
-                {{ ['organizer' => 'ร', 'staff' => 'ป', 'attendee' => 'ข'][$item['role']] ?? $item['role'] ?? '-' }}
+            <td style="text-align: center">{{ ($item['duration'] && is_int($item['duration'])) ? round($item['duration']) : $item['duration'] }}</td>
+            <td style="text-align: center; font-size: 0.9rem; white-space: nowrap">
+                {{ ['organizer' => 'รับผิดชอบ', 'staff' => 'ปฏิบัติงาน', 'attendee' => 'เข้าร่วม'][$item['role']] ?? $item['role'] ?? '-' }}
             </td>
         </tr>
     @endforeach
+    </tbody>
 </table>
-<p style="margin-top:2em; font-size:0.9em; color:gray">บทบาท : ร = ผู้รับผิดชอบ / ป = ผู้ปฏิบัติงาน / ข = ผู้เข้าร่วม</p>
-<p style="margin-top:2em; font-size:0.7em; color:lightgray; text-align: right">พิมพ์เมื่อ {{ date('F j, Y') }}</p>
+@if(empty($draft))
+    <div style="height:6rem">
+        {{-- space for signature --}}
+    </div>
+@endif
+<p style="margin-top:2em; font-size:0.7em; color:gray;">
+    ระเบียนประวัติการเข้าร่วมกิจกรรมนอกหลักสูตร {{ $user->name }}<br/>
+    พิมพ์เมื่อ {{ \Illuminate\Support\Carbon::now()->addYears(543)->translatedFormat('j F Y') }}<br/>
+    บทบาท ได้แก่ ผู้รับผิดชอบ ผู้ปฏิบัติงาน หรือผู้เข้าร่วม
+</p>
 <script>
     window.print();
     window.onafterprint = window.close;
