@@ -372,7 +372,7 @@
                                 <div class="flex items-center ps-3">
                                     <input v-model="form.action" id="radio-yes"
                                            type="radio" value="yes" name="action"
-                                           :disabled="item.year < 2567 || !can_submit"
+                                           :disabled="item.year < 2567 || (!can_submit && !is_faculty)"
                                            class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500 focus:ring-2">
                                     <label for="radio-yes" class="w-full py-3 ms-2 font-medium text-gray-900">
                                         ยืนยันส่งบันทึกลงใน Activity Transcript
@@ -385,6 +385,9 @@
                                         <span v-else class="block mt-1 text-xs text-gray-600">
                                             <b>เมื่อยืนยันแล้วไม่สามารถกลับมาแก้ไขข้อมูลได้อีก</b>
                                             ระบบจะให้นิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคนมาตรวจสอบและยืนยันรายชื่อผู้ปฏิบัติงานต่อไป
+                                        </span>
+                                        <span v-if="!can_submit && is_faculty" class="block mt-1 text-xs text-blue-600">
+                                            อาจารย์สามารถบันทึกสถานะ "ส่งบันทึกลงใน Activity Transcript" แทนนิสิตได้ ควรให้นิสิตกรอกข้อมูลให้ครบถ้วนและกดบันทึกผลการปฏิบัติงานในหน้าเว็บนี้ให้ครบถ้วนก่อน (โดยกด "ไม่ส่ง")
                                         </span>
                                     </label>
                                 </div>
@@ -428,6 +431,7 @@ import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 const props = defineProps({
     item: Object,
     can_submit: Boolean,
+    is_faculty: Boolean,
     warn_activity_date: Boolean,
 });
 

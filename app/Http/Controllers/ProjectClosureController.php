@@ -13,6 +13,7 @@ use App\ProjectClosureStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
@@ -34,6 +35,7 @@ class ProjectClosureController extends Controller {
         return Inertia::render('ProjectClosure', [
             'item' => $project,
             'can_submit' => $project->canSubmitClosure(),
+            'is_faculty' => Gate::allows('faculty-action'),
             'warn_activity_date' => $project->period_end?->isFuture(),
         ]);
     }
@@ -58,7 +60,7 @@ class ProjectClosureController extends Controller {
         $project->expense = $request->input('expense');
         $project->estimated_attendees = $request->input('estimated_attendees');
         if ($action == 'yes') {
-            if (!$project->canSubmitClosure()) {
+            if (!$project->canSubmitClosure() and Gate::denies('faculty-action')) {
                 $project->saveOrFail();
                 abort(403, 'Not in closure submission timeframe.');
             }
