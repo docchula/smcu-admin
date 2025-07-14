@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use IntlDateFormatter;
@@ -516,7 +517,7 @@ class ProjectController extends Controller {
             'type' => 'required|string|in:organizer,staff,attendee'
         ]);
         $this->authorize('update-project', $project);
-        if ($project->hasSubmittedClosure()) {
+        if ($project->hasSubmittedClosure() and Gate::denies('faculty-action')) {
             return back()->with('flash.banner', 'ไม่อนุญาตให้เพิ่มนิสิตผู้เกี่ยวข้องหลังส่งรายงานผลโครงการ')->with('flash.bannerStyle', 'danger');
         }
         $toAdd = [];

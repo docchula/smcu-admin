@@ -145,7 +145,10 @@
                                             จาก {{ participantsGrouped[type].length }} คน
                                         </span>
                                     </td>
-                                    <td></td>
+                                    <td v-if="item.closure_status < 10">
+                                        <PlusIcon class="inline-block ml-1 h-5 text-green-400 cursor-pointer"
+                                                  @click="showStudentIdDialog = type"/>
+                                    </td>
                                 </tr>
                                 <tr v-for="(e, i) in participantsGrouped[type]">
                                     <td class="px-2 py-1">
@@ -342,11 +345,13 @@
         <ClosureMessageDialog :show-modal="showMessageDialog" :project="item" @close="showMessageDialog = false"/>
         <ParticipantEditDialog :show-modal="showParticipantEditDialog" @close="showParticipantEditDialog = null"
                                :participant="showParticipantEditDialog"/>
+        <StudentIdDialog :show-modal="Boolean(showStudentIdDialog)" :list="item.participants.map(p => p.user?.student_id)"
+                         @close="showStudentIdDialog = null" @selected="addParticipant($event)"/>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
-import {CheckIcon, PencilIcon, XMarkIcon} from "@heroicons/vue/20/solid";
+import {CheckIcon, PencilIcon, PlusIcon, XMarkIcon} from "@heroicons/vue/20/solid";
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Jetstream/InputError.vue';
 import Label from '@/Jetstream/Label.vue';
@@ -361,8 +366,9 @@ import ProjectClosureStatus from "@/Components/ProjectClosureStatus.vue";
 import ClosureLogDialog from "@/Components/ClosureLogDialog.vue";
 import ClosureStatusText from "@/Components/ClosureStatusText.vue";
 import ClosureMessageDialog from "@/Components/ClosureMessageDialog.vue";
-import {Project, ProjectParticipant} from '@/types';
+import {Project, ProjectParticipant, User} from '@/types';
 import ParticipantEditDialog from '@/Components/ParticipantEditDialog.vue';
+import StudentIdDialog from '@/Components/StudentIdDialog.vue';
 
 const props = defineProps<{
     item: Project,
@@ -380,6 +386,7 @@ const selectedParticipants = ref(oldSelectedParticipants.length > 0 ? oldSelecte
 const showLogDialog = ref(false);
 const showMessageDialog = ref(false);
 const showParticipantEditDialog = ref<ProjectParticipant | null>(null);
+const showStudentIdDialog = ref<string | null>(null);
 const forceShowApproveBox = ref(false);
 
 // Computed
@@ -417,5 +424,14 @@ const submit = () => {
         preserveState: false,
         preserveScroll: false,
     });
+};
+const addParticipant = (student: User) => {
+    if (!props.item.participants.find((p: ProjectParticipant) => p.user.student_id === student.student_id)) {
+        useForm({
+            type: showStudentIdDialog.value,
+            student_ids: [student.student_id],
+        }).post(route('projects.addParticipant', {project: props.item.id}));
+        showStudentIdDialog.value = null;
+    }
 };
 </script>
