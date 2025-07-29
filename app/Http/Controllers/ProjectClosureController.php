@@ -269,7 +269,8 @@ class ProjectClosureController extends Controller {
         abort_unless($request->user()->can('update-project', $project) or $request->user()->can('faculty-action'), 403);
 
         return response()->json([
-            'logs' => $project->activities()->with('causer')->limit(100)->get()->map(fn(Activity $activity) => [
+            // order by id instead of created_at because id is indexed
+            'logs' => $project->activities()->with('causer')->orderByDesc('id')->limit(100)->get()->map(fn(Activity $activity) => [
                 'id' => $activity->id,
                 'description' => $activity->description,
                 'created_at' => $activity->created_at->format('j M Y H:i'),
