@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head title="สร้างเอกสารใหม่"/>
         <template #header>
             <Link :href="item.id ? route('documents.show', {document: item.id}) : route('documents.index')"
                   class="mb-4 flex items-center text-gray-700">
@@ -357,7 +358,7 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import Checkbox from "@/Jetstream/Checkbox.vue";
 import AttachmentBox from "@/Components/AttachmentBox.vue";
 import {computed, reactive, ref, watch} from 'vue';
-import {Link, router} from '@inertiajs/vue3'
+import {Head, Link, router} from '@inertiajs/vue3'
 import {debounce} from 'lodash/function';
 import {isNumber} from 'lodash/lang';
 

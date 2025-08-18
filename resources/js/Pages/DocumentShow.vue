@@ -1,5 +1,6 @@
 <template>
-    <app-layout>
+    <AppLayout>
+        <Head :title="'หนังสือสพจ. ที่ '+item.number+'/'+item.year"/>
         <template #header>
             <Link :href="route('documents.index')" class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
@@ -157,11 +158,11 @@
                 </p>
             </div>
         </div>
-    </app-layout>
+    </AppLayout>
 </template>
 
 <script setup lang="ts">
-import {Link} from '@inertiajs/vue3';
+import {Head, Link} from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {ArrowDownTrayIcon} from '@heroicons/vue/20/solid';
 import {Document, Personnel} from '@/types';

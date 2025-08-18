@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head title="กรรมการ"/>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 กรรมการสโมสร ปีวาระ {{ year }}
@@ -85,9 +86,11 @@ import {Bars4Icon} from "@heroicons/vue/24/solid";
 import {DocumentChartBarIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
 import {debounce} from "lodash/function";
+import {Head} from "@inertiajs/vue3";
 
 export default {
     components: {
+        Head,
         DocumentChartBarIcon, DocumentTextIcon,
         AppLayout,
         Pagination,

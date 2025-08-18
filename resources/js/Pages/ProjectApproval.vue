@@ -1,5 +1,6 @@
 <template>
     <AppLayout>
+        <Head :title="'อนุมัติรายงานผล '+item.name"/>
         <template #header>
             <Link :href="route('projects.approvalIndex')" class="mb-4 flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
@@ -356,7 +357,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import InputError from '@/Jetstream/InputError.vue';
 import Label from '@/Jetstream/Label.vue';
 import {computed, ref} from 'vue';
-import {Link, useForm} from '@inertiajs/vue3';
+import {Head, Link, useForm} from '@inertiajs/vue3';
 import {groupBy} from "lodash";
 import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 import Checkbox from "@/Jetstream/Checkbox.vue";

@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head title="สร้างโครงการใหม่"/>
         <template #header>
             <inertia-link :href="item.id ? route('projects.show', {project: item.id}) : route('projects.index')"
                           class="mb-4 flex items-center text-gray-700">
@@ -496,9 +497,11 @@ import JetSectionBorder from '@/Jetstream/SectionBorder.vue'
 import StudentIdDialog from "../Components/StudentIdDialog.vue";
 import Combobox from "../Components/Combobox.vue";
 import SDGSelector from "@/Components/SDGSelector.vue";
+import {Head} from "@inertiajs/vue3";
 
 export default {
     components: {
+        Head,
         SDGSelector,
         Combobox,
         StudentIdDialog,

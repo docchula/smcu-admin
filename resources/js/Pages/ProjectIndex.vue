@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head title="โครงการ"/>
         <template #header>
             <div class="flex flex-wrap gap-y-4 items-center">
                 <div class="flex-grow">
@@ -198,7 +199,7 @@ import Pagination from "@/Components/Pagination.vue";
 import {Bars4Icon, CalculatorIcon, CalendarDaysIcon, CheckBadgeIcon, DocumentChartBarIcon, PlusIcon} from "@heroicons/vue/20/solid";
 import {DocumentTextIcon} from "@heroicons/vue/24/outline";
 import {Menu, MenuButton, MenuItem, MenuItems} from '@headlessui/vue'
-import {Link, router} from '@inertiajs/vue3'
+import {Head, Link, router} from '@inertiajs/vue3'
 import {ref, watch} from 'vue';
 import {debounce} from "lodash/function";
 

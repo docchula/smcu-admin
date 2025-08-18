@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head title="สารบรรณ"/>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 สารบรรณ
@@ -77,9 +78,11 @@ import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import {DocumentChartBarIcon, DocumentTextIcon, PlusIcon} from '@heroicons/vue/20/solid';
 import {DocumentCheckIcon, ExclamationCircleIcon, PaperAirplaneIcon} from "@heroicons/vue/24/outline";
+import {Head} from "@inertiajs/vue3";
 
 export default {
     components: {
+        Head,
         PlusIcon,
         AppLayout,
         Pagination,

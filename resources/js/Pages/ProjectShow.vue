@@ -1,5 +1,6 @@
 <template>
     <app-layout>
+        <Head :title="item.name"/>
         <template #header>
             <inertia-link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
@@ -434,9 +435,11 @@ import {PROJECT_PARTICIPANT_ROLES} from "@/static";
 import ClosureStatusText from "@/Components/ClosureStatusText.vue";
 import ClosureCancelDialog from "@/Components/ClosureCancelDialog.vue";
 import SDGSelector from "@/Components/SDGSelector.vue";
+import {Head} from "@inertiajs/vue3";
 
 export default {
     components: {
+        Head,
         SDGSelector,
         ClosureCancelDialog,
         ClosureStatusText,

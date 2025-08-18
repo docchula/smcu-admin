@@ -1,5 +1,6 @@
 <template>
     <AppLayout>
+        <Head title="สถานะการอนุมัติรายงานผล"/>
         <template #header>
             <div class="flex flex-wrap gap-y-4 items-center">
                 <div class="flex-grow">
@@ -106,7 +107,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from '@/Components/SearchInput.vue';
-import {Link, router} from '@inertiajs/vue3';
+import {Head, Link, router} from '@inertiajs/vue3';
 import {UserIcon} from '@heroicons/vue/20/solid';
 import {ref, watch} from 'vue';
 import {debounce} from 'lodash';
