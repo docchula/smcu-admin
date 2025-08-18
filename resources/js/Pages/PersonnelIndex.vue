@@ -51,7 +51,7 @@
                             <p class="text-xs">{{ item.position_en }}</p>
                         </td>
                         <td class="px-2 py-2 md:px-4 md:py-3 text-sm">
-                            {{ item.department.name }}
+                            {{ item.department?.name }}
                         </td>
                         <td v-if="is_admin" class="px-2 py-2 md:px-4 md:py-3">
                             {{ item.sequence }}
