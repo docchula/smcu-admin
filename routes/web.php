@@ -6,7 +6,6 @@ use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PersonnelController;
-use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProjectClosureController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TranscriptController;
@@ -49,11 +48,7 @@ Route::get('health', SimpleHealthCheckController::class);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::get('/manual', function () {
-        return redirect('https://smcu.notion.site/SMCU2568-14108afa9ec480ea9cb5c1eb25582d49');
-    })->name('manual');
-
-    Route::get('plan', [PlanController::class, 'index'])->name('plan.index');
+    Route::inertia('manual', 'Manual')->name('manual');
 
     // Resource controller : https://laravel.com/docs/8.x/controllers#resource-controllers
     Route::get('projects/agenda', [ProjectController::class, 'indexAgenda'])->name('projects.indexAgenda');
