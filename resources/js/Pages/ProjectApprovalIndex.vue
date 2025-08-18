@@ -4,11 +4,8 @@
         <template #header>
             <div class="flex flex-wrap gap-y-4 items-center">
                 <div class="flex-grow">
-                    <Link :href="route('projects.index')" class="mb-4 block flex items-center text-gray-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="inline h-3 mr-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                                  class="text-gray-500"/>
-                        </svg>
+                    <Link :href="route('projects.index')" class="mb-4 flex items-center text-gray-700">
+                        <ArrowLeftIcon class="inline h-3 mr-2"/>
                         <p>โครงการ</p>
                     </Link>
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -98,7 +95,11 @@
             </div>
             <p class="mt-6 mb-4 text-xs text-gray-500">
                 สถานะโครงการ ได้แก่ <span class="bg-yellow-300">ส่งปิดโครง</span> > <span class="bg-blue-300">ผู้เกี่ยวข้องยืนยัน</span>ตามเกณฑ์ที่กำหนด
-                > <span class="bg-green-300">อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ ให้แก้ไข</span>
+                > <span class="bg-green-300">อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ ให้แก้ไข</span><br/>
+                กรณีต้องการส่งขออนุมัติรายงานผลโครงการนอกกำหนดเวลา ให้แจ้งให้นิสิตบันทึกข้อมูลผลการดำเนินโครงการให้เรียบร้อย (กด "ไม่ส่ง"
+                พิจารณาบันทึกลงใน Activity Transcript) แล้วให้อาจารย์กด "บันทึกผลการดำเนินโครงการ" จาก
+                <Link :href="route('projects.index')" class="text-blue-600">หน้าข้อมูลโครงการ</Link>
+                แทนนิสิต
             </p>
         </div>
     </AppLayout>
@@ -108,7 +109,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from '@/Components/SearchInput.vue';
 import {Head, Link, router} from '@inertiajs/vue3';
-import {UserIcon} from '@heroicons/vue/20/solid';
+import {ArrowLeftIcon, UserIcon} from '@heroicons/vue/20/solid';
 import {ref, watch} from 'vue';
 import {debounce} from 'lodash';
 
