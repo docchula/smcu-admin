@@ -241,40 +241,38 @@ class ProjectController extends Controller {
         $project->saveOrFail();
         if (!$project->id or !$project->hasSubmittedClosure()) {
             // Don't update participants if closure is submitted
-            foreach (['organizers' => 'organizer', 'staff' => 'staff', 'attendees' => 'attendee'] as $roleField => $role) {
-                if ($request->filled($roleField)) {
-                    // Note: these lines of code suffers from n+1 performance issue
-                    $inputParticipants = new Collection($request->input($roleField, []));
-                    $newParticipants = new Collection();
-                    $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])
-                        ->get();
-                    foreach ($inputParticipants as $student) {
-                        // Add / edit existing
-                        if (!empty($student['student_id'])) {
-                            $user = $users->where('student_id', $student['student_id'])->first(); /* ?? User::firstOrCreate(['email' => $student['email']], [
-                            'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
-                            'student_id' => $student['student_id'],
-                        ]); */
-                            if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
-                                // Existing
-                                if ($participant->type != $role) {
-                                    $participant->type = $role;
-                                    $participant->save();
-                                }
-                            } else {
-                                $newParticipants->push(['user_id' => $user->id, 'type' => $role]);
+            // Edit page only allows editing of organizers, not other types of participant.
+            $roleField = 'organizers';
+            $role = 'organizer';
+            if ($request->filled($roleField)) {
+                $inputParticipants = new Collection($request->input($roleField, []));
+                $newParticipants = new Collection();
+                $users = User::whereIn('student_id', [...$inputParticipants->pluck('student_id'), ...$existingParticipants->pluck('student_id')])
+                    ->get();
+                foreach ($inputParticipants as $student) {
+                    // Add / edit existing
+                    if (!empty($student['student_id'])) {
+                        $user = $users->firstWhere('student_id', $student['student_id']); /* ?? User::firstOrCreate(['email' => $student['email']], [
+                        'name' => ($student['title'] ?? '') . $student['first_name'] . ' ' . $student['last_name'],
+                        'student_id' => $student['student_id'],
+                    ]); */
+                        if ($participant = $existingParticipants->where('user_id', $user->id)->first()) {
+                            // Existing
+                            if ($participant->type != $role) {
+                                $participant->type = $role;
+                                $participant->save();
                             }
+                        } else {
+                            $newParticipants->push(['user_id' => $user->id, 'type' => $role]);
                         }
                     }
-                    if ($newParticipants->isNotEmpty()) {
-                        $project->participants()->createMany($newParticipants);
-                    }
-                    // Delete unused existing
-                    $existingParticipants->whereNotIn('user_id', $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id'))
-                        ->where('type', $role)->each->delete();
-                } elseif ($existingParticipants->isNotEmpty()) {
-                    $project->participants()->where('type', $role)->delete();
                 }
+                if ($newParticipants->isNotEmpty()) {
+                    $project->participants()->createMany($newParticipants);
+                }
+                // Delete unused existings
+                $deleteIds = $users->whereIn('student_id', $inputParticipants->pluck('student_id'))->pluck('id');
+                $project->participants()->whereNotIn('user_id', $deleteIds)->where('type', $role)->delete();
             }
         }
 
