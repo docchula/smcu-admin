@@ -141,14 +141,12 @@
                         </tr>
                         <tr v-else-if="item.recipient === 'รองคณบดีฝ่ายกิจการนิสิต'">
                             <td class="px-1">-</td>
-                            <td class="px-2" colspan="2">รองคณบดีฝ่ายกิจการนิสิต (เป็นผู้รับไม่ต้องมีช่องให้ลงชื่อในเอกสาร)</td>
-                            <td class="px-2 font-mono">sittisak.h@chula.ac.th</td>
+                            <td class="px-2" colspan="3">รองคณบดีฝ่ายกิจการนิสิต (เป็นผู้รับไม่ต้องมีช่องให้ลงชื่อในเอกสาร)</td>
                         </tr>
                         <tr v-else>
                             <td class="px-1">-</td>
-                            <td class="px-2">ศ.ดร.นพ.สิทธิศักดิ์ หรรษาเวก</td>
-                            <td class="px-2">รองคณบดีฝ่ายกิจการนิสิต</td>
-                            <td class="px-2 font-mono">sittisak.h@chula.ac.th</td>
+                            <td class="px-2">ผศ.นพ.อติคุณ ธนกิจ</td>
+                            <td class="px-2" colspan="2">รองคณบดีฝ่ายกิจการนิสิต</td>
                         </tr>
                     </table>
                 </template>
