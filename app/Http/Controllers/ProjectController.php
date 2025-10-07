@@ -314,7 +314,7 @@ class ProjectController extends Controller {
             'contact_phone' => '.............',
             'signer_advisor_name' => $project->advisor,
             'signer_s2_title' => 'ประธานฝ่าย/ประธานนิสิตแพทย์ชั้นปีที่.....',
-            'signer_s3_title' => 'อุปนายกสโมสรฝ่าย .....',
+            'signer_s3_title' => 'อุปนายกงาน .....',
             'signer_s4_title' => "นายกสโมสรนิสิต\nคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
             'background' => $project->background,
             'sdgs' => $project->sdgs

@@ -38,7 +38,7 @@ class DocumentController extends Controller {
         if ($request->input('tag') == 'summary' and $request->input('project_id')) {
             $document->project()->associate($request->input('project_id'));
             $document->title = 'รายงานผลการดำเนินงานโครงการ'.$document->project->name;
-            $document->recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
+            $document->recipient = 'รองคณบดีด้านกิจการนิสิต';
             $document->department_id = $document->project->department_id;
         }
 
