@@ -22,7 +22,7 @@
             </div>
             <div v-else-if="isSubmitted" class="p-4 my-4 rounded bg-blue-100 border border-blue-600 text-blue-600">
                 <p class="mb-1 font-bold">คุณบันทึกการตรวจสอบข้อมูลรายชื่อนิสิตผู้เกี่ยวข้องแล้ว</p>
-                รอง/ผู้ช่วยคณบดีฝ่ายกิจการนิสิต จะพิจารณาบันทึกโครงการนี้ใน Activity Transcript หลังจากที่
+                รอง/ผู้ช่วยคณบดีด้านกิจการนิสิต จะพิจารณาบันทึกโครงการนี้ใน Activity Transcript หลังจากที่
                 <ol class="list-decimal list-inside">
                     <li>รายชื่อนิสิตผู้เกี่ยวข้องผ่านการรับรองจากนิสิตผู้รับผิดชอบและผู้ปฏิบัติงานในโครงการทุกคนตามเงื่อนไข</li>
                     <li>หนังสือรายงานผลโครงการได้รับการอนุมัติ</li>
@@ -148,7 +148,7 @@
                         <ul class="ml-4 mb-4 list-outside list-disc">
                             <li>สำหรับนิสิตผู้รับผิดชอบ รับรองรายชื่อผู้รับผิดชอบโครงการ และรายชื่อนิสิตผู้ปฏิบัติงานในฝ่ายที่ตนรับผิดชอบ</li>
                             <li>สำหรับนิสิตผู้ปฏิบัติงาน รับรองรายชื่อหัวหน้าฝ่ายและสมาชิกในฝ่ายของตนเอง</li>
-                            <li>หากพบรายชื่อตกหล่น ให้แจ้งนิสิตประธานโครงการเพื่อพิจารณาแก้ไข หรือแจ้งผู้ช่วย/รองคณบดีฝ่ายกิจการนิสิตเพื่อพิจารณา</li>
+                            <li>หากพบรายชื่อตกหล่น ให้แจ้งนิสิตประธานโครงการเพื่อพิจารณาแก้ไข หรือแจ้งผู้ช่วย/รองคณบดีด้านกิจการนิสิตเพื่อพิจารณา</li>
                         </ul>
                         <ul class="grid w-full gap-6 md:grid-cols-5">
                             <li class="md:col-span-3">
@@ -189,7 +189,7 @@
                                 <Input id="reason" type="text" class="mt-1 block w-full" v-model.trim="form.reason" ref="reason" required/>
                                 <InputError :message="form.errors.reason" class="mt-2"/>
                             </div>
-                            <p class="my-4 text-sm">ผู้ช่วย/รองคณบดีฝ่ายกิจการนิสิต จะตรวจสอบข้อมูลเพื่อพิจารณาบันทึกใน Activity Transcript ต่อไป</p>
+                            <p class="my-4 text-sm">ผู้ช่วย/รองคณบดีด้านกิจการนิสิต จะตรวจสอบข้อมูลเพื่อพิจารณาบันทึกใน Activity Transcript ต่อไป</p>
                         </div>
                     </div>
                     <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">

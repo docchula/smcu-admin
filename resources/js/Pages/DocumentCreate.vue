@@ -136,7 +136,7 @@
                             <p v-else class="mt-2 text-xs text-gray-500">
                                 ควรใช้ชื่อตำแหน่ง (ถ้ามี) เช่น
                                 <a class="cursor-pointer text-green-500"
-                                   @click="form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต'">รองคณบดีฝ่ายกิจการนิสิต</a>
+                                   @click="form.recipient = 'รองคณบดีด้านกิจการนิสิต'">รองคณบดีด้านกิจการนิสิต</a>
                             </p>
                         </div>
                         <div class="col-span-6">
@@ -454,7 +454,7 @@ const selectProject = function (item) {
             } else if (form.tag === 'summary') {
                 form.title = `รายงานผลการดำเนินงานโครงการ${isProjectNameLatin ? ' ' : ''}${selectedProject.value.name}`;
             }
-            form.recipient = 'รองคณบดีฝ่ายกิจการนิสิต';
+            form.recipient = 'รองคณบดีด้านกิจการนิสิต';
         }
         form.department_id = selectedProject.value.department_id;
     }
