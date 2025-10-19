@@ -308,7 +308,7 @@ class ProjectController extends Controller {
                 return implode(' ', $aims);
             }, $project->aims),
             'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
-                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'กองทุนอื่นของคณะ']);
+                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'งานกิจการนิสิต', 'กองทุนอื่นของคณะ']);
             })) ? 'พร้อมงบประมาณสนับสนุน' : '',
             'contact_name' => $request->user()->name,
             'contact_phone' => '.............',
@@ -379,7 +379,7 @@ class ProjectController extends Controller {
             'period' => (($project->period_start == $project->period_end) ? 'ในวันที่ ' : 'ระหว่างวันที่ ') . $ranger->format($project->period_start, $project->period_end),
             'duration' => $project->duration,
             'is_budget_required_txt' => (array_filter($project->expense, function ($e) {
-                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'กองทุนอื่นของคณะ']);
+                return in_array($e['source'], ['ฝ่ายกิจการนิสิต', 'งานกิจการนิสิต', 'กองทุนอื่นของคณะ']);
             })) ? 'พร้อมงบประมาณสนับสนุน' : '',
             'contact_name' => $request->user()->name,
             'contact_phone' => '.............',

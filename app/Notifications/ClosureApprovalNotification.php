@@ -25,7 +25,7 @@ class ClosureApprovalNotification extends Notification implements ShouldQueue {
         return (new MailMessage)
             ->subject('อนุมัติรายงานผล โครงการที่ '.$this->project->year.'-'.$this->project->number.' '.$this->project->name)
             ->greeting('เรียน  นิสิตผู้รับผิดชอบโครงการ')
-            ->line('อาจารย์ฝ่ายกิจการนิสิต ได้รายงานผล โครงการที่ '.$this->project->year.'-'.$this->project->number.' '.$this->project->name.' แล้ว')
+            ->line('อาจารย์งานกิจการนิสิต ได้รายงานผล โครงการที่ '.$this->project->year.'-'.$this->project->number.' '.$this->project->name.' แล้ว')
             ->action('ดูข้อมูลโครงการเพิ่มเติม', route('projects.show', ['project' => $this->project->id]));
     }
 

@@ -263,7 +263,8 @@
                                     <select v-model="member.source" required
                                             class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option value="สพจ.">สพจ.</option>
-                                        <option value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
+                                        <option hidden disabled value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
+                                        <option value="งานกิจการนิสิต">งานกิจการนิสิต</option>
                                         <option value="กองทุนวันอานันทมหิดล">กองทุนวันอานันทมหิดล</option>
                                         <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
                                         <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>

@@ -26,9 +26,9 @@
                        class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบขออนุมัติโครงการ</a>
                     <p class="text-sm text-gray-700">เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน
                         และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
-                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต').length > 0" class="text-yellow-700">
-                        โครงการที่ใช้งบประมาณฝ่ายกิจการนิสิต
-                        ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่ฝ่ายกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
+                    <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต' || e.source === 'งานกิจการนิสิต').length > 0" class="text-yellow-700">
+                        โครงการที่ใช้งบประมาณงานกิจการนิสิต
+                        ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่งานกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
                 </div>
             </div>
             <div v-if="item.shouldBeClosed" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-blue-400">
