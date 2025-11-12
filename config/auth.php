@@ -42,9 +42,8 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
+            'driver' => 'keycloak',
             'provider' => 'users',
-            'hash' => false,
         ],
     ],
 

@@ -1,0 +1,108 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"Indicates what fields are available at the top level of a query operation."
+type Query {
+    "Find a single user by an identifying attribute."
+    user(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:email,student_id", "required_without_all:email,student_id"])
+
+        "Search by email address."
+        email: String @eq @rules(apply: ["prohibits:id,student_id", "required_without_all:id,student_id", "email"])
+
+        student_id: String @eq @rules(apply: ["prohibits:id,email", "required_without_all:id,email"])
+    ): User @find
+
+    "List multiple users."
+    users: [User!]! @paginate(defaultCount: 10)
+
+    "List multiple projects."
+    projects: [Project!]! @paginate(defaultCount: 10)
+}
+
+"Account of a person who uses this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Non-unique name."
+    name: String!
+
+    "Unique email address."
+    email: String!
+
+    "When the account was created."
+    created_at: DateTime!
+
+    "When the account was last updated."
+    updated_at: DateTime
+    student_id: String
+
+    "List of projects and activities the user has participated in."
+    transcript: [TranscriptRecord!]
+}
+
+type Department {
+    id: ID!
+    name: String!
+    group: String
+    sequence: Int
+}
+
+"A project."
+type Project {
+    "Unique primary key."
+    id: ID!
+    identifier: String!
+    year: Int!
+    number: Int!
+
+    "The name of the project."
+    name: String!
+    advisor: String
+    period_start: DateTime
+    period_end: DateTime
+    department_id: Int
+    duration: Int
+    estimated_attendees: String
+    closure_submitted_at: DateTime
+    closure_approved_status: Int
+    closure_approved_at: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    department: Department!
+    participants: [ProjectParticipant!]!
+}
+
+type ProjectParticipant {
+    id: ID!
+    project_type: String!
+    project_id: ID!
+    user_id: ID!
+    created_at: DateTime
+    updated_at: DateTime
+
+    type: String
+    title: String
+    verify_status: Int!
+    approve_status: Int!
+
+    user: User
+}
+
+"A project or activity a user has participated in."
+type TranscriptRecord {
+    id: ID!
+    identifier: String!
+    project_id: ID
+    activity_id: ID
+    name: String!
+    department: String
+    period_start: String
+    period_end: String
+    duration: String
+    role: String
+    approve_status: Int!
+    title: String
+}

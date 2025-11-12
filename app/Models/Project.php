@@ -6,6 +6,7 @@ use App\Helper;
 use App\ProjectClosureStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -120,6 +121,10 @@ class Project extends Model {
 
     public function getNumber(): string {
         return $this->year . '-' . $this->number;
+    }
+
+    public function identifier(): Attribute {
+        return Attribute::make(fn() => "{$this->year}-{$this->number}");
     }
 
     public static function latestOfYear(?int $year): ?self {

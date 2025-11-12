@@ -8,57 +8,39 @@ on:
 
 jobs:
   laravel-tests:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    environment: Testing
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          # Make sure the actual branch is checked out when running on pull requests
-          ref: ${{ github.head_ref }}
-          # This is important to fetch the changes to the previous commit
-          fetch-depth: 0
-      - uses: shivammathur/setup-php@v2
+          php-version: '8.4'
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js & pnpm
+        uses: actions/setup-node@v4
         with:
-          php-version: '8.3'
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+          node-version: lts/*
+          cache: 'pnpm'
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
         with:
-          node-version: 22.x
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 10
-          run_install: false
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-composer-
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-      - name: Install Dependencies
+      - name: Install PHP Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Generate key
+      - name: Generate Laravel key
         run: php artisan key:generate
-      - name: Directory Permissions
+      - name: Set Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
-      - name: Create Database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-      - name: Install JS Dependencies
-        run: pnpm install
-      - name: Build JS assets
-        run: pnpm run build
-      - name: Execute tests
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan test
+      - name: Install & Build JS
+        run: pnpm install && pnpm run build
+      - name: Run Tests
+        run: ./vendor/bin/pest --parallel

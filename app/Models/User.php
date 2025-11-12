@@ -116,6 +116,7 @@ class User extends Authenticatable {
             ->sortByDesc('project.period_end')
             ->map(function ($participant): array {
             return ($participant->project_type == 'App\Models\Project') ? [
+                'id' => $participant->id,
                 'identifier' => $participant->project->year.'-'.$participant->project->number,
                 'project_id' => $participant->project->id,
                 'name' => $participant->project->name,
@@ -127,6 +128,7 @@ class User extends Authenticatable {
                 'approve_status' => $participant->approve_status,
                 'title' => $participant->title,
             ] : [
+                'id' => $participant->id,
                 'identifier' => 'A'.$participant->project->id,
                 'activity_id' => $participant->project->id,
                 'name' => $participant->project->name,

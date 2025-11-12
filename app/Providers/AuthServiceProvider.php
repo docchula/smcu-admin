@@ -6,7 +6,9 @@ use App\Models\Document;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -57,7 +59,19 @@ class AuthServiceProvider extends ServiceProvider
             return in_array('faculty', $userRoles) or in_array('activity', $userRoles);
         });
         Gate::define('view-transcript', function (User $user) {
-            return in_array('view_transcript', explode(',', $user->roles)) or $user->can('create-activity');
+            return in_array('view_transcript', explode(',', $user->roles)) or $user->can('create-activity') or $user->can('admin-action');
+        });
+
+        // API permissions
+        Gate::define('api-access', function (AuthenticatableContract $user) {
+            if ($user instanceof User) {
+                return $user->can('view-transcript');
+            }
+            if ($user instanceof \KeycloakGuard\User) {
+                return Auth::hasScope('students_activity');
+            }
+
+            return false;
         });
     }
 }
