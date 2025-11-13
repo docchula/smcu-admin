@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Checks\StorageCheck;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
@@ -48,5 +50,6 @@ class AppServiceProvider extends ServiceProvider
             UsedDiskSpaceCheck::new()->warnWhenUsedSpaceIsAbovePercentage(90)
                 ->failWhenUsedSpaceIsAbovePercentage(95),
         ]);
+        RateLimiter::for('mails', fn() => Limit::perHour(100));
     }
 }
