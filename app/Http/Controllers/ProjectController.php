@@ -620,7 +620,7 @@ class ProjectController extends Controller {
             if ($existingParticipant = $project->participants->where('user_id', $student->id)->first()) {
                 if ($request->filled('project') and (ProjectParticipant::TYPES_RANK[$existingParticipant->type] < ProjectParticipant::TYPES_RANK[$row['type']])) {
                     $messages [] = 'WARNING: '.$row['student_id'].' มีอยู่แล้วและมีตำแหน่งที่สูงกว่า ไม่บันทึกข้อมูลใหม่';
-                } elseif ($existingParticipant->type != $row['type'] or $existingParticipant->title != $row['title']) {
+                } elseif ($existingParticipant->type != $row['type'] or $existingParticipant->title != ($row['title'] ?? '')) {
                     $toAdd->add([
                         'user_id' => $student->id,
                         'user_name' => $student->name,
