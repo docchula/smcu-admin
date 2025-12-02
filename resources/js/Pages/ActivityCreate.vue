@@ -35,7 +35,7 @@
                         <InputError :message="form.errors.organization" class="mt-2"/>
                     </div>
                     <div class="col-span-2">
-                        <Label for="period_start" value="วันที่เริ่ม"/>
+                        <Label for="period_start" value="วันที่เริ่ม (ค.ศ.)"/>
                         <Input id="period_start" v-model="form.period_start" type="date" pattern="\d{4}-\d{2}-\d{2}" min="2024-01-01"
                                class="mt-1 block w-full" :disabled="view_only" :class="{'border-0': view_only}"
                         />
@@ -186,6 +186,12 @@
                     </template>
                 </FormSection>
             </template>
+            <p class="mt-2 text-xs text-gray-500 text-right">
+                สร้างเมื่อ {{ item.created_at }}
+                <span v-if="item.updated_at && (item.created_at !== item.updated_at)">
+                &emsp;แก้ไขเมื่อ {{ item.updated_at }}
+            </span>
+            </p>
         </div>
         <Link :href="route('activities.edit', {activity: item.id})" v-if="view_only && can_edit">
             <button
