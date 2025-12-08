@@ -12,8 +12,11 @@
 .env
 .env.backup
 .phpunit.result.cache
+_lighthouse_ide_helper.php
 docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 npm-debug.log
+programmatic-types.graphql
+schema-directives.graphql
 yarn-error.log

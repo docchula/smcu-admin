@@ -18,7 +18,17 @@ type Query {
     users: [User!]! @paginate(defaultCount: 10)
 
     "List multiple projects."
-    projects: [Project!]! @paginate(defaultCount: 10)
+    projects(
+        orderBy: _ @orderBy(columns: ["closure_approved_at", "id", "created_at", "updated_at"])
+    ): [Project!]! @paginate(defaultCount: 10)
+
+    "List all approved projects and activities with approved participant list"
+    approvedActivities(
+        "Select activities with approved_at after this time"
+        from: DateTime!
+        "Select activities with approved_at before this time"
+        until: DateTime!
+    ): [ApprovedActivity!]! @paginate(resolver: "App\\GraphQL\\Queries\\ApprovedActivities", defaultCount: 25)
 }
 
 "Account of a person who uses this application."
@@ -64,7 +74,7 @@ type Project {
     period_start: DateTime
     period_end: DateTime
     department_id: Int
-    duration: Int
+    duration: Float
     estimated_attendees: String
     closure_submitted_at: DateTime
     closure_approved_status: Int
@@ -83,9 +93,12 @@ type ProjectParticipant {
     created_at: DateTime
     updated_at: DateTime
 
+    "Role; either organizer, staff, or attendee; optional for Activity"
     type: String
+    "Role title, as set by project organizer"
     title: String
     verify_status: Int!
+    "Approval status; 1 if approved"
     approve_status: Int!
 
     user: User
@@ -105,4 +118,22 @@ type TranscriptRecord {
     role: String
     approve_status: Int!
     title: String
+}
+
+"A unified object representing an approved Project or Activity."
+type ApprovedActivity {
+    identifier: String!
+    "Project ID; present for Project type"
+    project_id: ID
+    "Activity ID; present for Activity type"
+    activity_id: ID
+    name: String!
+    organization: String!
+    period_start: DateTime!
+    period_end: DateTime!
+    duration: Float
+    approved_at: DateTime!
+    "Advisor name; absent in case of Activity"
+    advisor: String
+    participants: [ProjectParticipant!]!
 }

@@ -6,10 +6,11 @@ use App\Helper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -86,7 +87,7 @@ class User extends Authenticatable {
         // 'profile_photo_url',
     ];
 
-    public function participants(): \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function participants(): HasMany {
         return $this->hasMany(ProjectParticipant::class);
     }
 
@@ -97,14 +98,13 @@ class User extends Authenticatable {
     /**
      * @return Collection<ProjectParticipant>
      */
-    public function participantAndProjects(): Collection
-    {
+    public function participantAndProjects(): Collection {
         return $this->participants()->where('project_type', 'App\Models\Project')->with([
             'project', 'project.approvalDocument', 'project.summaryDocument',
         ])->orderByDesc('id')->get()->filter(fn(ProjectParticipant $participant) => $participant->project?->approvalDocument)->values();
     }
 
-    public function projects(): \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function projects(): HasMany {
         return $this->hasMany(Project::class);
     }
 
@@ -112,7 +112,7 @@ class User extends Authenticatable {
      * Returns the user's activity transcript, which is both
      * the projects and the activities (external projects) they have participated in.
      */
-    public function getActivityTranscript() {
+    public function getActivityTranscript(): Collection {
         if (!$this->relationLoaded('participants')) {
             $this->load(['participants', 'participants.project']);
             $this->participants->where('project_type', 'App\Models\Project')->load('project.department');
