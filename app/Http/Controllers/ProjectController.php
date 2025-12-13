@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use IntlDateFormatter;
@@ -196,8 +197,8 @@ class ProjectController extends Controller {
             'recurrence' => 'required|filled|string|max:20',
             'duration' => 'nullable|numeric|max:999|min:1',
             'estimated_attendees' => 'nullable|string|max:40',
-            'period_start' => 'required|date',
-            'period_end' => 'required|date',
+            'period_start' => ['required', Rule::date()->after(today()->subYears(2))->before(today()->addYears(10))],
+            'period_end' => ['required', Rule::date()->after(today()->subYears(2))->before(today()->addYears(10))],
             'department_id' => 'required|integer|min:1',
             'background' => 'required|string',
             'aims' => 'required|string',

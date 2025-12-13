@@ -34,7 +34,7 @@
                     เลือกประเภท "กิจกรรมครั้งเดียว" และ "โครงการครั้งแรก"
                     <p class="mt-2">กิจกรรมที่สามารถบันทึกใน Student Profile/Activity Transcript จะต้องมีระยะเวลาไม่น้อยกว่า 3 ชั่วโมง และสนับสนุน
                         Outcome ของหลักสูตรแพทยศาสตรบัณฑิต</p>
-                    <p class="mt-2 text-blue-600">ระวังกรอกเดือนและปีสลับกัน</p>
+                    <p class="mt-2 text-blue-600">ระวังกรอกวันและเดือนสลับกัน</p>
                 </template>
                 <template #form>
                     <div class="col-span-6">
