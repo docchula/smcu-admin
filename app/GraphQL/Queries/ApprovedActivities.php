@@ -14,9 +14,10 @@ final class ApprovedActivities {
         $perPage = $args['first'] ?? 25;
         $currentPage = $args['page'] ?? 1;
         $queryLimit = $perPage * $currentPage;
+        $betweenParam = [$args['from'], $args['until'] ?? now()->addDay()];
 
         $projectsQuery = Project::where('closure_approved_status', 1)
-            ->whereBetween('closure_approved_at', [$args['from'], $args['until']]);
+            ->whereBetween('closure_approved_at', $betweenParam);
         $projects = $projectsQuery->with([
             'participants' => fn($query) => $query->where('approve_status', '>=', 1),
             'participants.user',
@@ -26,15 +27,15 @@ final class ApprovedActivities {
                 'id', 'year', 'number', 'name', 'department_id', 'period_start', 'period_end', 'duration', 'closure_approved_at',
                 'closure_approved_status', 'advisor',
             ])
-            ->orderBy('closure_approved_at', 'desc')
+            ->orderBy('closure_approved_at')
             ->take($queryLimit)->get()
             ->map(fn($project) => [
                 'identifier' => $project->year.'-'.$project->number,
                 'project_id' => $project->id,
                 'name' => $project->name,
                 'organization' => Helper::formatDepartmentName($project->department?->name ?? ''),
-                'period_start' => $project->period_start?->addYears(543)->toDateTimeString(),
-                'period_end' => $project->period_end?->addYears(543)->toDateTimeString(),
+                'period_start' => $project->period_start?->toDateTimeString(),
+                'period_end' => $project->period_end?->toDateTimeString(),
                 'duration' => $project->duration,
                 'approved_status' => $project->closure_approved_status,
                 'approved_at' => $project->closure_approved_at,
@@ -43,8 +44,8 @@ final class ApprovedActivities {
             ])->toBase();
         // Note that participant approve_status is not set in Activity
         $activitiesQuery = Activity::with(['participants', 'participants.user'])
-            ->whereBetween('updated_at', [$args['from'], $args['until']]);
-        $activities = $activitiesQuery->orderBy('updated_at', 'desc')
+            ->whereBetween('updated_at', $betweenParam);
+        $activities = $activitiesQuery->orderBy('updated_at')
             ->take($queryLimit)->get()
             ->map(fn($activity) => [
                 'identifier' => 'A'.$activity->id,
@@ -57,7 +58,7 @@ final class ApprovedActivities {
                 'approved_at' => $activity->updated_at,
                 'participants' => $activity->participants,
             ]);
-        $merged = $projects->merge($activities)->sortByDesc('approved_at');
+        $merged = $projects->merge($activities)->sortBy('approved_at');
 
         return new LengthAwarePaginator(
             items: $merged->chunk($perPage)[$currentPage - 1] ?? [],

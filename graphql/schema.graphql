@@ -22,12 +22,12 @@ type Query {
         orderBy: _ @orderBy(columns: ["closure_approved_at", "id", "created_at", "updated_at"])
     ): [Project!]! @paginate(defaultCount: 10)
 
-    "List all approved projects and activities with approved participant list"
+    "List all approved projects and activities with approved participant list, sorted ascendingly by approved_at."
     approvedActivities(
         "Select activities with approved_at after this time"
         from: DateTime!
         "Select activities with approved_at before this time"
-        until: DateTime!
+        until: DateTime
     ): [ApprovedActivity!]! @paginate(resolver: "App\\GraphQL\\Queries\\ApprovedActivities", defaultCount: 25)
 }
 
