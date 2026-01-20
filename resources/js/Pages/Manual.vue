@@ -16,6 +16,7 @@
 
             <div class="mt-8 prose max-w-none">
                 <h3>เอกสารเผยแพร่</h3>
+                <h4>ระเบียบและประกาศที่<u>จะสิ้นสุด</u>การบังคับใช้ในวันที่ 28 กุมภาพันธ์ 2569</h4>
                 <ul>
                     <li>
                         <a href="https://drive.google.com/file/d/141srCm-FFy6VQQaJ_aoEEqHlYd1tRfCN/view?usp=sharing" target="_blank">
@@ -36,8 +37,26 @@
                     <li>
                         <a href="https://drive.google.com/file/d/1GfeFC-sDX-Kx2dl-MXWKMnge2wRwrtcx/view" target="_blank">
                             ประกาศคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง การดำเนินงานของฝ่าย สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย (พ.ศ.
-                            2558)
-                        </a>
+                            2558)</a>
+                    </li>
+                </ul>
+                <h4>ระเบียบและประกาศที่<u>จะเริ่ม</u>บังคับใช้ในวันที่ 1 มีนาคม 2569</h4>
+                <ul>
+                    <li>
+                        <a href="https://drive.google.com/file/d/1JU6bYiBbpIFDDLvT3GLgb3XmE8uuxgAl/view" target="_blank">
+                            ระเบียบคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ว่าด้วยสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย พ.ศ. 2568</a>
+                    </li>
+                    <li>
+                        <a href="https://drive.google.com/file/d/1qaBuCr9HtsgExaf9a0_KeTbp5csHINw3/view" target="_blank">
+                            ประกาศคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง การดำเนินงานของฝ่าย สโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย (พ.ศ.
+                            2568)</a>
+                    </li>
+                </ul>
+                <h4>เอกสารเผยแพร่อื่น ๆ</h4>
+                <ul>
+                    <li>
+                        <a href="https://drive.google.com/file/d/1d36njQQZQX4GZj118m1I4UrWcMU03uAN/view" target="_blank">
+                            ระเบียบสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ว่าด้วยการเลือกตั้งประธานนิสิตแพทย์ชั้นปี และคณะกรรมการชั้นปี พ.ศ. 2568</a>
                     </li>
                     <li>
                         <a href="https://drive.google.com/file/d/1aq299MPB_un7uqqOKZipXYSgTg2g4jcg/view" target="_blank">
@@ -45,16 +64,23 @@
                             จุฬาลงกรณ์มหาวิทยาลัย พ.ศ. 2564</a>
                     </li>
                     <li>
-                        <a href="https://drive.google.com/file/d/1iXVv_SVuAgKdNM5k3h2bXKD83YC43DMx/view?usp=drivesdk" target="_blank">
-                            ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง การขอใช้งานอีเมลของสโมสรสำหรับนิสิตเก่าที่ถูกลบบัญชีผู้ใช้</a>
+                        <a href="https://drive.google.com/file/d/1UaO39cPEC94fa-dOj3R0u-seQligpWLE/view" target="_blank">
+                            ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง แนวปฏิบัติในการลาเข้าร่วมกิจกรรม (พ.ศ. 2568)</a>
+                    </li>
+                    <li>
+                        <a href="https://drive.google.com/file/d/1rbM5aqyKq7xpjRYF9VTwFgzxvUUpyCFW/view" target="_blank">
+                            ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง การจัดการอีเมลของสโมสรสำหรับนิสิตเก่า (พ.ศ. 2568)</a>
+                        <ul>
+                            <li>
+                                <a href="https://drive.google.com/file/d/1iXVv_SVuAgKdNM5k3h2bXKD83YC43DMx/view" target="_blank">
+                                    ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง การขอใช้งานอีเมลของสโมสรสำหรับนิสิตเก่าที่ถูกลบบัญชีผู้ใช้
+                                    (พ.ศ. 2565)</a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="https://drive.google.com/file/d/1O6Im8tb5pNIAfPvZkUPoxu_I6m9dCCwP/view" target="_blank">
-                            ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง แนวทางการรับ-ส่งหนังสือทางอิเล็กทรอนิกส์กับสโมสร</a>
-                    </li>
-                    <li>
-                        <a href="https://drive.google.com/file/d/1at8wFoLkw_E99cKdylHECXxEJY5Iwk9V/view" target="_blank">
-                            ระเบียบสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ว่าด้วยการเลือกตั้งประธานนิสิตแพทย์ชั้นปี พ.ศ. 2564</a>
+                            ประกาศสโมสรนิสิตคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย เรื่อง แนวทางการรับ-ส่งหนังสือทางอิเล็กทรอนิกส์กับสโมสร (พ.ศ. 2564)</a>
                     </li>
                 </ul>
             </div>
