@@ -599,9 +599,16 @@ class ProjectController extends Controller {
                 $messages [] = 'ERROR: ข้อมูลบทบาท (type) ไม่ถูกต้อง';
                 break;
             }
-            if (!empty($row['title']) and mb_strlen($row['title']) > 100) {
-                $messages [] = 'ERROR: ข้อมูลตำแหน่ง (title) ยาวเกินไป: '.$row['title'];
-                break;
+            if (!empty($row['title'])) {
+                $titleLength = mb_strlen($row['title']);
+                if ($titleLength > 90) {
+                    $messages [] = 'ERROR: ตำแหน่ง (title) ยาวเกินไป: '.$row['title'];
+                    break;
+                }
+                $row['title'] = Helper::stripEmoji($row['title']);
+                if (mb_strlen($row['title']) != $titleLength) {
+                    $messages [] = 'WARNING: ตัดอักขระต้องห้ามออกจากชื่อตำแหน่ง (title): '.$row['title'];
+                }
             }
             if (!$student = User::where('email', $row['student_id'])->orWhere('student_id', $row['student_id'])->first()) {
                 $vestaResponse = VestaClient::retrieveStudent($row['student_id'], $request->user()->email, ['student_id', 'title', 'first_name', 'last_name', 'nickname', 'email']);
