@@ -1,11 +1,11 @@
 <template>
     <ActionSection>
         <template #title>
-            โครงการ
+            ประวัติการเข้าร่วมกิจกรรม (Activity Transcript)
         </template>
 
         <template #description>
-            โครงการที่ฉันมีส่วนร่วม
+            โครงการ/กิจกรรมที่ฉันมีส่วนร่วม
             <Link :href="route('profile.printMyProjects')" class="text-green-600 ml-2 inline-block">
                 <PrinterIcon class="inline-block h-5 w-5" /> พิมพ์
             </Link>

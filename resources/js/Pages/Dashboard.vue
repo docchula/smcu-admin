@@ -80,9 +80,9 @@ const projectsAwaitingVerify = participants.map(participant => participant.proje
             <div class="p-8 sm:px-20 w-full bg-white border border-gray-200 sm:rounded-lg shadow-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h5 class="text-xl font-bold leading-none text-gray-900">โครงการที่ฉันมีส่วนร่วม</h5>
-                    <!-- a class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" href="#">
-                        View all
-                    </a -->
+                    <a class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" :href="route('profile.show')">
+                        ดูทั้งหมด
+                    </a>
                 </div>
                 <div class="flow-root">
                     <ul class="divide-y divide-gray-200" role="list">

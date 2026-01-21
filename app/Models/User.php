@@ -100,7 +100,8 @@ class User extends Authenticatable {
      */
     public function participantAndProjects(): Collection {
         return $this->participants()->where('project_type', 'App\Models\Project')->with([
-            'project', 'project.approvalDocument', 'project.summaryDocument',
+            'project:id,created_at,updated_at,year,number,name,period_end,department_id,closure_submitted_at,closure_approved_status',
+            'project.approvalDocument', 'project.summaryDocument',
         ])->orderByDesc('id')->get()->filter(fn(ProjectParticipant $participant) => $participant->project?->approvalDocument)->values();
     }
 
