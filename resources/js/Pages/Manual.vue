@@ -40,7 +40,7 @@
                             2558)</a>
                     </li>
                 </ul>
-                <h4>ระเบียบและประกาศที่<u>จะเริ่ม</u>บังคับใช้ในวันที่ 1 มีนาคม 2569</h4>
+                <h4>ระเบียบและประกาศที่บังคับใช้ในปัจจุบัน</h4>
                 <ul>
                     <li>
                         <a href="https://drive.google.com/file/d/1JU6bYiBbpIFDDLvT3GLgb3XmE8uuxgAl/view" target="_blank">
