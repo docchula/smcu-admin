@@ -48,7 +48,10 @@ class ActivityController extends Controller {
         if ($activity->participants) {
             $activity->load('participants.user');
             $activity->participants = $activity->participants->map(fn(ProjectParticipant $participant) => [
-                ...$participant->toArray(), 'name' => $participant->user->name, 'student_id' => $participant->user->student_id,
+                ...$participant->toArray(),
+                'name' => $participant->user->name,
+                'student_id' => $participant->user->student_id,
+                'type' => $participant->type ?? '', // make null type empty string instead, to properly display "-" in select
             ]);
         }
 
@@ -85,7 +88,7 @@ class ActivityController extends Controller {
             'organization' => 'required|filled|string|max:255',
             'period_start' => 'required|date',
             'period_end' => 'required|date',
-            'duration' => 'required|numeric|max:999|min:1',
+            'duration' => 'nullable|numeric|max:999|min:1', // make nullable 2026-02
             'description' => 'nullable|string|max:4000',
             'attachment' => 'nullable|file|mimes:pdf,docx,doc|max:20000', // File size limit: 20 MB
             'participants' => 'nullable|array',
