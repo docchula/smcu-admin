@@ -46,7 +46,6 @@ const props = defineProps({
     keyword: String,
     user: Object,
     transcript: Array,
-    static_departments: Array,
 });
 const searchKeyword = ref(props.keyword ?? '');
 const searchMessage = ref('');

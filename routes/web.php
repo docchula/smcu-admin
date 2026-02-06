@@ -38,6 +38,7 @@ Route::get('/board/{year?}', function (?string $year = null) {
     abort_if($year && (!is_numeric($year) or !in_array($year, Personnel::getYearList())), 404);
     return view('personnel', ['year' => $year ?? Helper::buddhistYear()]);
 });
+Route::get('transcript/view/{identifier}', [TranscriptController::class, 'publicView'])->name('transcript.public-view');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('auth/google/faculty', [GoogleController::class, 'redirectWithoutHd'])->name('login.googleWithoutHd');

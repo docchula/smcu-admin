@@ -162,6 +162,7 @@ class ProjectClosureController extends Controller {
         $sortOrder = [5 => 0, 6 => 1, 1 => 2, -2 => 3, -1 => 4, 10 => 5, 3 => 6, -3 => 7, 0 => 8];
 
         return Inertia::render('ProjectApprovalIndex', [
+            // @todo docs Project::searchQuery() limits to 1 year back by default
             'list' => Project::searchQuery($keyword)->with('participants')
                 ->withCount('participants') // to get participants_count
                 ->addSelect(['closure_submitted_at', 'closure_approved_at', 'closure_approved_status', 'closure_approved_message'])

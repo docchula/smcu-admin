@@ -3,9 +3,10 @@ import {CheckCircleIcon, XCircleIcon} from '@heroicons/vue/20/solid';
 import {PROJECT_PARTICIPANT_ROLES} from '@/static';
 import {TranscriptItem} from '@/types';
 
-const props = defineProps<{
-    transcript: TranscriptItem[],
-}>();
+defineProps({
+    transcript: Array<TranscriptItem>,
+    hideTick: {type: Boolean, default: false},
+});
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const props = defineProps<{
                     เลขที่
                 </th>
                 <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                    โครงการ
+                    โครงการ ({{ transcript.length }})
                 </th>
                 <th scope="col" class="px-2 py-2 md:px-4 md:py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                     หน่วยงาน
@@ -60,7 +61,7 @@ const props = defineProps<{
                 <td class="px-2 py-2 md:px-4 text-sm">{{ item.duration }}</td>
                 <td class="px-2 py-2 md:px-4">
                     {{ PROJECT_PARTICIPANT_ROLES[item.role] ?? item.role ?? '' }}
-                    <CheckCircleIcon v-if="item.approve_status === 1" class="inline-block ml-1 h-4 w-4 text-green-500"/>
+                    <CheckCircleIcon v-if="item.approve_status === 1 && !hideTick" class="inline-block ml-1 h-4 w-4 text-green-500"/>
                     <XCircleIcon v-if="item.approve_status === -1" class="inline-block ml-1 h-4 w-4 text-red-500"/>
                     <p v-if="item.title" class="text-xs">{{ item.title }}</p>
                 </td>

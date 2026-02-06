@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -149,6 +150,15 @@ class User extends Authenticatable {
         });
 
         return $myParticipants->sortByDesc('approve_status')->values();
+    }
+
+    public function getTranscriptLink(): string {
+        if (!$this->public_identifier) {
+            $this->public_identifier = Str::random(12);
+            $this->save();
+        }
+
+        return route('transcript.public-view', ['identifier' => $this->public_identifier]);
     }
 
     public static function searchQuery(string $keyword = null): ?Builder {
