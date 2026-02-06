@@ -26,6 +26,9 @@
         </template>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <p v-if="!searchKeyword" class="mb-2 text-xs text-gray-500">
+                กำลังแสดงข้อมูลโครงการเฉพาะในช่วงปีก่อนหน้าและปีปัจจุบัน หากต้องการดูโครงการที่เก่ากว่านั้น ให้ค้นหาด้วยปีวาระ (พ.ศ.) หรือชื่อโครงการ
+            </p>
             <SearchInput class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
             <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -94,6 +97,7 @@
                 </table>
             </div>
             <p class="mt-6 mb-4 text-xs text-gray-500">
+                หน้านี้มี {{ list?.length }} โครงการ ได้รับอนุมัติแล้ว {{ list?.filter(v => v.status === 10).length }} โครงการ<br/>
                 สถานะโครงการ ได้แก่ <span class="bg-yellow-300">ส่งปิดโครง</span> > <span class="bg-blue-300">ผู้เกี่ยวข้องยืนยัน</span>ตามเกณฑ์ที่กำหนด
                 > <span class="bg-green-300">อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ</span> หรือ <span class="bg-gray-300">ไม่อนุมัติ ให้แก้ไข</span><br/>
                 กรณีต้องการส่งขออนุมัติรายงานผลโครงการนอกกำหนดเวลา ให้แจ้งให้นิสิตบันทึกข้อมูลผลการดำเนินโครงการให้เรียบร้อย (กด "ไม่ส่ง"
