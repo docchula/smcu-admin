@@ -592,6 +592,7 @@ class ProjectController extends Controller {
                 $messages [] = 'ERROR: student_id ไม่ถูกต้อง';
                 break;
             }
+            $row['type'] ??= null; // set to null if undefined
             if ($request->filled('project') and (empty($row['type']) or !in_array($row['type'], ['organizer', 'staff', 'attendee']))) {
                 $messages [] = 'ERROR: type ไม่ถูกต้อง';
                 break;
