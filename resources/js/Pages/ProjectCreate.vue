@@ -335,7 +335,10 @@
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select v-model="member.type" required
-                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    :disabled="member.source === 'กองวัสดุร่วม (ไม่ต้องกรอกในโครงการ)'"
+                                    :class="member.source === 'กองวัสดุร่วม (ไม่ต้องกรอกในโครงการ)' ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'"
+                                >
                                     <optgroup label="งบดำเนินงาน"/>
                                     <optgroup label="- ค่าตอบแทน">
                                         <option value="ค่าวิทยากร">ค่าตอบแทนวิทยากร</option>
@@ -363,10 +366,12 @@
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select v-model="member.source" required
+                                        @change="handleMaterialSource(member)"
                                         class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="สพจ.">สพจ.</option>
                                     <option hidden disabled value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
                                     <option value="งานกิจการนิสิต">งานกิจการนิสิต</option>
+                                    <option value="กองวัสดุร่วม (ไม่ต้องกรอกในโครงการ)">กองวัสดุร่วม (ไม่ต้องกรอกในโครงการ)</option>
                                     <option value="กองทุนวันอานันทมหิดล">กองทุนวันอานันทมหิดล</option>
                                     <option value="กองทุนอื่นของคณะ">กองทุนอื่นของคณะ</option>
                                     <option value="เงินบริจาค/สนับสนุน">เงินบริจาค/สนับสนุน</option>
@@ -579,7 +584,14 @@ export default {
             this.form.type = 'once';
             this.form.recurrence = 0;
             this.form.department_id = 38;
-        }
+        },
+        handleMaterialSource(member) {
+            // by request of SMCU69
+            if (member.source === 'กองวัสดุร่วม (ไม่ต้องกรอกในโครงการ)') {
+                member.type = 'ค่าวัสดุ';
+                if(!member.name || member.name.trim() === '') member.name = 'งบประมาณวัสดุวางแผนจะซื้อ........';
+            }
+        },
     },
 
     props: {
