@@ -6,12 +6,12 @@ services:
     #     args:
     #         WWWGROUP: '${WWWGROUP}'
     # image: 'sail-8.3/app'
-    image: ariaieboy/sail-runtime-image:8.3
+    image: ariaieboy/sail-runtime-image:8.4
     # user: "${WWWUSER}:${WWWGROUP}"
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
-      - '${APP_PORT:-80}:80'
+      - '${APP_PORT:-8080}:80'
       - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
     environment:
       WEBSERVER: cli
