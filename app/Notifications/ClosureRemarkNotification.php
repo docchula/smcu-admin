@@ -12,13 +12,9 @@ use Illuminate\Notifications\Notification;
  * Notification sent to project organizers when the faculty staff updates the remark on project closure.
  */
 class ClosureRemarkNotification extends Notification implements ShouldQueue {
-    use Queueable;
+    use MailNotificationTrait, Queueable;
 
     public function __construct(public Project $project, public string $remark) {
-    }
-
-    public function via($notifiable): array {
-        return ['mail'];
     }
 
     public function toMail($notifiable): MailMessage {
@@ -32,17 +28,6 @@ class ClosureRemarkNotification extends Notification implements ShouldQueue {
 
     public function toArray($notifiable): array {
         return ['มีเพิ่มเติมหมายเหตุในการพิจารณา โครงการที่ '.$this->project->year.'-'.$this->project->number.' '.$this->project->name.' แล้ว!'];
-    }
-
-    /**
-     * Determine the notification's delivery delay.
-     *
-     * @return array<string, \Illuminate\Support\Carbon>
-     */
-    public function withDelay(object $notifiable): array {
-        return [
-            'mail' => now()->addMinutes(10),
-        ];
     }
 
     /**

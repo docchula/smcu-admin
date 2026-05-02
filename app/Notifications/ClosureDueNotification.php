@@ -8,20 +8,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\Middleware\RateLimited;
 
 class ClosureDueNotification extends Notification implements ShouldQueue {
-    use Queueable;
+    use Queueable, MailNotificationTrait;
 
     public function __construct(public Project $project, public ProjectParticipant $participant) {
-    }
-
-    public function middleware(): array {
-        return [(new RateLimited('mails'))->releaseAfter(3600)];
-    }
-
-    public function via($notifiable): array {
-        return ['mail'];
     }
 
     public function toMail($notifiable): MailMessage {

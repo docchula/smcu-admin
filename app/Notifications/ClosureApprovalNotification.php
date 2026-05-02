@@ -7,23 +7,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\Middleware\RateLimited;
 
 /**
  * Notification sent to project organizers when the faculty staff updates the remark on project closure.
  */
 class ClosureApprovalNotification extends Notification implements ShouldQueue {
-    use NotifyParticipantsTrait, Queueable;
+    use NotifyParticipantsTrait, MailNotificationTrait, Queueable;
 
     public function __construct(public Project $project) {
-    }
-
-    public function middleware(): array {
-        return [(new RateLimited('mails'))->releaseAfter(3600)];
-    }
-
-    public function via($notifiable): array {
-        return ['mail'];
     }
 
     public function toMail($notifiable): MailMessage {
@@ -36,16 +27,5 @@ class ClosureApprovalNotification extends Notification implements ShouldQueue {
 
     public function toArray($notifiable): array {
         return ['อนุมัติรายงานผล โครงการที่ '.$this->project->year.'-'.$this->project->number.' '.$this->project->name.' แล้ว!'];
-    }
-
-    /**
-     * Determine the notification's delivery delay.
-     *
-     * @return array<string, \Illuminate\Support\Carbon>
-     */
-    public function withDelay(object $notifiable): array {
-        return [
-            'mail' => now()->addMinutes(5),
-        ];
     }
 }
