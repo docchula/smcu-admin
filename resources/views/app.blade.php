@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="robots" content="noindex">
 
-        <title inertia>{{ config('app.name', 'SMCU Admin') }}</title>
+        <title data-inertia>{{ config('app.name', 'SMCU Admin') }}</title>
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">

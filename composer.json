@@ -11,7 +11,7 @@
         "docchula/vesta-client": "^1.0.2",
         "google/apiclient": "^2.15.0",
         "guzzlehttp/guzzle": "^7.3",
-        "inertiajs/inertia-laravel": "^2.0",
+        "inertiajs/inertia-laravel": "^3.0",
         "intervention/image": "^4.0",
         "intervention/image-laravel": "^4.0",
         "laravel/framework": "^13.0",
