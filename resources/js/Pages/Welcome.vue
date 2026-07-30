@@ -24,7 +24,7 @@
                                 <p class="block mb-4">เมื่อกดปุ่มต่อไปนี้ ถือว่าท่านได้ยินยอมให้มีการดำเนินการต่อข้อมูลส่วนบุคคลตาม
                                     <Link :href="route('policy.show')" class="text-green-500">นโยบายการคุ้มครองข้อมูลส่วนบุคคล</Link>
                                 </p>
-                                <div class="rounded-md shadow">
+                                <div class="rounded-md shadow-sm">
                                     <a :href="route('login.google')"
                                        class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10">
                                         Log in with Docchula

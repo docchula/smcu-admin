@@ -20,7 +20,7 @@
                 <span class="text-gray-300">เช่น "2566-32,2565-41"</span>
             </p>
 
-            <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div v-if="list" class="shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>

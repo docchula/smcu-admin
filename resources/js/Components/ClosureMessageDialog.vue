@@ -18,7 +18,7 @@
                         id="notify_checkbox"
                         v-model="form.notify"
                         type="checkbox"
-                        class="size-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+                        class="size-4 rounded-sm border-gray-300 text-orange-600 focus:ring-orange-600"
                     />
                 </div>
                 <div class="text-sm/6">

@@ -74,7 +74,7 @@
                             <label for="description" class="block text-sm font-medium text-gray-700">หมายเหตุ</label>
                             <div class="mt-1">
                                 <textarea id="description" rows="3" :disabled="view_only"
-                                          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                                          class="shadow-xs focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                                           :class="{'border-0': view_only}" v-model.trim="form.description"></textarea>
                             </div>
                             <InputError :message="form.errors.description" class="mt-1"/>
@@ -118,7 +118,7 @@
                             <td class="px-3 py-1 whitespace-nowrap">
                                 <select v-model="member.type" required :disabled="view_only"
                                         :class="{'border-red-500': !member.type, 'border-0': view_only}"
-                                        class="mt-1 block w-full py-1 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        class="mt-1 block w-full py-1 px-2 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">-</option>
                                     <option v-for="(name, value, i) in PROJECT_PARTICIPANT_ROLES"
                                             v-bind:key="value" :value="value">
@@ -150,7 +150,7 @@
                             เพิ่มนิสิต
                         </Button>
                         <a @click="showImportParticipantDialog = true" v-if="item.id"
-                           class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                           class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                             <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline"/>
                             <span>นำเข้าด้วยไฟล์ Excel</span>
                         </a>
@@ -167,7 +167,7 @@
                     </template>
                     <template #form>
                         <a v-if="view_only && item.attachment_path" :href="route('activities.download', {activity: item.id})" target="_blank"
-                           class="block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                           class="block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-hidden focus:border-blue-900 focus:ring-3 focus:ring-blue-300 disabled:opacity-25 transition">
                             ดูเอกสาร
                         </a>
                         <AttachmentBox v-else class="col-span-6" v-model="form.attachment" :disabled="view_only"
@@ -195,7 +195,7 @@
         </div>
         <Link :href="route('activities.edit', {activity: item.id})" v-if="view_only && can_edit">
             <button
-                class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
+                class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                 <PencilIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </Link>

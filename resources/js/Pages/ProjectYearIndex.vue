@@ -15,7 +15,7 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
             <p class="text-xs text-gray-300"><a class="cursor-pointer" @click="toggleTableMode">แสดงแบบตาราง</a></p>
-            <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div v-if="list" class="shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>

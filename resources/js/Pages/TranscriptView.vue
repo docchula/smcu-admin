@@ -10,7 +10,7 @@
             <Label>ชื่อ/อีเมล Docchula/เลขประจำตัวนิสิต</Label>
             <search-input v-model="searchKeyword" :status="searchMessage"/>
 
-            <div v-if="user" class="my-4 p-4 flex gap-4 items-center shadow overflow-hidden border-b border-gray-200 sm:rounded-lg bg-white">
+            <div v-if="user" class="my-4 p-4 flex gap-4 items-center shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg bg-white">
                 <div class="items-center">
                     <UserIcon class="h-10 w-10 text-gray-400"/>
                 </div>
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <ActivityTranscriptTable :transcript="transcript" v-if="user && transcript"
-                                     class="overflow-hidden shadow sm:rounded-lg"/>
+                                     class="overflow-hidden shadow-sm sm:rounded-lg"/>
         </div>
     </app-layout>
 </template>

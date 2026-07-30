@@ -11,7 +11,7 @@
     <Combobox v-else v-model="selected" :name="name">
         <ComboboxInput
             :id="name"
-            class="w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+            class="w-full border-gray-300 focus:border-indigo-300 focus:ring-3 focus:ring-indigo-200/50 rounded-md shadow-xs"
             :placeholder="placeholder"
             @change="query = $event.target.value"
         />

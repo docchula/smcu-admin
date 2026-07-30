@@ -17,10 +17,10 @@
             </p>
         </div>
 
-        <div class="bg-gray-400 bg-opacity-25 text-gray-500 px-6 py-1">
+        <div class="bg-gray-400/25 text-gray-500 px-6 py-1">
             ขั้นตอนการดำเนินโครงการ (<a :href="route('manual')" target="_blank" class="font-semibold text-green-700">คู่มือ</a>)
         </div>
-        <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2">
+        <div class="bg-gray-200/25 grid grid-cols-1 md:grid-cols-2">
             <div class="p-6">
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

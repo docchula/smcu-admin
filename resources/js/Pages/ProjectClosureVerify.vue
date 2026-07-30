@@ -17,10 +17,10 @@
             </p>
         </template>
         <div class="max-w-7xl mx-auto pt-4 pb-10 sm:px-6 lg:px-8">
-            <div v-if="!my_participant" class="p-4 my-4 rounded bg-orange-100 border border-orange-600 text-orange-600">
+            <div v-if="!my_participant" class="p-4 my-4 rounded-sm bg-orange-100 border border-orange-600 text-orange-600">
                 คุณไม่ใช่ผู้มีส่วนร่วมในโครงการนี้
             </div>
-            <div v-else-if="isSubmitted" class="p-4 my-4 rounded bg-blue-100 border border-blue-600 text-blue-600">
+            <div v-else-if="isSubmitted" class="p-4 my-4 rounded-sm bg-blue-100 border border-blue-600 text-blue-600">
                 <p class="mb-1 font-bold">คุณบันทึกการตรวจสอบข้อมูลรายชื่อนิสิตผู้เกี่ยวข้องแล้ว</p>
                 รอง/ผู้ช่วยคณบดีด้านกิจการนิสิต จะพิจารณาบันทึกโครงการนี้ใน Activity Transcript หลังจากที่
                 <ol class="list-decimal list-inside">
@@ -28,7 +28,7 @@
                     <li>หนังสือรายงานผลโครงการได้รับการอนุมัติ</li>
                 </ol>
             </div>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <ProjectClosureStatus :participants="item.participants"/>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         นิสิตผู้เกี่ยวข้อง
@@ -137,7 +137,7 @@
                 </div>
             </div>
             <div v-if="my_participant && my_participant.type !== 'attendee' && !isSubmitted"
-                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                 class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         กรุณาตรวจสอบรายชื่อนิสิตผู้เกี่ยวข้องข้างต้น
@@ -192,7 +192,7 @@
                             <p class="my-4 text-sm">ผู้ช่วย/รองคณบดีด้านกิจการนิสิต จะตรวจสอบข้อมูลเพื่อพิจารณาบันทึกใน Activity Transcript ต่อไป</p>
                         </div>
                     </div>
-                    <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
+                    <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow-sm sm:rounded-bl-md sm:rounded-br-md">
                         <Button type="button" :disabled="form.processing || !form.approve" @click="submit">
                             บันทึก
                         </Button>

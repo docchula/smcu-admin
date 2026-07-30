@@ -18,7 +18,7 @@
             <div class="mt-4">
                 <label for="type" class="block text-sm font-medium text-gray-700">บทบาท</label>
                 <select id="type" v-model="form.type" required
-                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     <option v-for="(name, value) in PROJECT_PARTICIPANT_ROLES"
                             :key="value" :value="value">
                         {{ name }}

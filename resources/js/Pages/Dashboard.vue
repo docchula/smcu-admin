@@ -26,7 +26,7 @@ const projectsAwaitingVerify = participants.map(participant => participant.proje
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-12">
             <div v-if="projectsAwaitingVerify.length > 0"
-                 class="animate-pulse bg-purple-100 border-purple-600 text-purple-600 border-l-4 rounded p-4 mb-6">
+                 class="animate-pulse bg-purple-100 border-purple-600 text-purple-600 border-l-4 rounded-sm p-4 mb-6">
                 <p class="font-bold">
                     กรุณารับรองรายชื่อนิสิตผู้เกี่ยวข้อง
                 </p>
@@ -50,7 +50,7 @@ const projectsAwaitingVerify = participants.map(participant => participant.proje
                     </tr>
                 </table>
             </div>
-            <div v-if="projectsAwaitingSummary.length > 0" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded p-4 mb-6" role="alert">
+            <div v-if="projectsAwaitingSummary.length > 0" class="bg-blue-100 border-blue-500 text-blue-500 border-l-4 rounded-sm p-4 mb-6" role="alert">
                 <p class="font-bold">
                     มี {{ projectsAwaitingSummary.length }} โครงการที่กำลังดำเนินงานอยู่
                 </p>

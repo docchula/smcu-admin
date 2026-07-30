@@ -22,7 +22,7 @@ const toggleSelection = (i: number) => {
             <template v-for="i in 17">
                 <div @click="toggleSelection(i)" v-if="!view || model?.includes(i)" class="item transition p-0.5"
                      :class="{'opacity-30 hover:opacity-50': !model?.includes(i),
-                     'ring ring-gray-300 hover:opacity-80': model?.includes(i) && !view, 'cursor-pointer': !view}">
+                     'ring-3 ring-gray-300 hover:opacity-80': model?.includes(i) && !view, 'cursor-pointer': !view}">
                     <img :src="'/assets/sdgs/' + String(i).padStart(2, '0') + '.svg'" :alt="'SDG '+ i"
                          class="w-full max-w-28 lg:max-w-none opacity-100 m-auto"/>
                 </div>

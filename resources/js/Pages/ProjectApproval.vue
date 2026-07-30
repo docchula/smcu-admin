@@ -21,7 +21,7 @@
             </p>
         </template>
         <div class="max-w-7xl mx-auto pt-4 pb-10 sm:px-6 lg:px-8">
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="flex px-4 py-5 sm:px-6">
                     <h3 class="flex-auto text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลโครงการ
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <ProjectClosureStatus v-if="item.closure_status <= 5" :participants="item.participants"/>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         นิสิตผู้เกี่ยวข้อง
@@ -204,7 +204,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="hasRejectedVerify" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="hasRejectedVerify" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         นิสิตที่ไม่รับรองรายชื่อ
@@ -229,7 +229,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="item.closure_status <= -1 || item.closure_status >= 10" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.closure_status <= -1 || item.closure_status >= 10" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ผลการอนุมัติรายงานผลโครงการ
@@ -252,14 +252,14 @@
             <div v-if="!(item.closure_status >= 1 && item.closure_status <= 5) && item.closure_status !== 0" class="relative flex gap-x-3">
                 <div class="flex h-6 items-center">
                     <input id="force_approve" v-model="forceShowApproveBox"
-                           type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"/>
+                           type="checkbox" class="h-4 w-4 rounded-sm border-gray-300 text-indigo-600 focus:ring-indigo-600"/>
                 </div>
                 <div class="text-sm leading-6">
                     <label for="force_approve" class="font-medium text-gray-700">แก้ไขผลการอนุมัติ/ไม่อนุมัติ</label>
                 </div>
             </div>
             <div v-if="(item.closure_status >= 1 && item.closure_status <= 5) || forceShowApproveBox"
-                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+                 class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         อนุมัติรายงานผลโครงการ และรายชื่อนิสิตผู้เกี่ยวข้องหรือไม่
@@ -326,7 +326,7 @@
                         </div>
                         <InputError :message="form.errors.approve_participants" class="mt-2"/>
                     </div>
-                    <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow sm:rounded-bl-md sm:rounded-br-md">
+                    <div class="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 shadow-sm sm:rounded-bl-md sm:rounded-br-md">
                         <Button type="button" :disabled="form.processing || !form.approve" @click="submit">
                             บันทึก
                         </Button>

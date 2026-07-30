@@ -19,7 +19,7 @@
                 </svg>
                 <div class="text-sm text-gray-600">
                     <label
-                        class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                         <input :accept="accept" class="sr-only"
                                type="file"
                                @input="emit('update:modelValue', $event.target.files[0])">

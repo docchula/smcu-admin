@@ -3,7 +3,7 @@
         <Head title="โครงการ"/>
         <template #header>
             <div class="flex flex-wrap gap-y-4 items-center">
-                <div class="flex-grow">
+                <div class="grow">
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                         โครงการ
                     </h2>
@@ -12,7 +12,7 @@
                     <Menu v-if="is_faculty || can_view_transcript" as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
-                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2"
                             >
                                 สำหรับอาจารย์
                             </MenuButton>
@@ -27,7 +27,7 @@
                             leave-to-class="transform scale-95 opacity-0"
                         >
                             <MenuItems
-                                class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+                                class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden"
                             >
                                 <Link v-if="is_faculty" :href="route('projects.approvalIndex')">
                                     <MenuItem v-slot="{ active }">
@@ -63,7 +63,7 @@
                     <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
-                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2"
                             >
                                 <DocumentChartBarIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                                 รายงาน
@@ -79,7 +79,7 @@
                             leave-to-class="transform scale-95 opacity-0"
                         >
                             <MenuItems
-                                class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+                                class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden"
                             >
                                 <Link :href="route('projects.indexOfYear')">
                                     <MenuItem v-slot="{ active }">
@@ -132,7 +132,7 @@
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <search-input class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div class="shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>
@@ -184,7 +184,7 @@
         </div>
         <Link :href="route('projects.create')">
             <button
-                class="p-0 w-16 h-16 bg-yellow-600 rounded-full hover:bg-yellow-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
+                class="p-0 w-16 h-16 bg-yellow-600 rounded-full hover:bg-yellow-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                 <PlusIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </Link>

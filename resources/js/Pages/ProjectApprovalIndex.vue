@@ -3,7 +3,7 @@
         <Head title="สถานะการอนุมัติรายงานผล"/>
         <template #header>
             <div class="flex flex-wrap gap-y-4 items-center">
-                <div class="flex-grow">
+                <div class="grow">
                     <Link :href="route('projects.index')" class="mb-4 flex items-center text-gray-700">
                         <ArrowLeftIcon class="inline h-3 mr-2"/>
                         <p>โครงการ</p>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="flex-auto flex items-center justify-end gap-2">
                     <Link :href="route('transcript.index')"
-                       class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-purple-500 border-purple-500 border rounded-lg shadow hover:shadow-md focus:ring-purple-500 focus:ring-offset-purple-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                       class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-purple-500 border-purple-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-purple-500 focus:ring-offset-purple-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2"
                     >
                         ดู <span class="hidden sm:inline px-1">Activity </span> Transcript ของนิสิต
                     </Link>
@@ -30,7 +30,7 @@
                 กำลังแสดงข้อมูลโครงการเฉพาะในช่วงปีก่อนหน้าและปีปัจจุบัน หากต้องการดูโครงการที่เก่ากว่านั้น ให้ค้นหาด้วยปีวาระ (พ.ศ.) หรือชื่อโครงการ
             </p>
             <SearchInput class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
-            <div v-if="list" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div v-if="list" class="shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>

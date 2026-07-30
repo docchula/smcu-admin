@@ -15,7 +15,7 @@
                 {{ item.name }}
             </p>
             <div v-if="item.can['update-project'] && item.documents.length === 0"
-                 class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-yellow-400">
+                 class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4 ring-4 ring-yellow-400">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         สร้างเอกสารขออนุมัติโครงการ
@@ -23,7 +23,7 @@
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     <a :href="route('projects.generateApprovalDocument', {project: item.id})"
-                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบขออนุมัติโครงการ</a>
+                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดแบบขออนุมัติโครงการ</a>
                     <p class="text-sm text-gray-700">เมื่อดาวน์โหลดเอกสารแล้ว กรุณาแก้ไขเพิ่มเติมข้อมูลต่าง ๆ ให้ครบถ้วน
                         และปรับแก้การจัดหน้าให้เรียบร้อยก่อนส่งขออนุมัติตามลำดับขั้น</p>
                     <p v-if="item.expense.filter(e => e.source === 'ฝ่ายกิจการนิสิต' || e.source === 'งานกิจการนิสิต').length > 0" class="text-yellow-700">
@@ -31,7 +31,7 @@
                         ควรนำร่างเอกสารปรึกษาเจ้าหน้าที่งานกิจการนิสิต เพื่อตรวจสอบความถูกต้องก่อนส่งขออนุมัติ</p>
                 </div>
             </div>
-            <div v-if="item.shouldBeClosed" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-blue-400">
+            <div v-if="item.shouldBeClosed" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4 ring-4 ring-blue-400">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         รายงานผลการดำเนินโครงการ
@@ -48,7 +48,7 @@
                             (โครงการจะไม่ได้รับการพิจารณาบันทึก Activity Transcript จนกว่าเอกสารรายงานผลจะได้รับอนุมัติ)
                         </p>
                         <a :href="route('projects.generateSummaryDocument', {project: item.id})"
-                           class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                           class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">
                             ดาวน์โหลดแบบรายงานผลโครงการ
                         </a>
                         &ensp;แก้ไขเพิ่มเติมรายละเอียดในไฟล์ แล้ว
@@ -62,7 +62,7 @@
                             ข้อมูลผลการดำเนินโครงการ มีผลต่อการพิจารณางบประมาณโครงการ/ฝ่ายครั้งถัดไป
                         </p>
                         <inertia-link :href="route('projects.closureForm', {project: item.id})"
-                                      class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                                      class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">
                             บันทึกผลการดำเนินโครงการ และสร้างแบบรายงานผลโครงการ
                         </inertia-link>
                         &ensp;หรือ&ensp;
@@ -71,7 +71,7 @@
                     </template>
                 </div>
             </div>
-            <div v-if="item.shouldVerify" class="bg-white shadow overflow-hidden sm:rounded-lg my-4 ring-4 ring-purple-400">
+            <div v-if="item.shouldVerify" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4 ring-4 ring-purple-400">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         กรุณารับรองรายชื่อนิสิตผู้เกี่ยวข้อง
@@ -83,12 +83,12 @@
                         โดยนิสิตผู้รับผิดชอบและผู้ปฏิบัติงานทุกคน<b>ภายใน 60 วัน นับจากสิ้นสุดกิจกรรม</b>
                     </p>
                     <inertia-link :href="route('projects.closureVerifyForm', {project: item.id})"
-                                  class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                                  class="inline-block items-center px-4 py-2 mt-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">
                         ตรวจสอบและรับรองรายชื่อนิสิตผู้เกี่ยวข้อง
                     </inertia-link>
                 </div>
             </div>
-            <div v-if="item.closure_status !== 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.closure_status !== 0" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     สถานะการพิจารณาเพื่อบันทึกลงใน Activity Transcript :
                     <ClosureStatusText class="font-bold" :closure_status="item.closure_status"/>
@@ -116,7 +116,7 @@
                     </p>
                 </div>
             </div>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
@@ -184,7 +184,7 @@
                     </dl>
                 </div>
             </div>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เหตุผล และวัตถุประสงค์
@@ -238,7 +238,7 @@
                     </dl>
                 </div>
             </div>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         งบประมาณ
@@ -303,7 +303,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="item.documents.length > 0" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="item.documents.length > 0" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารที่เกี่ยวข้อง
@@ -349,14 +349,14 @@
                     </div>
                 </div>
             </div>
-            <div v-if="participantsGrouped" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="participantsGrouped" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 inline-block">
                         นิสิตผู้เกี่ยวข้อง
                     </h3>
                     <template v-if="item.can['update-project']">
                         <a @click="showImportParticipantDialog = true" v-if="!hasProjectClosure"
-                           class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                           class="text-sm ml-4 inline-block cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                             <ArrowUpTrayIcon class="h-5 w-5 mr-1 inline"/>
                             <span>นำเข้าด้วยไฟล์ Excel</span>
                         </a>
@@ -387,7 +387,7 @@
                                     <li v-for="e in participantsGrouped[type]">
                                         {{ e.user?.name }}
                                         <span v-if="e.user?.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user?.student_id }}</span>
-                                        <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
+                                        <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded-sm bg-gray-200">{{ e.title }}</span>
                                         <XMarkIcon
                                             v-if="e.user?.student_id && !((type === 'organizer') && (participantsGrouped[type].length <= 1)) && item.can['update-project'] && !hasProjectClosure"
                                                    class="inline-block ml-1 h-5 text-red-400 cursor-pointer" @click="removeParticipant(e)"/>

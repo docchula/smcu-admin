@@ -3,7 +3,7 @@ const props = defineProps<{ value: number[] | null }>();
 </script>
 <template>
     <div v-if="value && value.length > 0"
-         class="inline-block p-0.5 text-xs bg-sky-100 rounded-sm text-sky-600">
+         class="inline-block p-0.5 text-xs bg-sky-100 rounded-xs text-sky-600">
         SDGs:
         <span v-for="i in value" :key="i" :class="'sdg-goal-' + i" class="ml-0.5 px-1 text-white text-center inline-block min-w-4">
             {{ i }}

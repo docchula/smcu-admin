@@ -2,7 +2,7 @@
     <Head :title="user_name"/>
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="p-4 sm:p-6 space-y-6 bg-white sm:overflow-hidden shadow-sm sm:rounded-lg component-dialog">
+            <div class="p-4 sm:p-6 space-y-6 bg-white sm:overflow-hidden shadow-xs sm:rounded-lg component-dialog">
                 <h2 class="mb-4 text-3xl text-gray-900">
                     ระเบียนประวัติการเข้าร่วมกิจกรรมนอกหลักสูตร
                 </h2>
@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <ActivityTranscriptTable v-if="transcript" :transcript="transcript" :hide-tick="true"
-                                         class="overflow-hidden shadow sm:rounded-lg"/>
+                                         class="overflow-hidden shadow-sm sm:rounded-lg"/>
             </div>
         </div>
         <a href="https://www.md.chula.ac.th" target="_blank">
@@ -33,6 +33,9 @@ defineProps({
 });
 </script>
 <style>
+/* Tailwind v4 needs an explicit @reference to resolve @apply inside SFC styles */
+@reference '../../css/app.css';
+
 body {
     @apply bg-gray-200;
 }

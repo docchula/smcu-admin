@@ -52,7 +52,7 @@
                     <div class="col-span-6">
                         <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
                         <select id="department" v-model="form.department_id" required
-                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <!-- hide if sequence >= 200 (deprecated values) -->
                             <template v-for="department in static_departments" v-bind:key="department.id">
                                 <option v-if="department.sequence < 200 || department.id === form.department_id" :value="department.id">
@@ -169,7 +169,7 @@
                     <div class="col-span-6">
                         <label for="background" class="block text-sm font-medium text-gray-700">หลักการและเหตุผล</label>
                         <div class="mt-1">
-                            <textarea id="background" rows="4" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                            <textarea id="background" rows="4" class="shadow-xs focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                                       placeholder="แสดงปัญหา ความจำเป็น หรือความต้องการที่ต้องมีการจัดทำโครงการขึ้น โดยอาจเชื่อมโยงกับนโยบาย/วิสัยทัศน์/แผนงาน หรืออ้างอิงหลักฐาน/หลักวิชาการ"
                                       v-model.trim="form.background"></textarea>
                         </div>
@@ -180,7 +180,7 @@
                         <label for="aims" class="block text-sm font-medium text-gray-700">วัตถุประสงค์</label>
                         <div class="mt-1">
                             <textarea id="aims" :rows="(aimLines > 2) ? aimLines : 2" placeholder="ผลลัพธ์ที่จะทำให้เกิดขึ้นในระยะยาว ขึ้นต้นด้วย เพื่อ..." v-model.trim="form.aims"
-                                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                                      class="shadow-xs focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                             ></textarea>
                         </div>
                         <p class="mt-2 text-xs text-gray-500">บรรทัดละข้อ (ตอนนี้มี {{ aimLines }} ข้อ)</p>
@@ -191,7 +191,7 @@
                         <div class="mt-1">
                             <textarea id="outcomes" :rows="(outcomeLines > 2) ? outcomeLines : 2" placeholder="เมื่อทำโครงการแล้ว จะมีผลดีอะไรตามมา ควรสอดคล้องกับวัตถุประสงค์"
                                       v-model.trim="form.outcomes"
-                                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
+                                      class="shadow-xs focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md"
                             ></textarea>
                         </div>
                         <p class="mt-2 text-xs text-gray-500">บรรทัดละข้อ (ตอนนี้มี {{ outcomeLines }} ข้อ)</p>
@@ -204,13 +204,13 @@
                 <template #title>ความสอดคล้องตามแผนงาน</template>
                 <template #description>
                     โครงการนี้สอดคล้องกับวิสัยทัศน์หรือแผนงานของสโมสรอย่างไร เลือกได้หลายข้อ
-                    <span class="py-0.5 px-2 ml-2 text-white bg-red-500 rounded inline-block">Not Implemented</span>
+                    <span class="py-0.5 px-2 ml-2 text-white bg-red-500 rounded-sm inline-block">Not Implemented</span>
                 </template>
                 <template #form>
                     <div class="col-span-6">
                         <label for="category" class="block text-sm font-medium text-red-700">แผนงานของสโมสร</label>
                         <select id="category" required multiple
-                                class="mt-1 block w-full h-64 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                class="mt-1 block w-full h-64 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <-- @todo v-model="okr" ->
                             <optgroup label="1. สนับสนุนกิจกรรมนิสิต">
                                 <option>1.1) เพื่อส่งเสริมกิจกรรมเสริมหลักสูตร ในด้านทักษะทางวิชาการ ศิลปะ วัฒนธรรม และพลานามัย</option>
@@ -335,7 +335,7 @@
                             </td>
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select v-model="member.type" required
-                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     :disabled="member.source === 'กองทุนวัสดุสโมสรนิสิต'"
                                     :class="member.source === 'กองทุนวัสดุสโมสรนิสิต' ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'"
                                 >
@@ -367,7 +367,7 @@
                             <td class="px-3 py-4 whitespace-nowrap">
                                 <select v-model="member.source" required
                                         @change="handleMaterialSource(member)"
-                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="สพจ.">สพจ.</option>
                                     <option hidden disabled value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
                                     <option value="งานกิจการนิสิต">งานกิจการนิสิต</option>

@@ -142,7 +142,7 @@
                         <div class="col-span-6">
                             <label for="department" class="block text-sm font-medium text-gray-700">หน่วยงานที่รับผิดชอบ</label>
                             <select id="department" v-model="form.department_id" required
-                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 <!-- hide if sequence >= 200 (deprecated values) -->
                                 <template v-for="department in static_departments" v-bind:key="department.id">
                                     <option v-if="department.sequence < 200 || department.id === form.department_id" :value="department.id">
@@ -187,7 +187,7 @@
                             <template #form>
                                 <div class="col-span-6">
                                     <div v-if="hasFilledClosureForm"
-                                         class="p-3 rounded bg-green-100 border border-green-600 text-green-600 mb-2 text-xl font-bold">
+                                         class="p-3 rounded-sm bg-green-100 border border-green-600 text-green-600 mb-2 text-xl font-bold">
                                         มีข้อมูลรายงานผลโครงการเรียบร้อยแล้ว
                                         <Link :href="route('projects.closureForm', {project: selectedProject.id})">
                                             <jet-button type="button" class="ml-2 inline-block">
@@ -195,7 +195,7 @@
                                             </jet-button>
                                         </Link>
                                     </div>
-                                    <div v-else class="p-3 rounded bg-blue-100 border border-blue-600 text-blue-600">
+                                    <div v-else class="p-3 rounded-sm bg-blue-100 border border-blue-600 text-blue-600">
                                         <h4 class="mb-2 text-xl font-bold">
                                             กรุณาบันทึกข้อมูลรายงานผลโครงการ ก่อนดำเนินการต่อ
                                         </h4>

@@ -93,7 +93,7 @@
                                 <li v-for="e in participantsGrouped[type]">
                                     {{ e.user.name }}
                                     <span v-if="e.user.student_id" class="ml-4 text-gray-700">เลขประจำตัวนิสิต {{ e.user.student_id }}</span>
-                                    <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded bg-gray-200">{{ e.title }}</span>
+                                    <span v-if="e.title" class="ml-4 px-1.5 py-0.5 rounded-sm bg-gray-200">{{ e.title }}</span>
                                 </li>
                             </ol>
                             <span v-else class="text-gray-500">-</span>
@@ -232,7 +232,7 @@
                                 </td>
                                 <td class="px-1 py-4 whitespace-nowrap">
                                     <select v-model="member.type" required
-                                            class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <optgroup label="งบดำเนินงาน"/>
                                         <optgroup label="- ค่าตอบแทน">
                                             <option value="ค่าวิทยากร">ค่าตอบแทนวิทยากร</option>
@@ -261,7 +261,7 @@
                                 </td>
                                 <td class="px-1 py-4 whitespace-nowrap">
                                     <select v-model="member.source" required
-                                            class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-xs focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option value="สพจ.">สพจ.</option>
                                         <option hidden disabled value="ฝ่ายกิจการนิสิต">ฝ่ายกิจการนิสิต</option>
                                         <option value="งานกิจการนิสิต">งานกิจการนิสิต</option>

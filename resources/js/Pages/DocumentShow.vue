@@ -18,7 +18,7 @@
                     {{ item.title }}
                 </span>
             </div>
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         ข้อมูลพื้นฐาน
@@ -76,7 +76,7 @@
                     </dl>
                 </div>
             </div>
-            <div v-if="can['download-document']" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="can['download-document']" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารต้นฉบับ
@@ -84,12 +84,12 @@
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     <a v-if="has_attachment" :href="route('documents.download', {document: item.id})"
-                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดร่างเอกสาร</a>
+                       class="inline-block items-center px-4 py-2 mb-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">ดาวน์โหลดร่างเอกสาร</a>
                     <p v-else class="text-gray-500">ไม่พบไฟล์</p>
                 </div>
             </div>
 
-            <div v-if="has_approved" class="bg-white shadow overflow-hidden sm:rounded-lg my-4">
+            <div v-if="has_approved" class="bg-white shadow-sm overflow-hidden sm:rounded-lg my-4">
                 <div class="px-4 py-5 sm:px-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">
                         เอกสารได้รับการอนุมัติแล้ว
@@ -97,7 +97,7 @@
                 </div>
                 <div class="border-t border-gray-200 p-4 sm:px-6">
                     <Link :href="route('documents.downloadApproved', {document: item.id})"
-                                  class="inline-block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                                  class="inline-block items-center px-4 py-2 mb-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-hidden focus:border-blue-900 focus:ring-3 focus:ring-blue-300 disabled:opacity-25 transition">
                         ดูเอกสาร
                     </Link>
                     <a :href="route('documents.downloadApproved', {document: item.id, download: true})">
@@ -106,7 +106,7 @@
                 </div>
             </div>
             <!-- File Naming Instruction -->
-            <div v-else-if="can['update-document']" class="bg-blue-100 border-blue-500 text-blue-600 border-l-4 rounded p-4 mb-6" role="alert">
+            <div v-else-if="can['update-document']" class="bg-blue-100 border-blue-500 text-blue-600 border-l-4 rounded-sm p-4 mb-6" role="alert">
                 <p class="font-bold">
                     ขั้นตอนต่อไป : ส่งให้ผู้เกี่ยวข้องลงลายมือชื่อ
                 </p>

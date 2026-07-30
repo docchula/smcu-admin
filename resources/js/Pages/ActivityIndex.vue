@@ -11,7 +11,7 @@
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <SearchInput class="mb-4" v-model="searchKeyword" :status="searchMessage"/>
-            <div v-if="list?.data" class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div v-if="list?.data" class="shadow-sm overflow-hidden border-b border-gray-200 sm:rounded-lg">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                     <tr>
@@ -60,7 +60,7 @@
             </div>
             <Link v-if="can_create" :href="route('activities.create')">
                 <button
-                    class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none fixed bottom-6 right-6">
+                    class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                     <PlusIcon class="w-6 h-6 inline-block text-white"/>
                 </button>
             </Link>

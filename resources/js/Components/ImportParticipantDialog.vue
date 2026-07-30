@@ -23,7 +23,7 @@
                 <li>
                     <span v-if="uploading" class="text-gray-500">กำลังอัปโหลดไฟล์...</span>
                     <label for="file-upload" v-else
-                           class="cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                           class="cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                         <span>อัปโหลดไฟล์ Excel</span>
                         <input id="file-upload" type="file" class="sr-only"
                                accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
@@ -33,7 +33,7 @@
                         นาทีแล้วอัปโหลดไฟล์เดิมซ้ำ</p>
                 </li>
             </ol>
-            <div v-if="importData.messages.length > 0" class="p-2 m-4 text-red-500 border rounded border-red-500">
+            <div v-if="importData.messages.length > 0" class="p-2 m-4 text-red-500 border rounded-sm border-red-500">
                 <p v-for="message in importData.messages">{{ message }}</p>
             </div>
             <div class="px-4 py-2 sm:px-6 border border-gray-200" v-if="importData.preview">
