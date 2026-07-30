@@ -122,7 +122,7 @@ class PersonnelController extends Controller
                 or !in_array($request->file('attachment')->getMimeType(), ['image/jpeg', 'image/webp', 'image/avif'])) {
                 // If image size > 100 kB -> resize and convert to webp
                 $path = 'personnels/'.$fileName.'webp';
-                Storage::disk('public')->put($path, Image::read($request->file('attachment'))
+                Storage::disk('public')->put($path, Image::decodeSplFileInfo($request->file('attachment'))
                     ->scaleDown(1000, 1000)->encode(new WebpEncoder(quality: 80)));
             } else {
                 $path = $request->file('attachment')
