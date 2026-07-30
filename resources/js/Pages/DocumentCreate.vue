@@ -34,28 +34,28 @@
                 </template>
                 <template #form>
                     <fieldset class="col-span-6">
-                        <jet-label for="" value="ประเภทหนังสือ"/>
+                        <jet-label value="ประเภทหนังสือ"/>
                         <ul class="mt-1.5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                             <li class="w-full border-b border-gray-200 rounded-t-lg">
                                 <div class="flex items-center ps-3">
                                     <input v-model="form.tag" id="list-radio-license" type="radio" value="" name="tag" required
-                                           class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 focus:ring-2">
-                                    <label for="list-radio-license" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">หนังสือทั่วไป</label>
+                                           class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 focus:ring-2">
+                                    <label for="list-radio-license" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 cursor-pointer">หนังสือทั่วไป</label>
                                 </div>
                             </li>
                             <li class="w-full border-b border-gray-200 rounded-t-lg">
                                 <div class="flex items-center ps-3">
                                     <input v-model="form.tag" id="list-radio-approval" type="radio" value="approval" name="tag"
-                                           class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 focus:ring-2">
-                                    <label for="list-radio-approval" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">ขออนุมัติดำเนินโครงการ
+                                           class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 focus:ring-2">
+                                    <label for="list-radio-approval" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 cursor-pointer">ขออนุมัติดำเนินโครงการ
                                         <i>(เปิดโครง)</i></label>
                                 </div>
                             </li>
                             <li class="w-full border-b border-gray-200 rounded-t-lg">
                                 <div class="flex items-center ps-3">
                                     <input v-model="form.tag" id="list-radio-summary" type="radio" value="summary" name="tag"
-                                           class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 focus:ring-2">
-                                    <label for="list-radio-summary" class="w-full py-3 ms-2 text-sm font-medium text-gray-900">รายงานผลการดำเนินโครงการ
+                                           class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500 focus:ring-2">
+                                    <label for="list-radio-summary" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 cursor-pointer">รายงานผลการดำเนินโครงการ
                                         <i>(ปิดโครง)</i></label>
                                 </div>
                             </li>

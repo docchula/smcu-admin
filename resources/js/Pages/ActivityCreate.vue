@@ -195,7 +195,7 @@
         </div>
         <Link :href="route('activities.edit', {activity: item.id})" v-if="view_only && can_edit">
             <button
-                class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
+                class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg cursor-pointer shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                 <PencilIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </Link>

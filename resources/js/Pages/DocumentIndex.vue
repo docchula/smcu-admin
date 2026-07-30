@@ -65,7 +65,7 @@
         </div>
         <inertia-link :href="route('documents.create')">
             <button
-                class="p-0 w-16 h-16 bg-green-600 rounded-full hover:bg-green-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
+                class="p-0 w-16 h-16 bg-green-600 rounded-full hover:bg-green-700 active:shadow-lg cursor-pointer shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                 <PlusIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </inertia-link>

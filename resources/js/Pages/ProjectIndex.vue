@@ -12,7 +12,7 @@
                     <Menu v-if="is_faculty || can_view_transcript" as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
-                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2"
+                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-orange-500 border-orange-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-orange-500 focus:ring-offset-orange-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer"
                             >
                                 สำหรับอาจารย์
                             </MenuButton>
@@ -32,7 +32,7 @@
                                 <Link v-if="is_faculty" :href="route('projects.approvalIndex')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             <CheckBadgeIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                                             อนุมัติ <span class="hidden sm:inline px-1">Activity </span> Transcript
@@ -42,7 +42,7 @@
                                 <Link :href="route('activities.index')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             ประวัติกิจกรรมภายนอก
                                         </button>
@@ -51,7 +51,7 @@
                                 <Link :href="route('transcript.index')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-orange-500 text-white' : 'text-orange-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             ดู Transcript ของนิสิต
                                         </button>
@@ -63,7 +63,7 @@
                     <Menu as="div" class="relative inline-block text-left z-10">
                         <div>
                             <MenuButton
-                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2"
+                                class="inline-flex py-2 px-4 justify-center items-center text-center text-base font-semibold transition ease-in duration-200 text-yellow-500 border-yellow-500 border rounded-lg shadow-sm hover:shadow-md focus:ring-yellow-500 focus:ring-offset-yellow-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer"
                             >
                                 <DocumentChartBarIcon class="-ml-1 mr-2 h-5 w-5" aria-hidden="true"/>
                                 รายงาน
@@ -84,7 +84,7 @@
                                 <Link :href="route('projects.indexOfYear')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             <Bars4Icon
                                                 :active="active"
@@ -98,7 +98,7 @@
                                 <Link :href="route('projects.indexAgenda')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             <CalendarDaysIcon
                                                 :active="active"
@@ -112,7 +112,7 @@
                                 <Link v-if="is_admin" :href="route('projects.budget')">
                                     <MenuItem v-slot="{ active }">
                                         <button
-                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm',]"
+                                            :class="[active ? 'bg-yellow-500 text-white' : 'text-yellow-600', 'group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer',]"
                                         >
                                             <CalculatorIcon
                                                 :active="active"
@@ -184,7 +184,7 @@
         </div>
         <Link :href="route('projects.create')">
             <button
-                class="p-0 w-16 h-16 bg-yellow-600 rounded-full hover:bg-yellow-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
+                class="p-0 w-16 h-16 bg-yellow-600 rounded-full hover:bg-yellow-700 active:shadow-lg cursor-pointer shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                 <PlusIcon class="w-6 h-6 inline-block text-white"/>
             </button>
         </Link>

@@ -60,7 +60,7 @@
             </div>
             <Link v-if="can_create" :href="route('activities.create')">
                 <button
-                    class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg mouse shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
+                    class="p-0 w-16 h-16 bg-purple-600 rounded-full hover:bg-purple-700 active:shadow-lg cursor-pointer shadow-sm transition ease-in duration-200 focus:outline-hidden fixed bottom-6 right-6">
                     <PlusIcon class="w-6 h-6 inline-block text-white"/>
                 </button>
             </Link>

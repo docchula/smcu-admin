@@ -13,7 +13,8 @@
         <p class="text-center mb-4">Please log in to continue</p>
         <p class="text-center mb-4">By clicking Log in, you agree to our <inertia-link :href="route('policy.show')" class="text-green-500">privacy policy</inertia-link>.</p>
         <a :href="route('login.google')">
-            <button class="m-auto block items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition">
+          <button
+              class="m-auto block items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-hidden focus:border-gray-900 focus:ring-3 focus:ring-gray-300 disabled:opacity-25 transition cursor-pointer">
                 Log in using Docchula
             </button>
         </a>
