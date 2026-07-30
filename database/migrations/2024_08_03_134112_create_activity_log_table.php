@@ -5,8 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class CreateActivityLogTable extends Migration {
+    // activitylog v5 dropped the `table_name` / `database_connection` config keys;
+    // the table name is fixed on Spatie\Activitylog\Models\Activity.
     public function up() {
-        Schema::connection(config('activitylog.database_connection'))->create(config('activitylog.table_name'), function (Blueprint $table) {
+        Schema::create('activity_log', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('log_name')->nullable();
             $table->text('description');
@@ -21,6 +23,6 @@ class CreateActivityLogTable extends Migration {
     }
 
     public function down() {
-        Schema::connection(config('activitylog.database_connection'))->dropIfExists(config('activitylog.table_name'));
+        Schema::dropIfExists('activity_log');
     }
 }
