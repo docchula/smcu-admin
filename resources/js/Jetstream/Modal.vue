@@ -19,7 +19,12 @@
                         leave-active-class="ease-in duration-200"
                         leave-from-class="opacity-100 translate-y-0 sm:scale-100"
                         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                    <div v-show="show" class="mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
+                    <!-- `relative` is load-bearing: in Tailwind v3 the `transform` utility always
+                         emitted a real transform, which created a stacking context and let this
+                         element paint above the fixed overlay. In v4 `transform` resolves to
+                         nothing unless a transform utility is applied, so without an explicit
+                         position the overlay would paint on top and swallow clicks. -->
+                    <div v-show="show" class="relative mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
                         <slot v-if="show"></slot>
                     </div>
                 </transition>
