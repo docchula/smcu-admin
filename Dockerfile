@@ -34,7 +34,7 @@ RUN chown -R www-data /var/www/html/storage /var/www/html/bootstrap/cache
 # Exporting large spreadsheets requires more memory
 ENV APP_ENV=production APP_DEBUG=false
 ENV REDIS_HOST=redis REDIS_PASSWORD=null REDIS_PORT=6379
-ENV CACHE_STORE=redis LOG_CHANNEL=stderr SESSION_DRIVER=redis
+ENV CACHE_STORE=redis LOG_CHANNEL=stderr QUEUE_CONNECTION=database SESSION_DRIVER=redis
 ENV PHP_MEMORY_LIMIT=400M PHP_OPCACHE_ENABLE=1
 ENV PHP_POST_MAX_SIZE=30M PHP_UPLOAD_MAX_FILE_SIZE=30M
 ENV OCTANE_SERVER=frankenphp HEALTHCHECK_PATH=/up

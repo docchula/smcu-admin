@@ -4,6 +4,7 @@ use App\Console\Commands\FetchEmailCommand;
 use App\Jobs\NotifyProjectClosureDueJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Spatie\Health\Commands\DispatchQueueCheckJobsCommand;
 use Spatie\Health\Commands\ScheduleCheckHeartbeatCommand;
 
 Artisan::command('inspire', function () {
@@ -12,6 +13,7 @@ Artisan::command('inspire', function () {
 
 Schedule::command(FetchEmailCommand::class)
     ->everyFourHours()->withoutOverlapping(28800)->appendOutputTo(storage_path('logs/fetch-email.log'));
+Schedule::command(DispatchQueueCheckJobsCommand::class)->everyFiveMinutes();
 Schedule::command(ScheduleCheckHeartbeatCommand::class)->everyFiveMinutes();
 
 Schedule::job(new NotifyProjectClosureDueJob)->daily();

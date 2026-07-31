@@ -11,6 +11,7 @@ use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Checks\Checks\EnvironmentCheck;
 use Spatie\Health\Checks\Checks\PingCheck;
+use Spatie\Health\Checks\Checks\QueueCheck;
 use Spatie\Health\Checks\Checks\ScheduleCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 use Spatie\Health\Facades\Health;
@@ -44,11 +45,12 @@ class AppServiceProvider extends ServiceProvider
                 ->name('Google')->timeout(10)->retryTimes(2),
             PingCheck::new()->url(config('vesta-client.url', 'https://docchula.com'))
                 ->name('Vesta')->timeout(10)->retryTimes(2),
-            ScheduleCheck::new()->heartbeatMaxAgeInMinutes(60),
+            QueueCheck::new()->failWhenHealthJobTakesLongerThanMinutes(15),
+            ScheduleCheck::new()->heartbeatMaxAgeInMinutes(15),
             StorageCheck::new(),
             // Disk space check only works on Linux
-            UsedDiskSpaceCheck::new()->warnWhenUsedSpaceIsAbovePercentage(90)
-                ->failWhenUsedSpaceIsAbovePercentage(95),
+            UsedDiskSpaceCheck::new()->warnWhenUsedSpaceIsAbovePercentage(85)
+                ->failWhenUsedSpaceIsAbovePercentage(90),
         ]);
         RateLimiter::for('mails', fn() => Limit::perHour(100));
     }
