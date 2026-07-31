@@ -6,9 +6,9 @@
 
         <template #description>
             โครงการ/กิจกรรมที่ฉันมีส่วนร่วม
-            <Link :href="route('profile.printMyProjects')" class="text-green-600 ml-2 inline-block">
+            <a :href="route('profile.printMyProjects')" target="_blank" class="text-green-600 ml-2 inline-block">
                 <PrinterIcon class="inline-block h-5 w-5" /> พิมพ์
-            </Link>
+            </a>
         </template>
 
         <template #content>
@@ -23,7 +23,6 @@
 </template>
 
 <script setup lang="ts">
-import {Link} from '@inertiajs/vue3';
 import {PrinterIcon} from '@heroicons/vue/24/solid';
 import ActivityTranscriptTable from "@/Components/ActivityTranscriptTable.vue";
 import ActionSection from '@/Jetstream/ActionSection.vue';

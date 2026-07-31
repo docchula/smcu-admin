@@ -19,10 +19,10 @@
                     <p class="mt-1 text-sm text-gray-500">เลขประจำตัวนิสิต {{ user.student_id }}</p>
                 </div>
                 <div class="flex-auto items-center text-right">
-                    <Link :href="route('transcript.print', {user: user.id})" class="text-green-600 ml-2 inline-block">
+                    <a :href="route('transcript.print', {user: user.id})" target="_blank" class="text-green-600 ml-2 inline-block">
                         <PrinterIcon class="inline-block h-5 w-5"/>
                         พิมพ์
-                    </Link>
+                    </a>
                 </div>
             </div>
             <ActivityTranscriptTable :transcript="transcript" v-if="user && transcript"
@@ -35,7 +35,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import SearchInput from '@/Components/SearchInput.vue';
 import Label from "@/Jetstream/Label.vue";
-import {Link, router} from '@inertiajs/vue3';
+import {router} from '@inertiajs/vue3';
 import {UserIcon} from '@heroicons/vue/20/solid';
 import {ref, watch} from 'vue';
 import {debounce} from 'lodash';

@@ -82,7 +82,7 @@
 <section style="display:flex;width: 100%;border-bottom: 0.15em solid black">
     <div style="text-align: center">
         @if(empty($draft))
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/06/Logo_of_Chulalongkorn_University_Colored.svg"
+            <img src="/assets/phrakiao.svg"
                  alt="Logo" style="width: 1.3cm"/>
         @else
             <h2 class="header-margin" style="color:red">ร่าง</h2>
