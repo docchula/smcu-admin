@@ -12,6 +12,7 @@
         "@vitejs/plugin-vue": "^6.0.8",
         "laravel-vite-plugin": "^3.1.3",
         "lodash": "^4.18.1",
+        "playwright": "latest",
         "postcss": "^8.5.25",
         "tailwindcss": "^4.3.3",
         "vite": "^8.2.0",
@@ -23,5 +24,5 @@
         "@inertiajs/vue3": "^3.6.1",
         "axios": "^1.19.0"
     },
-    "packageManager": "pnpm@10.15.1+sha512.34e538c329b5553014ca8e8f4535997f96180a1d0f614339357449935350d924e22f8614682191264ec33d1462ac21561aff97f6bb18065351c162c7e8f6de67"
+    "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c"
 }

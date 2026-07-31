@@ -1,43 +1,25 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Jetstream\Features;
-use Tests\TestCase;
 
-class DeleteAccountTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_user_accounts_can_be_deleted()
-    {
-        if (! Features::hasAccountDeletionFeatures()) {
-            return $this->markTestSkipped('Account deletion is not enabled.');
-        }
-
-        $this->actingAs($user = User::factory()->create());
-
-        $response = $this->delete('/user', [
-            'password' => 'password',
-        ]);
-
-        $this->assertNull($user->fresh());
+// Account deletion is disabled in config/jetstream.php, so these skip by default.
+beforeEach(function () {
+    if (!Features::hasAccountDeletionFeatures()) {
+        $this->markTestSkipped('Account deletion is not enabled.');
     }
+});
 
-    public function test_correct_password_must_be_provided_before_account_can_be_deleted()
-    {
-        if (! Features::hasAccountDeletionFeatures()) {
-            return $this->markTestSkipped('Account deletion is not enabled.');
-        }
+test('a user account can be deleted', function () {
+    $this->actingAs($user = User::factory()->create())
+        ->delete('/user', ['password' => 'password']);
 
-        $this->actingAs($user = User::factory()->create());
+    expect($user->fresh())->toBeNull();
+});
 
-        $response = $this->delete('/user', [
-            'password' => 'wrong-password',
-        ]);
+test('the correct password must be provided before an account can be deleted', function () {
+    $this->actingAs($user = User::factory()->create())
+        ->delete('/user', ['password' => 'wrong-password']);
 
-        $this->assertNotNull($user->fresh());
-    }
-}
+    expect($user->fresh())->not->toBeNull();
+});

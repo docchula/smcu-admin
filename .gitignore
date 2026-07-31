@@ -11,6 +11,12 @@
 /public/mix-manifest.json
 /storage/*.key
 /storage/clockwork
+/tests/Browser/screenshots
+/tests/Browser/Screenshots
+/tests/Browser/console
+/tests/Browser/Console
+/.playwright
+/database/testing.sqlite
 /vendor
 .env
 .env.backup

@@ -7,10 +7,15 @@ use Intervention\Image\ImageManager;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 test('resizing image (intervention/image)', function () {
+    // Built locally rather than downloaded so the suite runs offline.
+    $source = UploadedFile::fake()->image('sample.jpg', 800, 600)->get();
+
     $img = ImageManager::usingDriver(new Driver())
-        ->decodeBinary(file_get_contents('https://www.gstatic.com/webp/gallery/1.jpg'))
-        ->scaleDown(400, 300)->encode(new WebpEncoder(quality: 80));
-    $this->assertTrue((bool) $img);
+        ->decodeBinary($source)
+        ->scaleDown(400, 300)
+        ->encode(new WebpEncoder(quality: 80));
+
+    expect((bool) $img)->toBeTrue();
 });
 
 test('resizing an uploaded photo to webp (PersonnelController)', function () {
@@ -30,10 +35,10 @@ test('resizing an uploaded photo to webp (PersonnelController)', function () {
 });
 
 test('creating excel (phpoffice/phpspreadsheet)', function () {
-    $spreadsheet = IOFactory::load('storage/export_participant_template.xlsx');
+    $spreadsheet = IOFactory::load(base_path('storage/export_participant_template.xlsx'));
     $worksheet = $spreadsheet->getActiveSheet();
     $worksheet->setCellValue('A1', 'Test data');
-    $tmpPath = tempnam('storage', 'tmp-test-');
+    $tmpPath = tempnam(sys_get_temp_dir(), 'tmp-test-');
     IOFactory::createWriter($spreadsheet, 'Xlsx')->save($tmpPath);
 
     expect(file_exists($tmpPath))->toBeTrue();

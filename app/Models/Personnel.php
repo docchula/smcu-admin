@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Cache;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Personnel extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'name_en', 'position', 'position_en', 'year', 'sequence', 'supervisor', 'email', 'department_id'];
     protected $hidden = ['created_at', 'updated_at'];
 

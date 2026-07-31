@@ -28,4 +28,22 @@ class UserFactory extends Factory
             return $attributes;
         });
     }
+
+    /** Associate/Assistant Dean for Student Affairs. */
+    public function faculty(): static {
+        return $this->state(['roles' => 'faculty']);
+    }
+
+    /** Student Affairs officer who may create activities. */
+    public function activityStaff(): static {
+        return $this->state(['roles' => 'activity']);
+    }
+
+    public function viewTranscript(): static {
+        return $this->state(['roles' => 'view_transcript']);
+    }
+
+    public function downloader(): static {
+        return $this->state(['roles' => 'download']);
+    }
 }
