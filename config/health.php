@@ -14,7 +14,7 @@ return [
         ], */
 
         Spatie\Health\ResultStores\CacheHealthResultStore::class => [
-            'store' => 'file',
+            'store' => env('CACHE_STORE', 'database'),
         ],
 
         /*
