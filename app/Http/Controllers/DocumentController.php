@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Document;
 use App\Models\Personnel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -83,14 +84,15 @@ class DocumentController extends Controller {
                 'download-document' => $isAuthorized or $request->user()->can('download-action'),
                 'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
             ],
-            'has_attachment' => $isAuthorized && !empty($document->attachment_path),
+            'has_attachment' => ($isAuthorized or $request->user()->can('download-action')) && !empty($document->attachment_path),
             'has_approved' => $isAuthorized && !empty($document->approved_path),
             'signers' => $signers,
         ]);
     }
 
     public function download(Document $document): StreamedResponse {
-        $this->authorize('update-document', $document);
+        // $this->authorize('update-document', $document);
+        abort_if(!Gate::any(['update-document', 'download-action'], $document), 403);
         abort_if(empty($document->attachment_path), 404);
         abort_if(Storage::missing($document->attachment_path), 404);
 
