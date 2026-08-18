@@ -85,7 +85,7 @@ class DocumentController extends Controller {
                 'update-document' => $isAuthorized and ($document->created_at->diffInDays() <= 14),
             ],
             'has_attachment' => ($isAuthorized or $request->user()->can('download-action')) && !empty($document->attachment_path),
-            'has_approved' => $isAuthorized && !empty($document->approved_path),
+            'has_approved' => ($isAuthorized or $request->user()->can('download-action')) && !empty($document->approved_path),
             'signers' => $signers,
         ]);
     }
@@ -104,7 +104,8 @@ class DocumentController extends Controller {
 
     public function downloadApproved(Request $request, Document $document): StreamedResponse|\Illuminate\Http\Response
     {
-        $this->authorize('update-document', $document);
+        // $this->authorize('update-document', $document);
+        abort_if(!Gate::any(['update-document', 'download-action'], $document), 403);
         abort_if(empty($document->approved_path), 404);
         abort_if(Storage::missing($document->approved_path), 404);
 
