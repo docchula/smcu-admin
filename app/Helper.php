@@ -2,7 +2,12 @@
 
 namespace App;
 
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\HtmlString;
 
 class Helper {
     public static function buddhistYear(?int $year = null): int {
@@ -26,6 +31,15 @@ class Helper {
         }
 
         return $departmentName;
+    }
+
+    public static function transcriptQrCode(string $link): HtmlString {
+        $writer = new Writer(new ImageRenderer(
+            new RendererStyle(90),
+            new SvgImageBackEnd
+        ));
+
+        return new HtmlString($writer->writeString($link));
     }
 
     public static function stripEmoji($string): string {
