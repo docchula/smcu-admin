@@ -1,3 +1,4 @@
+/.claude
 /.idea
 /.phpunit.cache
 /.pnpm-store
@@ -20,8 +21,11 @@
 /vendor
 .env
 .env.backup
+.mcp.json
 .phpunit.result.cache
 _lighthouse_ide_helper.php
+boost.json
+CLAUDE.md
 docker-compose.override.yml
 Homestead.json
 Homestead.yaml
