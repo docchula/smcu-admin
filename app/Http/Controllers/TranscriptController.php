@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper;
 use App\Models\User;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
 use Illuminate\Http\Request;
-use Illuminate\Support\HtmlString;
 use Inertia\Inertia;
 
 class TranscriptController extends Controller {
@@ -28,16 +24,18 @@ class TranscriptController extends Controller {
 
     public function print(User $user) {
         $this->authorize('view-transcript');
-        $writer = new Writer(new ImageRenderer(
-            new RendererStyle(90),
-            new SvgImageBackEnd
-        ));
+
+        return self::printTranscript($user, false);
+    }
+
+    public static function printTranscript(User $user, bool $isDraft = true) {
         $link = $user->getTranscriptLink();
 
         return view('my-projects', [
             'user' => $user,
+            'draft' => $isDraft,
             'link' => $link,
-            'qrCode' => new HtmlString($writer->writeString($link)),
+            'qrCode' => Helper::transcriptQrCode($link),
         ]);
     }
 

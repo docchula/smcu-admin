@@ -17,7 +17,9 @@
             </div>
         </div>
         <a href="https://www.md.chula.ac.th" target="_blank">
-            <p class="mt-4 text-sm text-gray-500 max-w-5xl mx-auto sm:px-6 lg:px-8">คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p>
+            <p class="mt-4 text-sm text-gray-500 max-w-5xl mx-auto sm:px-6 lg:px-8">
+                ฝ่ายกิจการนิสิต คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย
+            </p>
         </a>
     </div>
 </template>

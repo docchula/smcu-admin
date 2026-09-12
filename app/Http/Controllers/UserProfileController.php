@@ -23,7 +23,6 @@ class UserProfileController extends JetstreamUserProfileController {
     {
         $user = $request->user();
 
-        return view('my-projects', ['user' => $user, 'draft' => true]);
-        // return response()->view('base64-pdf-viewer', ['encoded' => base64_encode(Pdf::loadView('my-projects', ['user' => $user, 'draft' => true])->output())]);
+        return TranscriptController::printTranscript($user);
     }
 }
